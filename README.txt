@@ -1,1 +1,1 @@
-Dashboard to track 'needinfo' backlogs for the Platform Graphics team.
+Originally based on Bob Hood's Need Info Leaderboard. More information to come... Currently under development.
