@@ -13,6 +13,13 @@ var NEEDINFO = null;
  -- https://bugzilla.mozilla.org/show_bug.cgi?id=969395
  - dealing with double needinfos 
  -- https://bugzilla.mozilla.org/show_bug.cgi?id=1667635#c31
+ - sec bug inclusion
+ -- make sure this is working
+ - Details pane
+ -- sorting features
+ -- authentication for posting changes
+ -- bulk actions with comments
+ -- ...
 */
  
 $(document).ready(function () {

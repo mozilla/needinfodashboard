@@ -180,8 +180,10 @@ function displayCountFor(url, type, data) {
 function addRow(ct, bugid, s, p, from, msg, cidx, title) {
   let dateStr = ct;
 
+  // poster simplification
   let fromClean = from.replace('release-mgmt-account-bot@mozilla.tld', 'nagbot');
 
+  // comment simplification
   let msgClean = msg;
   let clipIdx = msg.indexOf('For more information');
   if (clipIdx != -1)
