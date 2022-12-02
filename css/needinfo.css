@@ -1,0 +1,265 @@
+@font-face {
+  font-family: Moz;
+  src: url("../fonts/MozTT-Medium.ttf");
+}
+
+body {
+  margin: 0px;
+}
+
+.header {
+  margin: 0px;
+  height:7vh;
+  color: white;
+  text-align: center;
+  font-size:  5vmin;
+  font-family: Moz;
+  border:0px solid black;
+}
+
+.header-bg {
+  position: absolute;
+  z-index: -1;
+  margin: 0px;
+  height: 20vh;
+  border-bottom: 50px solid transparent;
+  border-right: 100vw solid #FF9500;
+}
+
+.header div {
+  display: inline-block;
+  height: 100%;
+  vertical-align: top;
+  margin-top: 3vmin;
+}
+
+.announcement {
+  font-size: 1.5vmin;
+  margin-top: 2vmin;
+  margin-left: 25vmin;
+  margin-right: 25vmin;
+  padding: 1vmin 0;
+  text-align: center;
+  border: 1px solid;
+}
+
+#content {
+  height: 67vh;
+  text-align: center;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
+
+.nodecoration {
+  text-decoration: none;
+  color: black;
+}
+
+a:hover {
+  color: highlight;
+}
+
+/* pop-up settings */
+* {
+    box-sizing: border-box;
+}
+.openBtn {
+    display: flex;
+    justify-content: left;
+}
+.openButton {
+    border: none;
+    border-radius: 5px;
+    background-color: #1c87c9;
+    color: white;
+    padding: 14px 20px;
+    cursor: pointer;
+    margin-left: 10px;
+    /* position: fixed; */
+}
+.settingsPopup {
+    color: black;
+    position: relative;
+    text-align: center;
+    width: 100%;
+}
+.formPopup {
+    display: none;
+    position: fixed;
+    left: 45%;
+    top: 5%;
+    transform: translate(-50%, 5%);
+    border: 3px solid #999999;
+    z-index: 9;
+}
+.formContainer {
+    max-width: 300px;
+    padding: 20px;
+    background-color: #fff;
+}
+.formContainer input[type=text],
+.formContainer input[type=password],
+.formContainer input[type=checkbox] {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    background: #eee;
+}
+.formContainer input[type=text]:focus,
+.formContainer input[type=password]:focus {
+    background-color: #ddd;
+    outline: none;
+}
+.formContainer .btn {
+    padding: 12px 20px;
+    border: none;
+    background-color: #8ebf42;
+    color: #fff;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom: 15px;
+    opacity: 0.8;
+}
+.formContainer .cancel {
+    background-color: #cc0000;
+}
+.formContainer .btn:hover,
+.openButton:hover {
+    opacity: 1;
+}
+
+.settings-container {
+  display: grid;
+  gap: 0px;
+  grid-row-gap: 0px;
+  grid-template-rows: repeat(5, 1fr);
+  width: 100%;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.settings-header {
+  grid-column: 1 / span 2;
+  margin-top: 10px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.settings-col1 {
+  grid-column: 1;
+}
+
+.settings-col2 {
+  grid-column: 2;
+}
+
+.table-container {
+  padding: 100px;
+  float: left;
+  width: 100%;
+  display: grid;
+  gap: 0px;
+  border: 0px solid gray;
+  font-size: 2vmin;
+  font-family: Moz;
+}
+
+.name-title, .name-odr, .name-cdr, .name-onb, .name-cnb {
+  min-height: 4vh;
+  grid-column: 1;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.name-odr {
+  grid-column: 2;
+  text-align: center;
+}
+
+.name-cdr {
+  grid-column: 3;
+  text-align: center;
+}
+
+.name-onb {
+  grid-column: 4;
+  text-align: center;
+}
+
+.name-cnb {
+  grid-column: 5;
+  text-align: center;
+}
+
+.details-container {
+  padding: 50px;
+  padding-top: 100px;
+  float: left;
+  width: 100%;
+  display: grid;
+  gap: 0px;
+  border: 0px solid gray;
+  font-family: Moz;
+}
+
+.name-nidate, .name-bugid, .name-severity, .name-priority, .name-nifrom, .name-nimsg, .name-bugtitle {
+  min-height: 3vh;
+  text-align: left;
+  border: 1px solid #ffebce;
+  font-size: 1.2vmin;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 2px;
+}
+
+.name-nidate {
+  grid-column: 1;
+}
+
+.name-bugid {
+  grid-column: 2;
+}
+
+.name-severity {
+  grid-column: 3;
+}
+
+.name-priority {
+  grid-column: 4;
+}
+
+.name-nifrom {
+  grid-column: 5;
+}
+
+.name-bugtitle {
+  grid-column: 6;
+  display: inline-block;
+}
+
+.name-nimsg {
+  grid-column: 7;
+  text-overflow: ellipsis;
+}
+
+.bug-link-container {
+  display: inline-block;
+  text-align: center;
+  align-self: center;
+  border: 0px solid blue;
+  white-space: nowrap;
+  width: 100px;
+}
+
+.bug-link {
+}
+
+.bug-icon {
+  border: 0px solid red;
+  max-height: 5px;
+  height: 5px;
+  margin-left: 5px;
+}
+

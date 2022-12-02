@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Need Info Manager</title>
+  <link rel="stylesheet" type="text/css" href="css/needinfo.css">
+  <script src="js/libs/jquery-1.12.0.min.js"></script>
+  <script src="js/libs/jquery-cross-origin.min.js"></script>
+  <script src="js/libs/purl-2.3.1/purl.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/needinfo.js"></script>
+</head>
+
+  <body id="body">
+    <div id="header-bg" class="header-bg"></div>
+    <div class="header">
+      <div id="title">Need Info Manager</div>
+    </div>
+    <div id="announcement" class="announcement">
+      News...
+    </div>
+
+    <center>
+      <div class="table-container" id="report">
+        <div class="name-title">Engineer</div>
+        <div class="name-odr">Open Dev Related</div>
+        <div class="name-cdr">Closed Dev Related</div>
+        <div class="name-onb">Open Nagbot</div>
+        <div class="name-cnb">Closed Nagbot</div>
+      </div>
+    </center>
+
+    <div class="settingsPopup">
+      <div class="formPopup" id="popupForm">
+        <form class="formContainer" onsubmit="saveSettings(event);">
+          <h2>Settings</h2>
+          <label for="api-key">
+            <strong>API Key</strong>&nbsp;<a href="https://wiki.mozilla.org/Bugzilla:REST_API#with_two_factor_authentication" target="_blank" rel="noopener noreferrer"><img src="images/info.png" width="15"></a>
+          </label>
+          <input type="text" id="api-key" placeholder="Bugzilla API Key" name="key" />
+
+          <div class="settings-container">
+            <div class="settings-header">
+              <label>Search Options</label>
+            </div>
+            <div class="settings-col1">
+              <label>Ignore self needinfos</label>
+            </div>
+            <div class="settings-col2">
+              <input type="checkbox" id="option-ignoremyni" placeholder="Ignore" name="ignoremyni" />
+            </div>
+            <div class="settings-header">
+              <label>General Options</label>
+            </div>
+            <div class="settings-col1">
+              <label>Always remember my settings</label>
+            </div>
+            <div class="settings-col2">
+              <input type="checkbox" id="option-save" checked placeholder="Remember" name="save" />
+            </div>
+          </div>
+
+          <button type="submit" class="btn" id="applySettingsButton">Apply</button>
+          <button type="button" class="btn cancel" onclick="closeSettings()">Cancel</button>
+        </form>
+      </div>
+    </div>
+    <button class="openButton" onclick="openSettings()"><strong>Settings</strong></button>
+  </body>
+</html>

@@ -1,0 +1,30 @@
+
+
+https://bugzilla.mozilla.org/rest/bug?include_fields=_all&f1=requestees.login_name&f2=flagtypes.name&f3=setters.login_name&f4=bug_status&list_id=16310137&o1=equals&o2=equals&o3=notequals&o4=nowordssubstr&query_format=advanced&v1=docfaraday%40gmail.com&v2=needinfo%3F&v3=release-mgmt-account-bot%40mozilla.tld&v4=RESOLVED%2CVERIFIED%2CCLOSED
+
+https://bugzilla.mozilla.org/rest/bug?include_fields=flags,summary,id,comments&f1=requestees.login_name&f2=flagtypes.name&f3=setters.login_name&f4=bug_status&list_id=16310137&o1=equals&o2=equals&o3=notequals&o4=nowordssubstr&query_format=advanced&v1=docfaraday%40gmail.com&v2=needinfo%3F&v3=release-mgmt-account-bot%40mozilla.tld&v4=RESOLVED%2CVERIFIED%2CCLOSED
+
+https://bugzilla.mozilla.org/rest/bug/1510802/comment
+
+
+1510802
+
+comment
+-----------------------------------
+time: 2022-08-01T16:14:18Z
+creator: docfaraday@gmail.com
+counts -> comments (zero indexed)
+
+flag
+-----------------------------------
+requestee
+setter
+status
+creation_date: 2022-08-01T16:14:18Z
+
+
+- how to connect a flag that we searched for here?
+- get the flag creation date
+- request comments that match creation date
+
+
