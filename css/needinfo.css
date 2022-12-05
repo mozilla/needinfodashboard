@@ -21,7 +21,7 @@ body {
   position: absolute;
   z-index: -1;
   margin: 0px;
-  height: 20vh;
+  height: 15vh;
   border-bottom: 50px solid transparent;
   border-right: 100vw solid #FF9500;
 }
@@ -30,7 +30,19 @@ body {
   display: inline-block;
   height: 100%;
   vertical-align: top;
-  margin-top: 3vmin;
+}
+
+#title-img {
+  height: 100%;
+}
+
+#title {
+  margin-top: 10px;
+}
+
+#div-team-select {
+  padding-left: 5px;
+  width: 150px;
 }
 
 .announcement {
@@ -40,7 +52,7 @@ body {
   margin-right: 25vmin;
   padding: 1vmin 0;
   text-align: center;
-  border: 1px solid;
+  border: 0px solid;
 }
 
 #content {
@@ -204,7 +216,8 @@ a:hover {
   font-family: Moz;
 }
 
-.name-nidate, .name-bugid, .name-severity, .name-priority, .name-nifrom, .name-nimsg, .name-bugtitle {
+.name-checkbox, .name-nidate-hdr, .name-bugid-hdr, .name-nidate, .name-bugid,
+.name-severity, .name-priority, .name-nifrom, .name-nimsg, .name-bugtitle {
   min-height: 3vh;
   text-align: left;
   border: 1px solid #ffebce;
@@ -214,33 +227,46 @@ a:hover {
   padding: 2px;
 }
 
-.name-nidate {
+.name-checkbox {
   grid-column: 1;
 }
 
-.name-bugid {
+.name-nidate-hdr {
+  cursor: pointer;
   grid-column: 2;
 }
 
-.name-severity {
+.name-bugid-hdr {
   grid-column: 3;
 }
 
-.name-priority {
+.name-nidate {
+  grid-column: 2;
+}
+
+.name-bugid {
+  grid-column: 3;
+}
+
+.name-severity {
   grid-column: 4;
 }
 
-.name-nifrom {
+.name-priority {
   grid-column: 5;
 }
 
-.name-bugtitle {
+.name-nifrom {
   grid-column: 6;
+}
+
+.name-bugtitle {
+  grid-column: 7;
   display: inline-block;
 }
 
 .name-nimsg {
-  grid-column: 7;
+  grid-column: 8;
   text-overflow: ellipsis;
 }
 

@@ -7,19 +7,18 @@
 var NEEDINFO = null;
 
 /*
- - dependent page itemizing ni's and messages --- precursor to bulk actions
- -- dependent page with NI by date
  - bug assingee changes by nagbots, can we expose who got dropped?
  -- https://bugzilla.mozilla.org/show_bug.cgi?id=969395
  - dealing with double needinfos 
  -- https://bugzilla.mozilla.org/show_bug.cgi?id=1667635#c31
+ - fix details targets
+ - teams selector and config file
  - sec bug inclusion
  -- make sure this is working
  - Details pane
- -- sorting features
  -- authentication for posting changes
- -- bulk actions with comments
- -- ...
+ -- bulk actions with comment
+ -- redirect ni feature?
 */
  
 $(document).ready(function () {
@@ -28,6 +27,9 @@ $(document).ready(function () {
     window.location.href = window.location.href + "?team=media"
     return;
   }
+
+  let sel = document.getElementById('team-select');
+  sel.value = team;
 
   $.getJSON('js/' + team + '.json', function (data) {
     main(data);
@@ -61,10 +63,6 @@ function main(json)
   for (var key in NEEDINFO.developers) {
     let id = encodeURIComponent(NEEDINFO.developers[key]);
     let url = NEEDINFO.bugzilla_rest_url;
-
-    // https://bugzilla.mozilla.org/rest/bug?f1=requestees.login_name&o2=equals&v2=needinfo?&f2=flagtypes.name&o1=equals&v1=docfaraday@gmail.com&include_fields=id,summary
-    // https://bugzilla.mozilla.org/query.cgi?f1=requestees.login_name&o2=equals&v2=needinfo?&f2=flagtypes.name&o1=equals&v1=docfaraday@gmail.com&include_fields=id,summary
-    // https://bugzilla.mozilla.org/buglist.cgi?query_format=advanced&v2=needinfo%3F&v3=release-mgmt-account-bot%40mozilla.tld&f1=requestees.login_name&o1=equals&o3=notequals&o2=equals&f2=flagtypes.name&f3=setters.login_name&v1=docfaraday%40gmail.com&list_id=16309846
 
     //////////////////////////////////////////
     // Base query and resulting fields request
@@ -174,6 +172,23 @@ function main(json)
   }
 }
 
+function replaceUrlParam(url, paramName, paramValue) {
+  if (paramValue == null) {
+    paramValue = '';
+  }
+  var pattern = new RegExp('\\b(' + paramName + '=).*?(&|#|$)');
+  if (url.search(pattern) >= 0) {
+    return url.replace(pattern, '$1' + paramValue + '$2');
+  }
+  url = url.replace(/[?#]$/, '');
+  return url + (url.indexOf('?') > 0 ? '&' : '?') + paramName + '=' + paramValue;
+}
+
+function teamSelectionChanged(el) {
+  var team = el.options[el.selectedIndex].value;
+  window.location.href = replaceUrlParam(window.location.href, 'team', team);
+}
+
 // this function's sole reason for existing is to provide
 // a capture context for the AJAX values...
 function retrieveInfoFor(url, id, key, type)
@@ -201,8 +216,8 @@ function displayCountFor(id, key, url, type, data)
     let dash_link = "details.html?" + "team=" + getTeam() + "&userquery=" + type + "&userid=" + id;
     let bug_list = url;
     bug_list = bug_list.replace('/rest/bug', '/buglist.cgi');
-    bug_link = "<div class='bug-link-container'><a class='bug-link' href='" + dash_link + "' target='_blank' rel='noopener noreferrer'>" + ni_count + "</a>";
-    bug_link += "<a class='bug-icon' href='" + bug_list + "' target='_blank' rel='noopener noreferrer'><img src='images/favicon.ico' /></a></div>";
+    bug_link = "<div class='bug-link-container'><a class='bug-link' href='" + dash_link + "' target='nilist' rel='noopener noreferrer'>" + ni_count + "</a>";
+    bug_link += "<a class='bug-icon' href='" + bug_list + "' target='buglist' rel='noopener noreferrer'><img src='images/favicon.ico' /></a></div>";
   }
 
   if (!ni_count) {

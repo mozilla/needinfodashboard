@@ -21,9 +21,6 @@ $(document).ready(function () {
   });
 });
 
-function prepPage() {
-}
-
 function main(json)
 {
   NEEDINFO = json.needinfo;
@@ -43,6 +40,7 @@ function main(json)
   }
 
   loadSettingsInternal();
+  prepPage(userQuery);
 
   let id = encodeURIComponent(getUserId());
   let url = NEEDINFO.bugzilla_rest_url;
@@ -123,13 +121,11 @@ function main(json)
       break;
   }
 
-  console.log(url);
+  //console.log(url);
 
   retrieveInfoFor(url, userQuery);
 }
 
-// this function's sole reason for existing is to provide
-// a capture context for the AJAX values...
 function retrieveInfoFor(url, type)
 {
     $.ajax({
@@ -145,43 +141,61 @@ function retrieveInfoFor(url, type)
 }
 
 function displayCountFor(url, type, data) {
-  console.log(data);
   data.bugs.forEach(function (bug) {
     let flagCreationDate = bug.flags[0].creation_date;
-    console.log(bug.id, bug.summary);
+
+    //let index = 0;
+    //bug.flags.forEach(function (flag) {
+    //  console.log(index, flag.creation_date, flag.name, flag.setter);
+    //  index++;
+    //});
+
     let index = 0;
-    bug.flags.forEach(function (flag) {
-      console.log(index, flag.creation_date, flag.name, flag.setter);
-      index++;
-    });
-    index = 0;
     let commentIdx = -1;
     bug.comments.every(function (comment) {
       if (flagCreationDate == comment.creation_time) {
         // when someone sets an ni without commenting, there won't be a comment to match here.
         // usually the right comment is the previous in the array (they forgot to set the ni when
         // submitting a comment) but lets not mess around with false positives here. leave it blank.
-        console.log(index, comment.creation_time, comment.creator);
+        //console.log(index, comment.creation_time, comment.creator);
         commentIdx = index;
         return false;
       }
       index++;
       return true;
     });
-    console.log('comment id', commentIdx);
+
     if (commentIdx == -1) {
-      addRow(flagCreationDate, bug.id, bug.severity, bug.priority, bug.flags[0].setter, "", -1, bug.summary);
+      processRow(flagCreationDate, bug.id, bug.severity, bug.priority, bug.flags[0].setter, "", -1, bug.summary);
     } else {
-      addRow(flagCreationDate, bug.id, bug.severity, bug.priority, bug.flags[0].setter, bug.comments[commentIdx].text, commentIdx, bug.summary);
+      processRow(flagCreationDate, bug.id, bug.severity, bug.priority, bug.flags[0].setter, bug.comments[commentIdx].text, commentIdx, bug.summary);
     }
   });
+  populateRows();
 }
 
-function addRow(ct, bugid, s, p, from, msg, cidx, title) {
-  let dateStr = ct;
+let bugset = [];
+
+function addRec(ct, bugid, s, p, from, msg, cidx, title) {
+  let record = {
+    'date': ct, // Date
+    'bugid': bugid,
+    'title': title,
+    'severity': s,
+    'priority': p,
+    'nisetter': from,
+    'msg': msg,
+    'commentId': cidx
+  };
+  bugset.push(record);
+  return record;
+}
+
+function processRow(ct, bugid, s, p, from, msg, cidx, title) {
+  let d = new Date(Date.parse(ct));
 
   // poster simplification
-  let fromClean = from.replace('release-mgmt-account-bot@mozilla.tld', 'nagbot');
+  from = from.replace('release-mgmt-account-bot@mozilla.tld', 'nagbot');
 
   // comment simplification
   let msgClean = msg;
@@ -189,21 +203,88 @@ function addRow(ct, bugid, s, p, from, msg, cidx, title) {
   if (clipIdx != -1)
     msgClean = msg.substring(0, clipIdx);
 
-  let bugLink = "<a target='_blank' rel='noopener noreferrer' href='https://bugzilla.mozilla.org/show_bug.cgi?id=" + bugid + "'>" + bugid + "</a>";
-  let titleLink = "<a class='nodecoration' target='_blank' rel='noopener noreferrer' href='https://bugzilla.mozilla.org/show_bug.cgi?id=" + bugid + "'>" + title + "</a>";
-  // https://bugzilla.mozilla.org/show_bug.cgi?id=1776524#c15
-  let commentLink = "<a class='nodecoration' target='_blank' rel='noopener noreferrer' href='https://bugzilla.mozilla.org/show_bug.cgi?id=" + bugid + "#c" + cidx + "'>" + msgClean + "</a>";
+  addRec(d, bugid, s, p, from, msgClean, cidx, title);
+}
+
+function prepPage(userQuery) {
+  let header =
+    "<div class='name-checkbox'></div>" +
+    "<div class='name-nidate-hdr' onclick='htmlSort(0);'>NI Date</div>" +
+    "<div class='name-bugid-hdr'>Bug ID</div>" +
+    "<div class='name-severity'>Severity</div>" +
+    "<div class='name-priority'>Priority</div>" +
+    "<div class='name-nifrom'>NI From</div>" +
+    "<div class='name-bugtitle'>Title</div>" +
+    "<div class='name-nimsg'>NI Message</div>";
+  $("#report").append(header);
+
+  $("#title").text('Need Info Details for ' + getUserId());
+}
+
+function populateRow(record) {
+  let dateStr = record.date.toDateString();
+  let bugLink = "<a target='user' href='https://bugzilla.mozilla.org/show_bug.cgi?id=" + record.bugid + "'>" + record.bugid + "</a>";
+  let titleLink = "<a class='nodecoration' target='user' href='https://bugzilla.mozilla.org/show_bug.cgi?id=" +
+    record.bugid + "'>" + record.title + "</a>";
+  let commentLink = "<a class='nodecoration' target='user' href='https://bugzilla.mozilla.org/show_bug.cgi?id=" +
+    record.bugid + "#c" + record.cidx + "'>" + record.msg + "</a>";
   let content =
+    "<div class='name-checkbox'><input type='checkbox' id='' placeholder='Ignore' name='ignoremyni' /></div>" +
     "<div class='name-nidate'>" + dateStr + "</div>" +
     "<div class='name-bugid'>" + bugLink + "</div>" +
-    "<div class='name-severity'>" + s + "</div>" +
-    "<div class='name-priority'>" + p + "</div>" +
-    "<div class='name-nifrom'>" + fromClean + "</div>" +
+    "<div class='name-severity'>" + record.severity + "</div>" +
+    "<div class='name-priority'>" + record.priority + "</div>" +
+    "<div class='name-nifrom'>" + record.nisetter + "</div>" +
     "<div class='name-bugtitle'>" + titleLink + "</div>" +
     "<div class='name-nimsg'>" + commentLink + "</div>";
+  $("#report").append(content);
+}
 
-  if (content.length) {
-    $("#report").append(content);
+function clearRows() {
+  $("#report").empty();
+  prepPage();
+}
+
+function populateRows() {
+  bugset.forEach(function (rec) {
+    populateRow(rec);
+  });
+}
+
+// sorting:
+// If the result is negative, a is sorted before b.
+// If the result is positive, b is sorted before a.
+// If the result is 0, no changes are done with the sort order of the two values.
+
+function sortDateAsc(a, b) {
+  return a.date < b.date;
+}
+
+function sortDateDesc(a, b) {
+  return a.date > b.date;
+}
+
+function sortBugId(a, b) {
+  return a.bugid - b.bugid;
+}
+
+let sortTrack = {
+  'date': true,
+};
+
+function htmlSort(colId) {
+  switch (colId) {
+    case 0: // date
+      console.log(sortTrack['date']);
+      if (sortTrack['date']) {
+        bugset.sort(sortDateAsc);
+      } else {
+        bugset.sort(sortDateDesc);
+      }
+      sortTrack['date'] = !sortTrack['date'];
+      clearRows();
+      populateRows();
+      break;
   }
 }
 
