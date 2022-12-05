@@ -171,6 +171,7 @@ function displayCountFor(url, type, data) {
       processRow(flagCreationDate, bug.id, bug.severity, bug.priority, bug.flags[0].setter, bug.comments[commentIdx].text, commentIdx, bug.summary);
     }
   });
+  sortBugs();
   populateRows();
 }
 
@@ -249,6 +250,7 @@ function populateRows() {
   bugset.forEach(function (rec) {
     populateRow(rec);
   });
+  $("#stats").text("" + bugset.length + " Bugs");
 }
 
 // sorting:
@@ -269,19 +271,22 @@ function sortBugId(a, b) {
 }
 
 let sortTrack = {
-  'date': true,
+  'date': true, /* newest to oldest */
 };
+
+function sortBugs() {
+  if (sortTrack['date']) {
+    bugset.sort(sortDateAsc);
+  } else {
+    bugset.sort(sortDateDesc);
+  }
+  sortTrack['date'] = !sortTrack['date'];
+}
 
 function htmlSort(colId) {
   switch (colId) {
     case 0: // date
-      console.log(sortTrack['date']);
-      if (sortTrack['date']) {
-        bugset.sort(sortDateAsc);
-      } else {
-        bugset.sort(sortDateDesc);
-      }
-      sortTrack['date'] = !sortTrack['date'];
+      sortBugs();
       clearRows();
       populateRows();
       break;

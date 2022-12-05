@@ -45,9 +45,7 @@ function clearStorage(keyname) {
 
 function loadSettingsInternal() {
   let api_key = getFromStorage("api-key");
-  console.log(api_key);
   NEEDINFO.api_key = (api_key == null) ? "" : api_key;
-
   NEEDINFO.ignoremyni = getFromStorage("ignoremyni") == (null || 'false') ? false : true;
   NEEDINFO.saveoptions = getFromStorage("save") == (null || 'false') ? false : true;
 }

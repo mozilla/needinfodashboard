@@ -16,7 +16,6 @@ body {
   font-family: Moz;
   border:0px solid black;
 }
-
 .header-bg {
   position: absolute;
   z-index: -1;
@@ -80,7 +79,8 @@ a:hover {
 }
 
 /* pop-up settings */
-.openButton {
+
+.settings-button {
   border: none;
   border-radius: 5px;
   background-color: #1c87c9;
@@ -100,53 +100,53 @@ a:hover {
 }
 
 .formPopup {
-    display: none;
-    position: fixed;
-    left: 45%;
-    top: 5%;
-    transform: translate(-50%, 5%);
-    border: 3px solid #999999;
-    z-index: 9;
+  display: none;
+  position: fixed;
+  left: 45%;
+  top: 5%;
+  transform: translate(-50%, 5%);
+  border: 3px solid #999999;
+  z-index: 9;
 }
 
 .formContainer {
-    max-width: 350px;
-    padding: 20px;
-    background-color: #fff;
+  max-width: 350px;
+  padding: 20px;
+  background-color: #fff;
 }
 
 .formContainer input[type=text],
 .formContainer input[type=password],
 .formContainer input[type=checkbox] {
-    width: 100%;
-    padding: 15px;
-    border: none;
-    background: #eee;
+  width: 100%;
+  padding: 15px;
+  border: none;
+  background: #eee;
 }
 
 .formContainer input[type=text]:focus,
 .formContainer input[type=password]:focus {
-    background-color: #ddd;
-    outline: none;
+  background-color: #ddd;
+  outline: none;
 }
 
 .formContainer .btn {
-    padding: 12px 20px;
-    border: none;
-    background-color: #8ebf42;
-    color: #fff;
-    cursor: pointer;
-    width: 100%;
-    margin-bottom: 15px;
-    opacity: 0.8;
+  padding: 12px 20px;
+  border: none;
+  background-color: #8ebf42;
+  color: #fff;
+  cursor: pointer;
+  width: 100%;
+  margin-bottom: 15px;
+  opacity: 0.8;
 }
 
 .formContainer .cancel {
-    background-color: #cc0000;
+  background-color: #cc0000;
 }
 
 .formContainer .btn:hover,
-.openButton:hover {
+.settings-button:hover {
     opacity: 1;
 }
 
@@ -174,6 +174,8 @@ a:hover {
   grid-column: 2;
 }
 
+/* index pane css */
+
 .table-container {
   padding-top: 25px;
   padding-left: 100px;
@@ -188,10 +190,15 @@ a:hover {
 }
 
 .name-title, .name-odr, .name-cdr, .name-onb, .name-cnb {
+  border: 0px solid blue;
+}
+
+.name-title, .name-odr, .name-cdr, .name-onb, .name-cnb {
   min-height: 4vh;
   grid-column: 1;
   text-align: left;
   border-bottom: 1px solid #e0e0e0;
+  padding-top: 7px;
 }
 
 .name-odr {
@@ -214,9 +221,12 @@ a:hover {
   text-align: center;
 }
 
+/* details pane css */
+
 .details-container {
-  padding: 50px;
-  padding-top: 100px;
+  padding-top: 5px;
+  padding-left: 2vmin;
+  padding-right: 2vmin;
   float: left;
   width: 100%;
   display: grid;
@@ -225,11 +235,44 @@ a:hover {
   font-family: Moz;
 }
 
+.command-button-container {
+  margin-top: 20px;
+  padding-left: 2vmin;
+  padding-right: 2vmin;
+  width: 100%;
+  border: 0px solid green;
+  align-content: start;
+}
+
+.command-button {
+  margin: 5px;
+  padding: 5px;
+  float: right;
+  border: none;
+  border-radius: 5px;
+  background-color: #1c87c9;
+  color: white;
+  cursor: default;
+}
+
+.command-button:disabled {
+  background-color: #e0e0e0;
+  cursor:default;
+}
+
+.stats {
+  padding-top: 10px;
+  margin-top:10px;
+  float: left;
+  font-size: 1.75vmin;
+  font-family: Moz;
+}
+
 .name-checkbox, .name-nidate-hdr, .name-bugid-hdr, .name-nidate, .name-bugid,
 .name-severity, .name-priority, .name-nifrom, .name-nimsg, .name-bugtitle {
   min-height: 3vh;
   text-align: left;
-  border: 1px solid #ffebce;
+  border: 1px solid #eee;
   font-size: 1.2vmin;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -295,6 +338,5 @@ a:hover {
   border: 0px solid red;
   max-height: 5px;
   height: 5px;
-  margin-left: 5px;
+  margin-left: 10px;
 }
-
