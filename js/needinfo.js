@@ -58,7 +58,7 @@ function main(json)
   loadSettingsInternal();
 
   prepPage(NEEDINFO.developers.size);
-  //return;
+  return;
 
   for (var key in NEEDINFO.developers) {
     let id = encodeURIComponent(NEEDINFO.developers[key]);
