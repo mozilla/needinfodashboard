@@ -40,11 +40,11 @@ function prepPage(count) {
   var content = "";
   for (var key in NEEDINFO.developers) {
     content +=
-      "<div class='name-title'>" + key + "</div>" +
-      "<div class='name-odr' id='data_odr_" + key + "'>?</div>" +
-      "<div class='name-cdr' id='data_cdr_" + key + "'>?</div>" +
-      "<div class='name-onb' id='data_onb_" + key + "'>?</div>" +
-      "<div class='name-cnb' id='data_cnb_" + key + "'>?</div>";
+      "<div class='report-title'>" + key + "</div>" +
+      "<div class='report-odr' id='data_odr_" + key + "'>?</div>" +
+      "<div class='report-cdr' id='data_cdr_" + key + "'>?</div>" +
+      "<div class='report-onb' id='data_onb_" + key + "'>?</div>" +
+      "<div class='report-cnb' id='data_cnb_" + key + "'>?</div>";
   }
   if (content.length) {
     $("#report").append(content);
@@ -199,8 +199,9 @@ function retrieveInfoFor(url, id, key, type)
       }
     })
     .error(function(jqXHR, textStatus, errorThrown) {
-      console.log("error " + textStatus);
-      console.log("incoming Text " + jqXHR.responseText);
+      console.log("status:", textStatus);
+      console.log("error thrown:", errorThrown);
+      console.log("response text:", jqXHR.responseText);
     });
 }
 
@@ -210,11 +211,8 @@ function displayCountFor(id, key, url, type, data)
 
   var bug_link = "" + ni_count;
   if (ni_count != 0) {
-    // '/rest/bug' | '/buglist.cgi'
-    // http://127.0.0.1/details.html?team=media&userquery=odr&userid=jib@mozilla.com
     let dash_link = "details.html?" + "team=" + getTeam() + "&userquery=" + type + "&userid=" + id;
-    let bug_list = url;
-    bug_list = bug_list.replace('/rest/bug', '/buglist.cgi');
+    let bug_list = restToQueryUrl(url);
     bug_link = "<div class='bug-link-container'><a class='bug-link' href='" + dash_link + "' target='nilist' rel='noopener noreferrer'>" + ni_count + "</a>";
     bug_link += "<a class='bug-icon' href='" + bug_list + "' target='buglist' rel='noopener noreferrer'><img src='images/favicon.ico' /></a></div>";
   }

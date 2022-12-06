@@ -50,4 +50,9 @@ function loadSettingsInternal() {
   NEEDINFO.saveoptions = getFromStorage("save") == (null || 'false') ? false : true;
 }
 
+function restToQueryUrl(url) {
+  // '/rest/bug' | '/buglist.cgi'
+  return url.replace('/rest/bug', '/buglist.cgi');
+}
+
 

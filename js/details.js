@@ -5,10 +5,18 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 var NEEDINFO = null;
+var bugset = [];
+var sortTrack = {
+  'date': true, /* newest to oldest */
+};
 
-// http://127.0.0.1/?team=media
+
 // http://127.0.0.1/details.html?team=media&userquery=odr&userid=docfaraday@gmail.com
 $(document).ready(function () {
+  loadList();
+});
+
+function loadList() {
   let team = getTeam();
 
   if (team == undefined) {
@@ -19,7 +27,7 @@ $(document).ready(function () {
   $.getJSON('js/' + team + '.json', function (data) {
     main(data);
   });
-});
+}
 
 function main(json)
 {
@@ -121,23 +129,22 @@ function main(json)
       break;
   }
 
-  //console.log(url);
-
   retrieveInfoFor(url, userQuery);
 }
 
 function retrieveInfoFor(url, type)
 {
-    $.ajax({
-      url: url,
-      success: function (data) {
-        displayCountFor(url, type, data);
-      }
-    })
-    .error(function(jqXHR, textStatus, errorThrown) {
-      console.log("error " + textStatus);
-      console.log("incoming Text " + jqXHR.responseText);
-    });
+  $.ajax({
+    url: url,
+    success: function (data) {
+      displayCountFor(url, type, data);
+    }
+  })
+  .error(function (jqXHR, textStatus, errorThrown) {
+    console.log("status:", textStatus);
+    console.log("error thrown:", errorThrown);
+    console.log("response text:", jqXHR.responseText);
+  });
 }
 
 function displayCountFor(url, type, data) {
@@ -166,21 +173,20 @@ function displayCountFor(url, type, data) {
     });
 
     if (commentIdx == -1) {
-      processRow(flagCreationDate, bug.id, bug.severity, bug.priority, bug.flags[0].setter, "", -1, bug.summary);
+      processRow(flagCreationDate, bug.id, bug.assigned_to, bug.severity, bug.priority, bug.flags[0].setter, "", -1, bug.summary);
     } else {
-      processRow(flagCreationDate, bug.id, bug.severity, bug.priority, bug.flags[0].setter, bug.comments[commentIdx].text, commentIdx, bug.summary);
+      processRow(flagCreationDate, bug.id, bug.assigned_to, bug.severity, bug.priority, bug.flags[0].setter, bug.comments[commentIdx].text, commentIdx, bug.summary);
     }
   });
   sortBugs();
   populateRows();
 }
 
-let bugset = [];
-
-function addRec(ct, bugid, s, p, from, msg, cidx, title) {
+function addRec(ct, bugid, assignee, s, p, from, msg, cidx, title) {
   let record = {
     'date': ct, // Date
     'bugid': bugid,
+    'assignee': assignee,
     'title': title,
     'severity': s,
     'priority': p,
@@ -192,7 +198,7 @@ function addRec(ct, bugid, s, p, from, msg, cidx, title) {
   return record;
 }
 
-function processRow(ct, bugid, s, p, from, msg, cidx, title) {
+function processRow(ct, bugid, assignee, s, p, from, msg, cidx, title) {
   let d = new Date(Date.parse(ct));
 
   // poster simplification
@@ -204,7 +210,7 @@ function processRow(ct, bugid, s, p, from, msg, cidx, title) {
   if (clipIdx != -1)
     msgClean = msg.substring(0, clipIdx);
 
-  addRec(d, bugid, s, p, from, msgClean, cidx, title);
+  addRec(d, bugid, assignee, s, p, from, msgClean, cidx, title);
 }
 
 function prepPage(userQuery) {
@@ -212,6 +218,7 @@ function prepPage(userQuery) {
     "<div class='name-checkbox'></div>" +
     "<div class='name-nidate-hdr' onclick='htmlSort(0);'>NI Date</div>" +
     "<div class='name-bugid-hdr'>Bug ID</div>" +
+    "<div class='name-assignee'>Assignee</div>" +
     "<div class='name-severity'>Severity</div>" +
     "<div class='name-priority'>Priority</div>" +
     "<div class='name-nifrom'>NI From</div>" +
@@ -229,10 +236,12 @@ function populateRow(record) {
     record.bugid + "'>" + record.title + "</a>";
   let commentLink = "<a class='nodecoration' target='user' href='https://bugzilla.mozilla.org/show_bug.cgi?id=" +
     record.bugid + "#c" + record.cidx + "'>" + record.msg + "</a>";
+  let assignee = record.assignee.replace('nobody@mozilla.org', 'nobody');
   let content =
     "<div class='name-checkbox'><input type='checkbox' id='' placeholder='Ignore' name='ignoremyni' /></div>" +
     "<div class='name-nidate'>" + dateStr + "</div>" +
     "<div class='name-bugid'>" + bugLink + "</div>" +
+    "<div class='name-assignee'>" + assignee + "</div>" +
     "<div class='name-severity'>" + record.severity + "</div>" +
     "<div class='name-priority'>" + record.priority + "</div>" +
     "<div class='name-nifrom'>" + record.nisetter + "</div>" +
@@ -243,7 +252,6 @@ function populateRow(record) {
 
 function clearRows() {
   $("#report").empty();
-  prepPage();
 }
 
 function populateRows() {
@@ -251,6 +259,16 @@ function populateRows() {
     populateRow(rec);
   });
   $("#stats").text("" + bugset.length + " Bugs");
+}
+
+function refreshList(e) {
+  if (e) {
+    e.preventDefault();
+  }
+  bugset = [];
+  sortTrack['date'] = true;
+  clearRows();
+  loadList();
 }
 
 // sorting:
@@ -270,10 +288,6 @@ function sortBugId(a, b) {
   return a.bugid - b.bugid;
 }
 
-let sortTrack = {
-  'date': true, /* newest to oldest */
-};
-
 function sortBugs() {
   if (sortTrack['date']) {
     bugset.sort(sortDateAsc);
@@ -288,10 +302,13 @@ function htmlSort(colId) {
     case 0: // date
       sortBugs();
       clearRows();
+      prepPage();
       populateRows();
       break;
   }
 }
+
+
 
 /*
   {
