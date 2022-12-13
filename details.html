@@ -11,25 +11,98 @@
   <script src="js/details.js"></script>
 </head>
 
-  <body id="body">
-    <div id="header-bg" class="header-bg"></div>
-    <div class="header">
-      <div id="title"></div>
-    </div>
+<body id="body">
+  <div id="header-bg" class="header-bg"></div>
+  <div class="header">
+    <div class="title-details" id="title"></div>
+  </div>
 
-    <center>
-      <div class="command-button-container">
-        <div id="stats" class="stats"></div>
-        <button class="command-button" disabled onclick="">Clear</button>
-        <button class="command-button" disabled onclick="">Clear w/Comment</button>
-        <button class="command-button" disabled onclick="">Redirect to...</button>
-        <button class="command-button" disabled onclick="">Redirect to Assignee</button>
-      </div>
-      <div class="details-container" id="report">
-      </div>
-      <div class="command-button-container">
-        <button class="command-button" onclick="refreshList(event);">Refresh</button>
-      </div>
-    </center>
-  </body>
+  <div class="command-button-container">
+    <div id="stats" class="stats"></div>
+    <button class="command-button" onclick="openSettings()">Settings</button>
+    <div class="button-separator"></div>
+    <button class="command-button" onclick="refreshList(event);">Refresh</button>
+    <button class="command-button" id="button-clear" onclick="invokeClearNI();">Clear</button>
+    <button class="command-button" id="button-clearcmt" onclick="invokeClearNIWithComment();">Clear w/Comment</button>
+    <button class="command-button" id="button-redir" onclick="">Redirect to...</button>
+    <button class="command-button" id="button-redirassignee" onclick="">Redirect to Assignee</button>
+    <div id="status" class="status-text">tes test test</div>
+  </div>
+
+  <div class="details-container" id="report">
+  </div>
+
+  <!-- Setting div start -->
+  <div class="settingsPopup">
+    <div class="formPopup" id="popupForm">
+      <form class="formContainer" onsubmit="saveSettings(event);">
+        <h2>Settings</h2>
+        <label for="api-key">
+          API Key&nbsp;<a href="https://wiki.mozilla.org/Bugzilla:REST_API#with_two_factor_authentication" target="_blank" rel="noopener noreferrer"><img src="images/info.png" width="15"></a>
+        </label>
+        <input type="text" id="api-key" placeholder="Bugzilla API Key" name="key" />
+
+        <div class="settings-container">
+          <div class="settings-header">
+            <div class="settings-label-title">Search Options</div>
+          </div>
+          <div class="settings-col1">
+            <input type="checkbox" id="option-ignoremyni" name="ignoremyni" />
+          </div>
+          <div class="settings-col2">
+            <div class="settings-label">Ignore self needinfos</div>
+          </div>
+          <div class="settings-header">
+            <div class="settings-label-title">General Options</div>
+          </div>
+          <div class="settings-col1">
+            <input type="checkbox" id="option-targets" name="target" />
+          </div>
+          <div class="settings-col2">
+            <div class="settings-label">Target same tab for bug links</div>
+          </div>
+          <div class="settings-col1">
+            <input type="checkbox" id="option-save" name="save" />
+          </div>
+          <div class="settings-col2">
+            <div class="settings-label">Always remember my settings</div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn" id="applySettingsButton">Apply</button>
+        <button type="button" class="btn cancel" onclick="closeSettings()">Cancel</button>
+      </form>
+    </div>
+  </div>
+  <!-- Setting div end -->
+  <!-- dialog: clear needinfo without a comment -->
+  <dialog id="prompt-confirm" oncancel="">
+    <div class="prompt-confirm-info-grid">
+      <div class="prompt-text prompt-row1">These changes will impact</div>
+      <div id="prompt-confirm-bugcount" class="prompt-emphasis-text prompt-row2">36</div>
+      <div class="prompt-text prompt-row3">bugs.</div>
+    </div>
+    <div class="prompt-buttons-form">
+      <form method="dialog">
+        <button id="btn-confirm" value="confirm">Confirm</button>
+        <button id="btn-cancel" autofocus value="cancel">Cancel</button>
+      </form>
+    </div>
+  </dialog>
+  <!-- dialog: clear needinfo with a comment -->
+  <dialog id="prompt-comment-confirm" oncancel="">
+    <div class="prompt-confirm-info-grid">
+      <div class="prompt-text prompt-row1">These changes will impact</div>
+      <div id="prompt-comment-confirm-bugcount" class="prompt-emphasis-text prompt-row2">36</div>
+      <div class="prompt-text prompt-row3">bugs.</div>
+    </div>
+    <div class="prompt-buttons-form">
+      <form method="dialog">
+        <textarea id="prompt-comment-confirm-comment" rows="3" cols="20" type="text" placeholder="comment"></textarea>
+        <button id="btn-confirm" value="confirm">Confirm</button>
+        <button id="btn-cancel" autofocus value="cancel">Cancel</button>
+      </form>
+    </div>
+  </dialog>
+</body>
 </html>

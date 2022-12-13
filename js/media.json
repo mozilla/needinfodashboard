@@ -1,10 +1,12 @@
 {
   "needinfo": {
-    "bugzilla_rest_url": "https://bugzilla.mozilla.org/rest/bug?",
-    "bugzilla_bug_list": "https://bugzilla.mozilla.org/buglist.cgi?bug_id=",
+    "bugzilla_search_url": "https://bugzilla.mozilla.org/rest/bug?",
+    "bugzilla_put_url": "https://bugzilla.mozilla.org/rest/bug/{id}",
+    "bugzilla_domain": "bugzilla.mozilla.org",
+    "bugzilla_test_domain": "bugzilla-dev.allizom.org",
+    "use_test_domain": true,
     "fields_query": "f1=requestees.login_name&o1=equals&v1={id}&v2=needinfo%3F&o2=equals&f2=flagtypes.name&include_fields=id,summary",
     "bugs_query": "f1=requestees.login_name&o1=equals&v1={id}&v2=needinfo%3F&o2=equals&f2=flagtypes.name&include_fields=id,summary,comments,flags,severity,priority,assigned_to",
-    "api_key": "",
     "developers": {
       "Jim": "jmathies@mozilla.com",
       "Byron": "docfaraday@gmail.com",

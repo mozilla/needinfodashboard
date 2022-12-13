@@ -13,57 +13,59 @@
 <body id="body">
   <div id="header-bg" class="header-bg"></div>
   <div class="header">
-    <img id="title-img" src="images/firefox.png"/>
-    <div id="title">Need Info Manager</div>
-  </div>
-  <div id="announcement" class="announcement">
-  
+    <img id="title-img" src="images/firefox.png" />
+    <div class="title" id="title">Need Info Manager</div>
   </div>
 
-  <div id="div-team-select">
+  <div class="command-button-container">
     <select id="team-select" onchange="teamSelectionChanged(this);">
-      <option value="media">Media and Web Conferencing</option>
-      <option value="graphics">Graphics</option>
+      <option class="team-option" value="media">Media and Web Conferencing</option>
+      <option class="team-option" value="graphics">Graphics</option>
     </select>
+    <button class="command-button" onclick="openSettings()">Settings</button>
+    <div class="button-separator"></div>
+    <button class="command-button" onclick="refreshList(event);">Refresh</button>
   </div>
 
   <center>
     <div class="table-container" id="report">
-      <div class="report-title">Engineer</div>
-      <div class="report-odr">Open Dev Related</div>
-      <div class="report-cdr">Closed Dev Related</div>
-      <div class="report-onb">Open Nagbot</div>
-      <div class="report-cnb">Closed Nagbot</div>
     </div>
   </center>
 
+  <!-- Setting div start -->
   <div class="settingsPopup">
     <div class="formPopup" id="popupForm">
       <form class="formContainer" onsubmit="saveSettings(event);">
         <h2>Settings</h2>
         <label for="api-key">
-          <strong>API Key</strong>&nbsp;<a href="https://wiki.mozilla.org/Bugzilla:REST_API#with_two_factor_authentication" target="_blank" rel="noopener noreferrer"><img src="images/info.png" width="15"></a>
+          API Key&nbsp;<a href="https://wiki.mozilla.org/Bugzilla:REST_API#with_two_factor_authentication" target="_blank" rel="noopener noreferrer"><img src="images/info.png" width="15"></a>
         </label>
         <input type="text" id="api-key" placeholder="Bugzilla API Key" name="key" />
 
         <div class="settings-container">
           <div class="settings-header">
-            <label>Search Options</label>
+            <div class="settings-label-title">Search Options</div>
           </div>
           <div class="settings-col1">
-            <label>Ignore self needinfos</label>
+            <input type="checkbox" id="option-ignoremyni" name="ignoremyni" />
           </div>
           <div class="settings-col2">
-            <input type="checkbox" id="option-ignoremyni" placeholder="Ignore" name="ignoremyni" />
+            <div class="settings-label">Ignore self needinfos</div>
           </div>
           <div class="settings-header">
-            <label>General Options</label>
+            <div class="settings-label-title">General Options</div>
           </div>
           <div class="settings-col1">
-            <label>Always remember my settings</label>
+            <input type="checkbox" id="option-targets" name="target" />
           </div>
           <div class="settings-col2">
-            <input type="checkbox" id="option-save" checked placeholder="Remember" name="save" />
+            <div class="settings-label">Target same tab for bug links</div>
+          </div>
+          <div class="settings-col1">
+            <input type="checkbox" id="option-save" name="save" />
+          </div>
+          <div class="settings-col2">
+            <div class="settings-label">Always remember my settings</div>
           </div>
         </div>
 
@@ -72,6 +74,7 @@
       </form>
     </div>
   </div>
-  <button class="settings-button" onclick="openSettings()"><strong>Settings</strong></button>
+  <!-- Setting div end -->
+
 </body>
 </html>
