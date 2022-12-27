@@ -177,7 +177,9 @@ function retrieveInfoFor(url, userQuery)
 
 function displayBugs(url, type, data) {
   data.bugs.forEach(function (bug) {
-    console.log(bug);
+    // log bug object:
+    // console.log(bug);
+    
     // TODO: there may be multiple NIs to same dev here, which
     // we currently do not detect. We could walk flags and add 
     // entries for each (by duplicating bugs entries in the list?).
@@ -406,6 +408,16 @@ function getCheckedBugs() {
   return list;
 }
 
+function clearCheckedBugs() {
+  let list = getCheckedBugs();
+  list.forEach(function (bugId) {
+    let checkBox = document.getElementById('check-' + bugId);
+    if (checkBox != null) {
+      checkBox.checked = false;
+    }
+  });
+}
+
 function checkClick(e) {
   updateButtonsState();
 }
@@ -440,6 +452,14 @@ function submitCommand(url, bugId, jsonData) {
       console.log("status:", textStatus);
       console.log("error thrown:", errorThrown);
       console.log("response text:", jqXHR.responseText);
+      try {
+        let info = JSON.parse(jqXHR.responseText);
+        let text = info.message ? info.message : errorThrown;
+        updateAfterError(bugId, text);
+        return;
+      } catch(e) {
+      }
+      updateAfterError(bugId, errorThrown);
     });
 }
 
@@ -499,6 +519,20 @@ function updateStatus(percent) {
 
 function updateStatusText() {
   document.getElementById('status').textContent = ChangeList.length + " responses pending..";
+}
+
+function updateAfterError(bugid, text) {
+  ChangeList = ChangeList.filter((value) => value != bugid);
+  updateStatus(((ChangeListSize - ChangeList.length) / ChangeListSize) * 100.0);
+  updateStatusText();
+  $("#errors").append("request error for bug " + bugid + " '" + text + "'");
+  $("#errors").append("<br/>");
+
+  if (ChangeList.length == 0) {
+    document.getElementById('status').style.visibility = 'hidden';
+    clearCheckedBugs();
+    updateButtonsState();
+  }
 }
 
 function updateAfterChanges(bugid) {

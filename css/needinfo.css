@@ -307,6 +307,19 @@ a:hover {
   margin-left: 10px;
 }
 
+.errors-container {
+  padding-top: 5px;
+  padding-left: 2vmin;
+  padding-right: 2vmin;
+  float: left;
+  width: 100%;
+  border: 0px solid gray;
+  font-family: Moz;
+  color: #cc0000;
+  display: inline-block;
+  font-size: 2.0vmin;
+}
+
 /* Form controls on pages */
 
 .command-button-container {
