@@ -482,12 +482,6 @@ function submitCommands() {
   BugWorker.postMessage('submit', PendingPuts);
 }
 
-function submitNextCommand() {
-  let cmd = PendingPuts.pop();
-  console.log("submitting changes to bugzilla:", cmd.bugid, cmd.url, cmd.json);
-  submitCommand(cmd.url, cmd.bugid, cmd.json);
-}
-
 function queueBugChange(type, bugId, comment) {
   // change types:
   //  clear-flag

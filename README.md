@@ -1,15 +1,14 @@
-This is a handy Bugzilla need info flag dashboard that supports displaying summary needinfo counts for
-teams categorized by developer / release management setters. Need infos are broken down into four
-columns - developer related needinfos on open and closed bugs, and release management related needinfos.
-The main pane provides needinfo counts linked to both Bugzilla bug lists as well as a needinfo list
-details sub page. The details page provides a list of each needinfo matched to the bugzilla comment
-when the flag was set, as well as additional meta data such as bug title, severity, priority, and
-assignee. A basic set of bulk action options are also provided for authenticated users.
+A handy Bugzilla needinfo dashboard for managing needinfo flags for teams. The main management page
+lists active needinfos broken down into four columns - developer related needinfos on open and
+closed bugs, and release management related needinfos. Each column provides links to both
+Bugzilla bug lists as well as a need info details sub page. The details page provides a list of
+each needinfo matched to the bugzilla comment when the flag was set, as well as additional meta
+data such as bug title, severity, priority, and assignee. A basic set of bulk action options are
+also provided.
 
 Note authentication through a Bugzilla API key is required for visibility of security related bugs
-and for access to bulk actions. API keys can be generated through Bugzilla account preferences.
-
-See the dashboard settings for api key configuration and other display options.
+and for access to bulk actions. API keys can be generated through Bugzilla account preferences. See
+the dashboard settings for API key configuration and other display options.
 
 Improvements and bug fixes for the dashboard are welcome!
 
