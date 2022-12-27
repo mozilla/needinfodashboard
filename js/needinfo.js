@@ -14,6 +14,12 @@ var DEV_DISABLE = false;
  * dealing with double needinfos 
  -  https://bugzilla.mozilla.org/show_bug.cgi?id=1667635#c31
 
+- 4Lh5Bi21nGF8h9tHU2TtzSTedLBgxDuI207iSGIc
+
+ Bugs
+ * comment indexes not piped through to links in details
+ * multiple puts result in errors on every request except the first. timing?
+
  Details pane
  * how to expose more information without adding columns?
  *  - bug creation date
@@ -22,6 +28,7 @@ var DEV_DISABLE = false;
  * expose additional needinfos in the details pane
  * resolve incomplete?
  * redirect ni feature
+ * rather than refresh the list after a change, maybe gray out the row and remove the checkbox?
 */
  
 $(document).ready(function () {
@@ -85,6 +92,9 @@ function main(json)
       NeedInfoConfig.bugzilla_search_url.replace(NeedInfoConfig.bugzilla_domain, NeedInfoConfig.bugzilla_test_domain);
     NeedInfoConfig.bugzilla_put_url =
       NeedInfoConfig.bugzilla_put_url.replace(NeedInfoConfig.bugzilla_domain, NeedInfoConfig.bugzilla_test_domain);
+    NeedInfoConfig.bugzilla_link_url =
+      NeedInfoConfig.bugzilla_link_url.replace(NeedInfoConfig.bugzilla_domain, NeedInfoConfig.bugzilla_test_domain);
+
     console.log("Bugzilla target:", NeedInfoConfig.bugzilla_test_domain);
   } else {
     console.log("Bugzilla target:", NeedInfoConfig.bugzilla_domain);

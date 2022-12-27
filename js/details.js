@@ -45,6 +45,9 @@ function main(json)
       NeedInfoConfig.bugzilla_search_url.replace(NeedInfoConfig.bugzilla_domain, NeedInfoConfig.bugzilla_test_domain);
     NeedInfoConfig.bugzilla_put_url =
       NeedInfoConfig.bugzilla_put_url.replace(NeedInfoConfig.bugzilla_domain, NeedInfoConfig.bugzilla_test_domain);
+    NeedInfoConfig.bugzilla_link_url =
+      NeedInfoConfig.bugzilla_link_url.replace(NeedInfoConfig.bugzilla_domain, NeedInfoConfig.bugzilla_test_domain);
+
     console.log("Bugzilla target:", NeedInfoConfig.bugzilla_test_domain);
   } else {
     console.log("Bugzilla target:", NeedInfoConfig.bugzilla_domain);
@@ -174,6 +177,7 @@ function retrieveInfoFor(url, userQuery)
 
 function displayBugs(url, type, data) {
   data.bugs.forEach(function (bug) {
+    console.log(bug);
     // TODO: there may be multiple NIs to same dev here, which
     // we currently do not detect. We could walk flags and add 
     // entries for each (by duplicating bugs entries in the list?).
@@ -261,13 +265,14 @@ function prepPage(userQuery) {
 
 function populateRow(record) {
   const options = { dateStyle: 'medium' };
+  let bugUrl = NeedInfoConfig.bugzilla_link_url.replace('{id}', record.bugid);
   let dateStr = record.date.toLocaleDateString(undefined, options);
   let tabTarget = NeedInfoConfig.targetnew ? "nidetails" : "_blank";
-  let bugLink = "<a target='" + tabTarget + "' href='https://bugzilla.mozilla.org/show_bug.cgi?id=" + record.bugid + "'>" + record.bugid + "</a>";
-  let titleLink = "<a class='nodecoration' target='" + tabTarget + "' href='https://bugzilla.mozilla.org/show_bug.cgi?id=" +
-    record.bugid + "'>" + record.title + "</a>";
-  let commentLink = "<a class='nodecoration' target='" + tabTarget + "' href='https://bugzilla.mozilla.org/show_bug.cgi?id=" +
-    record.bugid + "#c" + record.cidx + "'>" + record.msg + "</a>";
+  let bugLink = "<a target='" + tabTarget + "' href='" + bugUrl + "'>" + record.bugid + "</a>";
+  let titleLink = "<a class='nodecoration' target='" + tabTarget + "' href='" + bugUrl + "'>" + record.title + "</a>";
+  // let commentLink = "<a class='nodecoration' target='" + tabTarget + "' href='" + bugUrl + "#c" + record.cidx + "'>" + record.msg + "</a>";
+  // record.cidx is undefined
+  let commentLink = record.msg;
   let assignee = trimAddress(record.assignee);
   let setter = trimAddress(record.nisetter);
   let content =
@@ -417,13 +422,18 @@ function getBugRec(bugId) {
   return record;
 }
 
-function submitInfoFor(url, bugId, jsonData) {
+function submitCommand(url, bugId, jsonData) {
   $.ajax({
     url: url,
     type: 'PUT',
-    data: jsonData, // "name=John&location=Boston",
+    data: jsonData,
     contentType: "application/json",
     success: function (data) {
+      // success response 
+      // Object { message: null, error: true, documentation: "http://www.bugzilla.org/docs/4.2/en/html/api/", code: 100500 }
+      if (data && data.error) {
+        console.log("bugzilla error on request:", data.code, "bug id:", bugId);
+      }
       updateAfterChanges(bugId);
     }
   }).error(function (jqXHR, textStatus, errorThrown) {
@@ -433,7 +443,7 @@ function submitInfoFor(url, bugId, jsonData) {
     });
 }
 
-function submitChanges(type, bugId, comment) {
+function submitPutCommand(type, bugId, comment) {
   // change types:
   //  clear-flag
   //  clear-flag-comment
@@ -445,7 +455,11 @@ function submitChanges(type, bugId, comment) {
     return;
   }
 
+  // Testing UI related to multiple bug changes
   if (ChangeListTest) {
+    if (ChangeListSize == ChangeList.length) {
+      TestDelay = 1000;
+    }
     setTimeout(function () {
       updateAfterChanges(bugId);
     }, TestDelay);
@@ -454,13 +468,6 @@ function submitChanges(type, bugId, comment) {
   }
 
   // https://bugzilla.readthedocs.io/en/latest/api/core/v1/bug.html#update-bug
-  // rest PUT to /rest/bug/(id_or_alias)
-  // flag change object: flag id, status='X' to clear
-  // comment
-  //'comment': {
-  //  'body': '',
-  //    },
-
   if (type == 'clear-flag') {
     data = {
       'flags': [{
@@ -479,13 +486,13 @@ function submitChanges(type, bugId, comment) {
   if (NeedInfoConfig.api_key.length) {
     url += "?api_key=" + NeedInfoConfig.api_key;
   }
+
   console.log("submitting changes to bugzilla:", url, json);
-  submitInfoFor(url, bugId, json);
+  submitCommand(url, bugId, json);
 }
 
 function updateStatus(percent) {
   let style = Math.ceil(percent) + '%';
-  console.log(style);
   document.getElementById('status').style.visibility = 'visible';
   document.getElementById('status').style.backgroundSize = style;
 }
@@ -505,11 +512,9 @@ function updateAfterChanges(bugid) {
   }
 }
 
-function invokeClearNI() {
-  ChangeList = getCheckedBugs();
+function queueChanges(type, comment) {
   if (!ChangeList.length)
     return;
-  document.getElementById('prompt-confirm-bugcount').textContent = ChangeList.length;
 
   // Temporarily disable buttons while we submit changes
   updateButtonState(false);
@@ -520,15 +525,22 @@ function invokeClearNI() {
   updateStatus(0);
   updateStatusText();
 
-  TestDelay = 1000;
+  ChangeList.forEach(function (bugId) {
+    submitPutCommand(type, bugId, comment);
+  });
+}
+
+function invokeClearNI() {
+  ChangeList = getCheckedBugs();
+  if (!ChangeList.length)
+    return;
+  document.getElementById('prompt-confirm-bugcount').textContent = ChangeList.length;
 
   let dlg = document.getElementById("prompt-confirm");
   dlg.returnValue = "cancel";
   dlg.addEventListener('close', (event) => {
     if (dlg.returnValue == 'confirm') {
-      ChangeList.forEach(function (bugid) {
-        submitChanges('clear-flag', bugid, null);
-      });
+      queueChanges('clear-flag', null);
     } else {
       // Update buttons after cancel
       updateButtonsState();
@@ -538,34 +550,19 @@ function invokeClearNI() {
 }
 
 function invokeClearNIWithComment() {
-  // prompt-comment-confirm
   ChangeList = getCheckedBugs();
   if (!ChangeList.length)
     return;
   document.getElementById('prompt-comment-confirm-bugcount').textContent = ChangeList.length;
 
-  // Temporarily disable buttons while we submit changes
-  updateButtonState(false);
-
-  ChangeListSize = ChangeList.length;
-
-  // Show status
-  updateStatus(0);
-  updateStatusText();
-
-  TestDelay = 1000;
-
   let dlg = document.getElementById("prompt-comment-confirm");
   dlg.returnValue = "cancel";
   dlg.addEventListener('close', (event) => {
     if (dlg.returnValue == 'confirm') {
-
       let comment = document.getElementById("prompt-comment-confirm-comment").value;
-      console.log('comment:', comment);
-
-      ChangeList.forEach(function (bugid) {
-        submitChanges('clear-flag', bugid, comment);
-      });
+      if (!comment.length)
+        comment = null;
+      queueChanges('clear-flag', comment);
     } else {
       // Update buttons after cancel
       updateButtonsState();
@@ -573,3 +570,11 @@ function invokeClearNIWithComment() {
   }, { once: true });
   dlg.show();
 }
+
+function invokeRedirectToAssignee() {
+}
+
+function invokeRedirectTo() {
+}
+
+
