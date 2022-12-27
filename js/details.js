@@ -445,8 +445,10 @@ function submitCommand(url, bugId, jsonData) {
       // Object { message: null, error: true, documentation: "http://www.bugzilla.org/docs/4.2/en/html/api/", code: 100500 }
       if (data && data.error) {
         console.log("bugzilla error on request:", data.code, "bug id:", bugId);
+        updateAfterError(bugId, 'error code:' + data.code);
+      } else {
+        updateAfterChanges(bugId);
       }
-      updateAfterChanges(bugId);
     }
   }).error(function (jqXHR, textStatus, errorThrown) {
       console.log("status:", textStatus);
@@ -463,7 +465,30 @@ function submitCommand(url, bugId, jsonData) {
     });
 }
 
-function submitPutCommand(type, bugId, comment) {
+let PendingPuts = [];
+
+let BugWorker = new Worker('bugworker.js');
+
+function clearPendingCommands() {
+  // Clear sequence of commands
+  PendingPuts = [];
+}
+
+function queueCommand(url, bugId, json) {
+  PendingPuts.push({'url': url, 'bugid': bugId, 'json': json});
+}
+
+function submitCommands() {
+  BugWorker.postMessage('submit', PendingPuts);
+}
+
+function submitNextCommand() {
+  let cmd = PendingPuts.pop();
+  console.log("submitting changes to bugzilla:", cmd.bugid, cmd.url, cmd.json);
+  submitCommand(cmd.url, cmd.bugid, cmd.json);
+}
+
+function queueBugChange(type, bugId, comment) {
   // change types:
   //  clear-flag
   //  clear-flag-comment
@@ -507,8 +532,7 @@ function submitPutCommand(type, bugId, comment) {
     url += "?api_key=" + NeedInfoConfig.api_key;
   }
 
-  console.log("submitting changes to bugzilla:", url, json);
-  submitCommand(url, bugId, json);
+  queueCommand(url, bugId, json);
 }
 
 function updateStatus(percent) {
@@ -547,6 +571,8 @@ function updateAfterChanges(bugid) {
 }
 
 function queueChanges(type, comment) {
+  clearPendingCommends();
+
   if (!ChangeList.length)
     return;
 
@@ -560,8 +586,9 @@ function queueChanges(type, comment) {
   updateStatusText();
 
   ChangeList.forEach(function (bugId) {
-    submitPutCommand(type, bugId, comment);
+    queueBugChange(type, bugId, comment);
   });
+  submitCommands();
 }
 
 function invokeClearNI() {
