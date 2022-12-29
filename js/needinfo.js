@@ -8,16 +8,14 @@ var NeedInfoConfig = null;
 var DEV_DISABLE = false;
 
 /*
- General
- * bug assingee changes by nagbots, can we expose who got dropped?
- -  https://bugzilla.mozilla.org/show_bug.cgi?id=969395
- * dealing with double needinfos 
- -  https://bugzilla.mozilla.org/show_bug.cgi?id=1667635#c31
-
-- 4Lh5Bi21nGF8h9tHU2TtzSTedLBgxDuI207iSGIc
-
  Bugs
  * multiple puts with the same comment results in errors on every request except the first. Some sort of anti-spam feature?
+
+ General
+ * bug assingee changes by nagbots, can we expose who got dropped?
+    -  https://bugzilla.mozilla.org/show_bug.cgi?id=969395
+ * dealing with double needinfos 
+    -  https://bugzilla.mozilla.org/show_bug.cgi?id=1667635#c31
 
  Details pane
  * how to expose more information without adding columns?
