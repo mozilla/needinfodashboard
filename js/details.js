@@ -212,16 +212,17 @@ function displayBugs(url, type, data) {
 
     if (commentIdx == -1) {
       processRow(flagCreationDate, bug.id, flagId, bug.assigned_to, bug.severity,
-        bug.priority, bug.flags[0].setter, "", bug.summary);
+        bug.priority, bug.flags[0].setter, "", 0, bug.summary);
     } else {
       processRow(flagCreationDate, bug.id, flagId, bug.assigned_to, bug.severity,
-        bug.priority, bug.flags[0].setter, bug.comments[commentIdx].text, bug.summary);
+        bug.priority, bug.flags[0].setter, bug.comments[commentIdx].text, bug.comments[commentIdx].count, bug.summary);
+        //console.log(bug.comments[commentIdx]);
     }
   });
   dateSort();
 }
 
-function addRec(ct, bugId, flagId, assignee, s, p, from, msg, title) {
+function addRec(ct, bugId, flagId, assignee, s, p, from, msg, cmtIdx, title) {
   let record = {
     'date': ct, // NI Date
     'bugid': bugId,
@@ -231,13 +232,14 @@ function addRec(ct, bugId, flagId, assignee, s, p, from, msg, title) {
     'severity': s,
     'priority': p,
     'nisetter': from,
-    'msg': msg
+    'msg': msg,
+    'commentid': cmtIdx
   };
   bugset.push(record);
   return record;
 }
 
-function processRow(ct, bugId, flagId, assignee, s, p, from, msg, title) {
+function processRow(ct, bugId, flagId, assignee, s, p, from, msg, cmtIdx, title) {
   let d = new Date(Date.parse(ct));
 
   // comment simplification steps
@@ -246,7 +248,7 @@ function processRow(ct, bugId, flagId, assignee, s, p, from, msg, title) {
   if (clipIdx != -1)
     msgClean = msg.substring(0, clipIdx);
 
-  addRec(d, bugId, flagId, assignee, s, p, from, msgClean, title);
+  addRec(d, bugId, flagId, assignee, s, p, from, msgClean, cmtIdx, title);
 }
 
 function prepPage(userQuery) {
@@ -272,9 +274,7 @@ function populateRow(record) {
   let tabTarget = NeedInfoConfig.targetnew ? "nidetails" : "_blank";
   let bugLink = "<a target='" + tabTarget + "' href='" + bugUrl + "'>" + record.bugid + "</a>";
   let titleLink = "<a class='nodecoration' target='" + tabTarget + "' href='" + bugUrl + "'>" + record.title + "</a>";
-  // let commentLink = "<a class='nodecoration' target='" + tabTarget + "' href='" + bugUrl + "#c" + record.cidx + "'>" + record.msg + "</a>";
-  // record.cidx is undefined
-  let commentLink = record.msg;
+  let commentLink = "<a class='nodecoration' target='" + tabTarget + "' href='" + bugUrl + "#c" + record.commentid + "'>" + record.msg + "</a>";
   let assignee = trimAddress(record.assignee);
   let setter = trimAddress(record.nisetter);
   let content =
@@ -434,7 +434,32 @@ function getBugRec(bugId) {
   return record;
 }
 
+/*
+let PendingPuts = [];
+let BugWorker = new Worker('js/bugworker.js');
+
+BugWorker.onmessage = (event) => {
+  let msg = event.data;
+  console.log('worker response:', msg.message);
+  switch(msg.message) {
+    case 'complete':
+    break;
+    case 'change':
+    updateAfterChanges(msg.bugid);
+    break;
+    case 'error':
+    updateAfterError(msg.bugid, msg.text);
+    break;
+  }
+}
+
+function submitCommands() {
+  BugWorker.postMessage(PendingPuts);
+}
+*/
+
 function submitCommand(url, bugId, jsonData) {
+  console.log("submitting changes to bugzilla:", bugId);
   $.ajax({
     url: url,
     type: 'PUT',
@@ -465,9 +490,19 @@ function submitCommand(url, bugId, jsonData) {
     });
 }
 
-let PendingPuts = [];
-
-let BugWorker = new Worker('bugworker.js');
+// attempting to get around spam blocking with duplicate comments. Didn't work.
+function submitCommands() {
+  let timer = 100;
+  let bug = PendingPuts.pop();
+  while (bug != undefined) {
+    console.log(timer, bug.bugid, bug.url, bug.json);
+    setTimeout(function (bug) {
+      submitCommand(bug.url, bug.bugid, bug.json);
+    }, timer, bug);
+    timer += 100;
+    bug = PendingPuts.pop();
+  }
+}
 
 function clearPendingCommands() {
   // Clear sequence of commands
@@ -476,10 +511,6 @@ function clearPendingCommands() {
 
 function queueCommand(url, bugId, json) {
   PendingPuts.push({'url': url, 'bugid': bugId, 'json': json});
-}
-
-function submitCommands() {
-  BugWorker.postMessage('submit', PendingPuts);
 }
 
 function queueBugChange(type, bugId, comment) {
@@ -565,7 +596,7 @@ function updateAfterChanges(bugid) {
 }
 
 function queueChanges(type, comment) {
-  clearPendingCommends();
+  clearPendingCommands();
 
   if (!ChangeList.length)
     return;

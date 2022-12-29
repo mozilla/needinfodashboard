@@ -17,8 +17,7 @@ var DEV_DISABLE = false;
 - 4Lh5Bi21nGF8h9tHU2TtzSTedLBgxDuI207iSGIc
 
  Bugs
- * comment indexes not piped through to links in details
- * multiple puts result in errors on every request except the first. timing?
+ * multiple puts with the same comment results in errors on every request except the first. Some sort of anti-spam feature?
 
  Details pane
  * how to expose more information without adding columns?
