@@ -41,6 +41,7 @@ body {
 
 .title-details {
   margin-top: 10px;
+  font-size: 3.5vmin;
 }
 
 /* include margin and padding in sizing calulations */
@@ -368,6 +369,14 @@ a:hover {
   margin-left: 10px;
   font-family: Moz;
   float: right;
+}
+
+.command-button-hidden {
+  padding: 5px;
+  margin-left: 10px;
+  font-family: Moz;
+  float: right;
+  visibility: collapse;
 }
 
 .status-text {

@@ -168,7 +168,7 @@ function sortBugIdDesc(a, b) {
 
 // severity - S1 - S4, enhancement, trivial, minor, normal, major, critical, blocker, N/A, --
 var sVals = {
-  '--': 1,
+  '--': 0,
   'S1': 1,
   'S2': 2,
   'S3': 3,
@@ -192,7 +192,7 @@ function sortSeverityDesc(a, b) {
 }
 
 var pVals = {
-  '--': 1,
+  '--': 0,
   'P1': 1,
   'P2': 2,
   'P3': 3,

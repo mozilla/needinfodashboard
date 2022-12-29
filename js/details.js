@@ -264,7 +264,25 @@ function prepPage(userQuery) {
     "<div class='name-nimsg'>NI Message</div>";
   $("#report").append(header);
 
-  $("#title").text('Need Info Details for ' + getUserId());
+  let textHdr = '';
+  // odr, cdr, onb, cnb
+  var userQuery = getUserQuery();
+  switch (userQuery) {
+    case 'odr':
+    textHdr = 'Open Dev Related'
+    break;
+    case 'cdr':
+    textHdr = 'Closed Dev Related'
+    break;
+    case 'onb':
+    textHdr = 'Open Nag Bot'
+    break;
+    case 'cnb':
+    textHdr = 'Closed Nag Bot'
+    break;
+  }
+
+  $("#title").text(textHdr + ' Details for ' + getUserId());
 }
 
 function populateRow(record) {

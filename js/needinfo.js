@@ -25,9 +25,9 @@ var DEV_DISABLE = false;
  *  - component
  *  - sliding drop down with bug detail?
  * expose additional needinfos in the details pane
+ * save last sort selection and reuse
  * resolve incomplete?
  * redirect ni feature
- * rather than refresh the list after a change, maybe gray out the row and remove the checkbox?
 */
  
 $(document).ready(function () {
