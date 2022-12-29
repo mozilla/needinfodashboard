@@ -8,7 +8,8 @@ var NeedInfoConfig = null;
 var bugset = [];
 
 // buttons that get enabled only when there is an api key saved.
-var buttons = ['button-clear', 'button-clearcmt', 'button-redir', 'button-redirassignee'];
+var buttons = ['button-clear', 'button-clearcmt',
+  'button-redir', 'button-redirassignee', 'button-redirsetter'];
 
 // list of bugs we are submitting changes for.
 var ChangeListSize = 0;
@@ -180,15 +181,14 @@ function retrieveInfoFor(url, userQuery)
 
 function displayBugs(url, type, data) {
   data.bugs.forEach(function (bug) {
-    // log bug object:
     // console.log(bug);
+    // console.log("flags", bug.flags);
     
     // TODO: there may be multiple NIs to same dev here, which
     // we currently do not detect. We could walk flags and add 
     // entries for each (by duplicating bugs entries in the list?).
     let flagCreationDate = bug.flags[0].creation_date;
     let flagId = bug.flags[0].id;
-
     if (bug.flags.length > 1) {
       let index = 0;
       console.log('Additional NIs for bug ', bug.id, ' -')
@@ -420,11 +420,11 @@ function updateButtonState(enabled) {
 }
 
 function updateButtonsState() {
-  let list = getCheckedBugs();
+  let list = getCheckedBugIds();
   updateButtonState(list.length > 0);
 }
 
-function getCheckedBugs() {
+function getCheckedBugIds() {
   let list = [];
   bugset.every(function (bug) {
     let checkBox = document.getElementById('check-' + bug.bugid);
@@ -442,7 +442,7 @@ function getCheckedBugs() {
 }
 
 function clearCheckedBugs() {
-  let list = getCheckedBugs();
+  let list = getCheckedBugIds();
   list.forEach(function (bugId) {
     let checkBox = document.getElementById('check-' + bugId);
     if (checkBox != null) {
@@ -549,7 +549,7 @@ function queueCommand(url, bugId, json) {
 function queueBugChange(type, bugId, comment) {
   // change types:
   //  clear-flag
-  //  clear-flag-comment
+  //  redirect-flag
 
   let data = null;
   let bug = getBugRec(bugId);
@@ -583,7 +583,28 @@ function queueBugChange(type, bugId, comment) {
         'body': comment
       };
     }
+  } else if (type == 'redirect-flag') {
+    // redirect to setter with a comment
+    data = {
+      'flags': [{
+        'id': bug.flagid,
+        'status': 'X'
+      },
+      {
+        'name': 'needinfo',
+        'status': '?',
+        'requestee': bug.nisetter,
+        'new': true,
+        'type_id': 800
+      }]
+    };
+    if (comment != null) {
+      data.comment = {
+        'body': comment
+      };
+    }
   }
+
   let json = JSON.stringify(data);
   let url = NeedInfoConfig.bugzilla_put_url.replace('{id}', bug.bugid);
   if (NeedInfoConfig.api_key.length) {
@@ -651,7 +672,7 @@ function queueChanges(type, comment) {
 }
 
 function invokeClearNI() {
-  ChangeList = getCheckedBugs();
+  ChangeList = getCheckedBugIds();
   if (!ChangeList.length)
     return;
   document.getElementById('prompt-confirm-bugcount').textContent = ChangeList.length;
@@ -670,8 +691,8 @@ function invokeClearNI() {
 }
 
 function invokeClearNIWithComment() {
-  ChangeList = getCheckedBugs();
-  if (!ChangeList.length)
+  ChangeList = getCheckedBugIds();
+  if (!ChangeList.length || ChangeList.length > 1)
     return;
   document.getElementById('prompt-comment-confirm-bugcount').textContent = ChangeList.length;
 
@@ -683,6 +704,35 @@ function invokeClearNIWithComment() {
       if (!comment.length)
         comment = null;
       queueChanges('clear-flag', comment);
+    } else {
+      // Update buttons after cancel
+      updateButtonsState();
+    }
+  }, { once: true });
+  dlg.show();
+}
+
+function invokeRedirectToSetter() {
+  ChangeList = getCheckedBugIds();
+  if (!ChangeList.length || ChangeList.length > 1)
+    return;
+  let bug = getBugRec(ChangeList[0]);
+  if (bug == null)
+    return;
+
+  document.getElementById('prompt-redirect-confirm-bugcount').textContent = ChangeList.length;
+  document.getElementById('prompt-setter').textContent =
+    'Redirecting to: ' + trimAddress(bug.nisetter);
+
+  let dlg = document.getElementById("prompt-redirect-confirm");
+  dlg.returnValue = "cancel";
+  dlg.addEventListener('close', (event) => {
+    if (dlg.returnValue == 'confirm') {
+      let comment = document.getElementById("prompt-redirect-confirm-comment").value;
+      if (!comment.length) {
+        comment = null;
+      }
+      queueChanges('redirect-flag', comment);
     } else {
       // Update buttons after cancel
       updateButtonsState();

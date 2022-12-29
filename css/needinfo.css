@@ -256,37 +256,43 @@ a:hover {
 
 .name-nidate {
   grid-column: 2;
+  min-width: 8vmin;
 }
 
 .name-bugid {
   grid-column: 3;
+  min-width: 8vmin;
 }
 
 .name-nifrom {
   grid-column: 4;
+  min-width: 10vmin;
 }
 
 .name-assignee {
   grid-column: 5;
+  min-width: 10vmin;
 }
 
 .name-severity {
   grid-column: 6;
+  min-width: 5vmin;
 }
 
 .name-priority {
   grid-column: 7;
+  min-width: 3vmin;
 }
 
 .name-bugtitle {
   grid-column: 8;
-  min-width:40vmin;
+  min-width:28vmin;
 }
 
 .name-nimsg {
   grid-column: 9;
   width:auto;
-  min-width: 40vmin;
+  min-width: 28vmin;
 }
 
 .bug-link-container {
@@ -423,6 +429,14 @@ a:hover {
   justify-self: center;
 }
 
+.prompt-details {
+  font-size: 2vmin;
+  font-family: Moz;
+  display: inline-block;
+  float: left;
+  margin-bottom: 10px;
+}
+
 .prompt-emphasis-text {
   font-size: 5vmin;
   align-self: center;
@@ -469,6 +483,19 @@ a:hover {
 }
 
 #prompt-comment-confirm-comment:focus {
+  background-color: #ddd;
+  outline: none;
+}
+
+#prompt-redirect-confirm-comment {
+  width: 100%;
+  padding: 15px;
+  border: none;
+  background: #eee;
+  margin: 0px 0px 10px 0px;
+}
+
+#prompt-redirect-confirm-comment:focus {
   background-color: #ddd;
   outline: none;
 }

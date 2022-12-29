@@ -36,12 +36,18 @@ function restToQueryUrl(url) {
 }
 
 function trimAddress(account) {
+  if (account == undefined) {
+    // Unassigned
+    account = '';
+  }
+
   for (const [key, value] of Object.entries(NeedInfoConfig.developers)) {
     if (value == account) {
       account = key;
       break;
     }
   }
+
   account = account.replace('release-mgmt-account-bot@mozilla.tld', 'nag-bot');
   account = account.replace('update-bot@bmo.tld', 'update-bot');
   account = account.replace('nobody@mozilla.org', 'nobody');
