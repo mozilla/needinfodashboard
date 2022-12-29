@@ -86,7 +86,7 @@ function main(json)
   // v2=needinfo?
 
   let url = NeedInfoConfig.bugzilla_search_url;
-  if (NeedInfoConfig.api_key.length) {
+  if (NeedInfoConfig.api_key.length > 0) {
     url += "api_key=" + NeedInfoConfig.api_key + "&";
   }
   url += NeedInfoConfig.bugs_query.replace("{id}", id);
@@ -172,6 +172,9 @@ function retrieveInfoFor(url, userQuery)
     console.log("status:", textStatus);
     console.log("error thrown:", errorThrown);
     console.log("response text:", jqXHR.responseText);
+    let info = JSON.parse(jqXHR.responseText);
+    let text = info.message ? info.message : errorThrown;
+    errorMsg(text);
   });
 }
 
@@ -308,8 +311,19 @@ function populateRow(record) {
   $("#report").append(content);
 }
 
+function checkConfig() {
+  if (NeedInfoConfig.api_key.length == 0) {
+    errorMsg('Missing Bugzilla API key.');
+  }
+}
+
 function clearRows() {
   $("#report").empty();
+  $("#errors").empty();
+}
+
+function errorMsg(text) {
+  $("#errors").append(text);
 }
 
 function populateRows() {
@@ -318,6 +332,7 @@ function populateRows() {
   });
   $("#stats").text("" + bugset.length + " Bugs");
   updateButtonsState();
+  checkConfig();
 }
 
 function refreshList(e) {
@@ -395,12 +410,12 @@ function settingsUpdated() {
   refreshList(null);
 }
 
-function updateButtonState(enable) {
-  if (!NeedInfoConfig.api_key.length)
+function updateButtonState(enabled) {
+  if (NeedInfoConfig.api_key.length == 0) {
     enabled = false;
-
+  }
   buttons.forEach(function (button) {
-    document.getElementById(button).disabled = !enable;
+    document.getElementById(button).disabled = !enabled;
   });
 }
 
@@ -592,8 +607,9 @@ function updateAfterError(bugid, text) {
   ChangeList = ChangeList.filter((value) => value != bugid);
   updateStatus(((ChangeListSize - ChangeList.length) / ChangeListSize) * 100.0);
   updateStatusText();
-  $("#errors").append("request error for bug " + bugid + " '" + text + "'");
-  $("#errors").append("<br/>");
+
+  errorMsg("request error for bug " + bugid + " '" + text + "'");
+  errorMsg("<br/>");
 
   if (ChangeList.length == 0) {
     document.getElementById('status').style.visibility = 'hidden';
