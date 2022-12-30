@@ -157,7 +157,6 @@ a:hover {
 }
 
 /* index pane css */
-
 .table-container {
   padding-top: 25px;
   padding-left: 100px;
@@ -315,7 +314,7 @@ a:hover {
 }
 
 .errors-container {
-  padding-top: 5px;
+  padding-top: 20px;
   padding-left: 2vmin;
   padding-right: 2vmin;
   float: left;
@@ -324,7 +323,7 @@ a:hover {
   font-family: Moz;
   color: #cc0000;
   display: inline-block;
-  font-size: 2.0vmin;
+  font-size: 1.5vmin;
 }
 
 .footer {
@@ -385,6 +384,26 @@ a:hover {
   visibility: collapse;
 }
 
+.button-separator {
+  display: inline-block;
+  float: right;
+  padding: 10px;
+}
+
+.settings-button-container {
+  padding: 0px;
+  margin: 0px;
+  border: 0px solid blue;
+  float: right;
+}
+
+.alert-icon {
+  position: absolute;
+  visibility: hidden;
+  margin-left: 65px;
+  margin-top: -2px;
+}
+
 .status-text {
   visibility: hidden;
   margin-top: 2px;
@@ -398,16 +417,6 @@ a:hover {
   background-size: 50%;
   background-repeat: no-repeat;
   color: gray;
-}
-
-.settings-button {
-  float:none;
-}
-
-.button-separator {
-  display: inline-block;
-  float: right;
-  padding: 10px;
 }
 
 /* prompts for details */
@@ -434,6 +443,7 @@ a:hover {
   font-family: Moz;
   display: inline-block;
   float: left;
+  width: 100%;
   margin-bottom: 10px;
 }
 
@@ -458,6 +468,7 @@ a:hover {
 
 .prompt-buttons-form {
   margin-top: 10px;
+  border: 0px solid green;
 }
 
 .prompt-buttons-form  #btn-confirm, #btn-cancel {
@@ -474,28 +485,53 @@ a:hover {
   background-color: #cc0000;
 }
 
-#prompt-comment-confirm-comment {
-  width: 100%;
+.prompt-comment-textarea {
+  width: inherit;
   padding: 15px;
   border: none;
   background: #eee;
   margin: 0px 0px 10px 0px;
+  resize: both;
 }
 
-#prompt-comment-confirm-comment:focus {
+.prompt-comment-textarea:focus {
   background-color: #ddd;
   outline: none;
 }
 
-#prompt-redirect-confirm-comment {
-  width: 100%;
-  padding: 15px;
-  border: none;
-  background: #eee;
-  margin: 0px 0px 10px 0px;
+.text-area-container {
+  border: 0px solid red;
+  margin: 5px;
 }
 
-#prompt-redirect-confirm-comment:focus {
+#prompt-text-input {
+  font-size: 2vmin;
+  font-family: Moz;
+  display: inline-block;
+  float: left;
+  width: 100%;
+  margin-bottom: 10px;
+  border: 0px solid blue;
+}
+
+#prompt-clear-confirm-comment {
+}
+
+#prompt-redirect-confirm-comment {
+}
+
+#prompt-redirect-to-confirm-comment {
+}
+
+#prompt-redirect-to-confirm-to {
+  margin-left: 10px;
+  width: fit-content;
+  background: #eee;
+  border: none;
+  height: 20px;
+}
+
+#prompt-redirect-to-confirm-to:focus {
   background-color: #ddd;
   outline: none;
 }

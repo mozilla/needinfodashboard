@@ -10,6 +10,8 @@ var DEV_DISABLE = false;
 /*
  Bugs
  * multiple puts with the same comment results in errors on every request except the first. Some sort of anti-spam feature?
+ * Polish the css related to viewport size
+ * css of comment text area in dialogs needs polish when resizing
 
  General
  * bug assingee changes by nagbots, can we expose who got dropped?
@@ -70,6 +72,7 @@ function prepPage() {
   if (content.length) {
     $("#report").append(content);
   }
+  checkConfig();
 }
 
 function refreshList(e) {
@@ -278,4 +281,14 @@ function displayCountFor(id, key, url, type, data)
 }
 
 function settingsUpdated() {
+  checkConfig();
+  refreshList(null);
+}
+
+function checkConfig() {
+  if (NeedInfoConfig.api_key.length == 0) {
+    document.getElementById('alert-icon').style.visibility = 'visible';
+  } else {
+    document.getElementById('alert-icon').style.visibility = 'hidden';
+  }
 }

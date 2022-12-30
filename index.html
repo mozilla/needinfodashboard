@@ -22,7 +22,10 @@
       <option class="team-option" value="media">Media and Web Conferencing</option>
       <option class="team-option" value="graphics">Graphics</option>
     </select>
-    <button class="command-button" onclick="openSettings()">Settings</button>
+    <div class="settings-button-container">
+      <button class="command-button" onclick="openSettings()">Settings</button>
+      <img id="alert-icon" class="alert-icon" src="images/alert-icon.png" width="10px" height="10px" />
+    </div>
     <div class="button-separator"></div>
     <button class="command-button" onclick="refreshList(event);">Refresh</button>
   </div>

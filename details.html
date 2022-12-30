@@ -19,12 +19,15 @@
 
   <div class="command-button-container">
     <div id="stats" class="stats"></div>
-    <button class="command-button" onclick="openSettings()">Settings</button>
+    <div class="settings-button-container">
+      <button class="command-button" onclick="openSettings()">Settings</button>
+      <img id="alert-icon" class="alert-icon" src="images/alert-icon.png" width="10px" height="10px" />
+    </div>
     <div class="button-separator"></div>
     <button class="command-button" onclick="refreshList(event);">Refresh</button>
     <button class="command-button" id="button-clear" onclick="invokeClearNI();">Clear</button>
     <button class="command-button" id="button-clearcmt" onclick="invokeClearNIWithComment();">Clear w/Comment</button>
-    <button class="command-button" id="button-redir" onclick="">Redirect to...</button>
+    <button class="command-button" id="button-redir" onclick="invokeRedirectTo();">Redirect to...</button>
     <button class="command-button" id="button-redirsetter" onclick="invokeRedirectToSetter();">Redirect to Setter</button>
     <button class="command-button-hidden" id="button-redirassignee" onclick="">Redirect to Assignee</button>
     <div id="status" class="status-text"></div>
@@ -102,7 +105,9 @@
     </div>
     <div class="prompt-buttons-form">
       <form method="dialog">
-        <textarea id="prompt-comment-confirm-comment" rows="3" cols="20" type="text" placeholder="comment"></textarea>
+        <div id="prompt-div3" class="text-area-container">
+          <textarea class="prompt-comment-textarea" id="prompt-comment-confirm-comment" rows="3" cols="35" type="text" placeholder="comment"></textarea>
+        </div>
         <button id="btn-confirm" value="confirm">Confirm</button>
         <button id="btn-cancel" autofocus value="cancel">Cancel</button>
       </form>
@@ -117,8 +122,28 @@
     </div>
     <div class="prompt-buttons-form">
       <form method="dialog">
-        <div class="prompt-details" id="prompt-setter"></div><br/>
-        <textarea id="prompt-redirect-confirm-comment" rows="3" cols="20" type="text" placeholder="comment"></textarea>
+        <div class="prompt-details" id="prompt-setter"></div><br />
+        <div id="prompt-div3" class="text-area-container">
+          <textarea class="prompt-comment-textarea" id="prompt-redirect-confirm-comment" rows="3" cols="35" type="text" placeholder="comment"></textarea>
+        </div>
+        <button id="btn-confirm" value="confirm">Confirm</button>
+        <button id="btn-cancel" autofocus value="cancel">Cancel</button>
+      </form>
+    </div>
+  </dialog>
+  <!-- dialog: redirect needinfo to someone with a comment -->
+  <dialog id="prompt-redirect-to-confirm" oncancel="">
+    <div class="prompt-confirm-info-grid">
+      <div class="prompt-text prompt-row1">These changes will impact</div>
+      <div id="prompt-redirect-to-confirm-bugcount" class="prompt-emphasis-text prompt-row2">err</div>
+      <div class="prompt-text prompt-row3">bug(s).</div>
+    </div>
+    <div class="prompt-buttons-form">
+      <form method="dialog">
+        <div id="prompt-text-input">Redirect To:<input id="prompt-redirect-to-confirm-to" type="text" placeholder="email" value=""/></div>
+        <div id="prompt-div3" class="text-area-container">
+          <textarea class="prompt-comment-textarea" id="prompt-redirect-to-confirm-comment" rows="3" cols="35" type="text" placeholder="comment"></textarea>
+        </div>
         <button id="btn-confirm" value="confirm">Confirm</button>
         <button id="btn-cancel" autofocus value="cancel">Cancel</button>
       </form>

@@ -15,7 +15,7 @@ var buttons = ['button-clear', 'button-clearcmt',
 var ChangeListSize = 0;
 var ChangeList = [];
 
-// Testing progress
+// Testing the progress. Set to true to simulate submitting bug changes.
 var ChangeListTest = false;
 var TestDelay;
 
@@ -313,8 +313,16 @@ function populateRow(record) {
 
 function checkConfig() {
   if (NeedInfoConfig.api_key.length == 0) {
-    errorMsg('Missing Bugzilla API key.');
+    document.getElementById('alert-icon').style.visibility = 'visible';
+  } else {
+    document.getElementById('alert-icon').style.visibility = 'hidden';
   }
+}
+
+// Called from Settings util functions after settings are updated.
+function settingsUpdated() {
+  checkConfig();
+  refreshList(null);
 }
 
 function clearRows() {
@@ -404,10 +412,6 @@ function prioritySort() {
   clearRows();
   prepPage();
   populateRows();
-}
-
-function settingsUpdated() {
-  refreshList(null);
 }
 
 function updateButtonState(enabled) {
@@ -546,10 +550,11 @@ function queueCommand(url, bugId, json) {
   PendingPuts.push({'url': url, 'bugid': bugId, 'json': json});
 }
 
-function queueBugChange(type, bugId, comment) {
+function queueBugChange(type, bugId, comment, to) {
   // change types:
-  //  clear-flag
-  //  redirect-flag
+  //  clear-flag        - valid params: none
+  //  redirect-flag     - valid params: comment
+  //  redirect-flag-to  - valid params: comment, to
 
   let data = null;
   let bug = getBugRec(bugId);
@@ -558,7 +563,7 @@ function queueBugChange(type, bugId, comment) {
     return;
   }
 
-  // Testing UI related to multiple bug changes
+  // Testing UI progress meter for multiple bug changes
   if (ChangeListTest) {
     if (ChangeListSize == ChangeList.length) {
       TestDelay = 1000;
@@ -650,7 +655,7 @@ function updateAfterChanges(bugid) {
   }
 }
 
-function queueChanges(type, comment) {
+function queueChanges(type, comment, to) {
   clearPendingCommands();
 
   if (!ChangeList.length)
@@ -666,10 +671,13 @@ function queueChanges(type, comment) {
   updateStatusText();
 
   ChangeList.forEach(function (bugId) {
-    queueBugChange(type, bugId, comment);
+    queueBugChange(type, bugId, comment, to);
   });
   submitCommands();
 }
+
+// prompt-confirm
+// prompt-confirm-bugcount
 
 function invokeClearNI() {
   ChangeList = getCheckedBugIds();
@@ -689,6 +697,10 @@ function invokeClearNI() {
   }, { once: true });
   dlg.show();
 }
+
+// prompt-comment-confirm
+// prompt-comment-confirm-bugcount
+// prompt-comment-confirm-comment
 
 function invokeClearNIWithComment() {
   ChangeList = getCheckedBugIds();
@@ -711,6 +723,10 @@ function invokeClearNIWithComment() {
   }, { once: true });
   dlg.show();
 }
+
+// prompt-redirect-confirm
+// prompt-redirect-confirm-bugcount
+// prompt-redirect-confirm-comment
 
 function invokeRedirectToSetter() {
   ChangeList = getCheckedBugIds();
@@ -741,10 +757,42 @@ function invokeRedirectToSetter() {
   dlg.show();
 }
 
-function invokeRedirectToAssignee() {
-}
+// prompt-redirect-to-confirm
+// prompt-redirect-to-confirm-bugcount
+// prompt-redirect-to-confirm-to
+// prompt-redirect-to-confirm-comment
 
 function invokeRedirectTo() {
+  ChangeList = getCheckedBugIds();
+  if (!ChangeList.length || ChangeList.length > 1)
+    return;
+  let bug = getBugRec(ChangeList[0]);
+  if (bug == null)
+    return;
+
+  document.getElementById('prompt-redirect-to-confirm-bugcount').textContent = ChangeList.length;
+
+  let dlg = document.getElementById("prompt-redirect-to-confirm");
+  dlg.returnValue = "cancel";
+  dlg.addEventListener('close', (event) => {
+    if (dlg.returnValue == 'confirm') {
+      let comment = document.getElementById("prompt-redirect-to-confirm-comment").value;
+      if (!comment.length) {
+        comment = null;
+      }
+      let to = document.getElementById("prompt-redirect-to-confirm-to").value;
+      if (!to.length) {
+        to = null;
+      }
+      queueChanges('redirect-flag-to', comment, to);
+    } else {
+      // Update buttons after cancel
+      updateButtonsState();
+    }
+  }, { once: true });
+  dlg.show();
 }
 
+function invokeRedirectToAssignee() {
+}
 
