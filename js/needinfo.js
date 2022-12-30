@@ -12,6 +12,7 @@ var DEV_DISABLE = false;
  * multiple puts with the same comment results in errors on every request except the first. Some sort of anti-spam feature?
  * Polish the css related to viewport size
  * css of comment text area in dialogs needs polish when resizing
+ * bugzilla user aliases don't work when updating flags
 
  General
  * bug assingee changes by nagbots, can we expose who got dropped?

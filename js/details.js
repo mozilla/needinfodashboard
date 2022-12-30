@@ -608,6 +608,30 @@ function queueBugChange(type, bugId, comment, to) {
         'body': comment
       };
     }
+  } else if (type == 'redirect-flag-to') {
+    // redirect to with a comment
+    data = {
+      'flags': [{
+        'id': bug.flagid,
+        'status': 'X'
+      },
+      {
+        'name': 'needinfo',
+        'status': '?',
+        // doesn't work with aliases?
+        'requestee': to,
+        'new': true,
+        'type_id': 800
+      }]
+    };
+    if (comment != null) {
+      data.comment = {
+        'body': comment
+      };
+    }
+  } else {
+    console.log("unsupported action.")
+    return;
   }
 
   let json = JSON.stringify(data);
