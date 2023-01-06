@@ -142,7 +142,15 @@
     </div>
     <div class="prompt-buttons-form">
       <form method="dialog">
-        <div id="prompt-text-input">Redirect To:<input id="prompt-redirect-to-confirm-to" type="text" placeholder="email" value="" /></div>
+        <div class="prompt-text-input">
+          <label id="redirct-label">Redirect To:</label><input id="prompt-redirect-to-confirm-to" type="text" placeholder="email"
+                                                               oninput="onInputForBugzillaUser(this);" value="" autocomplete="off"/>
+        </div>
+        <br />
+        <div class="prompt-text-input">
+          <select id="autofill-user-search" name="account" size="4">
+          </select>
+        </div>
         <div id="prompt-div3" class="text-area-container">
           <textarea class="prompt-comment-textarea" id="prompt-redirect-to-confirm-comment" rows="3" cols="35" type="text" placeholder="comment"></textarea>
         </div>

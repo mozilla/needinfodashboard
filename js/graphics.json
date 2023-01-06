@@ -1,8 +1,9 @@
 {
   "needinfo": {
-    "bugzilla_search_url": "https://bugzilla.mozilla.org/rest/bug?",
-    "bugzilla_put_url": "https://bugzilla.mozilla.org/rest/bug/{id}",
-    "bugzilla_link_url": "https://bugzilla.mozilla.org/show_bug.cgi?id={id}",
+    "bugzilla_search_url": "https://{domain}/rest/bug?",
+    "bugzilla_put_url": "https://{domain}/rest/bug/{id}",
+    "bugzilla_link_url": "https://{domain}/show_bug.cgi?id={id}",
+    "bugzilla_user_url": "https://{domain}/rest/user?match={value}",
     "bugzilla_domain": "bugzilla.mozilla.org",
     "bugzilla_test_domain": "bugzilla-dev.allizom.org",
     "use_test_domain": false,

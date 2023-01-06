@@ -486,11 +486,9 @@ a:hover {
 }
 
 .prompt-comment-textarea {
-  width: inherit;
-  padding: 15px;
+  width: 100%;
   border: none;
   background: #eee;
-  margin: 0px 0px 10px 0px;
   resize: both;
 }
 
@@ -501,17 +499,46 @@ a:hover {
 
 .text-area-container {
   border: 0px solid red;
-  margin: 5px;
 }
 
-#prompt-text-input {
-  font-size: 2vmin;
+.prompt-text-input {
+  font-size: 1.5vmin;
   font-family: Moz;
   display: inline-block;
   float: left;
   width: 100%;
   margin-bottom: 10px;
   border: 0px solid blue;
+}
+
+#redirct-label {
+  width: auto;
+}
+
+#prompt-redirect-to-confirm-to {
+  font-size: 1.5vmin;
+  width: 100%;
+  background: #eee;
+  border: 0px solid red;
+  height: auto;
+}
+
+#prompt-redirect-to-confirm-to:focus {
+  background-color: #ddd;
+  outline: none;
+}
+
+#autofill-user-search {
+  font-size: 1.5vmin;
+  width: 100%;
+  background: #eee;
+  border: 0px solid red;
+  height: auto;
+}
+
+#autofill-user-search:focus {
+  background-color: #ddd;
+  outline: none;
 }
 
 #prompt-clear-confirm-comment {
@@ -523,15 +550,3 @@ a:hover {
 #prompt-redirect-to-confirm-comment {
 }
 
-#prompt-redirect-to-confirm-to {
-  margin-left: 10px;
-  width: fit-content;
-  background: #eee;
-  border: none;
-  height: 20px;
-}
-
-#prompt-redirect-to-confirm-to:focus {
-  background-color: #ddd;
-  outline: none;
-}

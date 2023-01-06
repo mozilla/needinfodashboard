@@ -6,15 +6,16 @@
 
 var NeedInfoConfig = null;
 var DEV_DISABLE = false;
+var LastErrorText = '';
 
 /*
  Bugs
  * multiple puts with the same comment results in errors on every request except the first. Some sort of anti-spam feature?
  * Polish the css related to viewport size
  * css of comment text area in dialogs needs polish when resizing
- * bugzilla user aliases don't work when updating flags
 
  General
+ * redirect to triage owner based on google cal injestion
  * bug assingee changes by nagbots, can we expose who got dropped?
     -  https://bugzilla.mozilla.org/show_bug.cgi?id=969395
  * dealing with double needinfos 
@@ -26,9 +27,7 @@ var DEV_DISABLE = false;
  *  - component
  *  - sliding drop down with bug detail?
  * expose additional needinfos in the details pane
- * save last sort selection and reuse
  * resolve incomplete?
- * redirect ni feature
 */
  
 $(document).ready(function () {
@@ -85,22 +84,12 @@ function refreshList(e) {
 
 function main(json)
 {
+  LastErrorText = '';
+  $("#errors").empty();
+
   NeedInfoConfig = json.needinfo;
-  // If requested via the json config file, point all queries at
-  // a bugzilla test instance. 
-  if (NeedInfoConfig.use_test_domain) {
-    NeedInfoConfig.bugzilla_search_url =
-      NeedInfoConfig.bugzilla_search_url.replace(NeedInfoConfig.bugzilla_domain, NeedInfoConfig.bugzilla_test_domain);
-    NeedInfoConfig.bugzilla_put_url =
-      NeedInfoConfig.bugzilla_put_url.replace(NeedInfoConfig.bugzilla_domain, NeedInfoConfig.bugzilla_test_domain);
-    NeedInfoConfig.bugzilla_link_url =
-      NeedInfoConfig.bugzilla_link_url.replace(NeedInfoConfig.bugzilla_domain, NeedInfoConfig.bugzilla_test_domain);
 
-    console.log("Bugzilla target:", NeedInfoConfig.bugzilla_test_domain);
-  } else {
-    console.log("Bugzilla target:", NeedInfoConfig.bugzilla_domain);
-  }
-
+  updateDomains(NeedInfoConfig);
   loadSettingsInternal();
   prepPage();
 
@@ -243,21 +232,36 @@ function teamSelectionChanged(el) {
   window.location.href = replaceUrlParam(window.location.href, 'team', team);
 }
 
+function errorMsg(text) {
+  if (LastErrorText == text)
+    return;
+  $("#errors").append(text);
+  LastErrorText = text;
+}
+
 // this function's sole reason for existing is to provide
 // a capture context for the AJAX values...
 function retrieveInfoFor(url, id, key, userQuery)
 {
-    $.ajax({
-      url: url,
-      success: function (data) {
-        displayCountFor(id, key, url, userQuery, data);
-      }
-    })
-    .error(function(jqXHR, textStatus, errorThrown) {
-      console.log("status:", textStatus);
-      console.log("error thrown:", errorThrown);
-      console.log("response text:", jqXHR.responseText);
-    });
+  $.ajax({
+    url: url,
+    success: function (data) {
+      displayCountFor(id, key, url, userQuery, data);
+    }
+  })
+  .error(function(jqXHR, textStatus, errorThrown) {
+    console.log("status:", textStatus);
+    console.log("error thrown:", errorThrown);
+    console.log("response text:", jqXHR.responseText);
+    try {
+      let info = JSON.parse(jqXHR.responseText);
+      let text = info.message ? info.message : errorThrown;
+      errorMsg(text);
+      return;
+    } catch(e) {
+    }
+    errorMsg(errorThrown);
+  });
 }
 
 function displayCountFor(id, key, url, type, data)

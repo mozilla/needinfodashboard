@@ -39,20 +39,8 @@ function loadList() {
 function main(json)
 {
   NeedInfoConfig = json.needinfo;
-  // If requested via the json config file, point all queries at
-  // a bugzilla test instance. 
-  if (NeedInfoConfig.use_test_domain) {
-    NeedInfoConfig.bugzilla_search_url =
-      NeedInfoConfig.bugzilla_search_url.replace(NeedInfoConfig.bugzilla_domain, NeedInfoConfig.bugzilla_test_domain);
-    NeedInfoConfig.bugzilla_put_url =
-      NeedInfoConfig.bugzilla_put_url.replace(NeedInfoConfig.bugzilla_domain, NeedInfoConfig.bugzilla_test_domain);
-    NeedInfoConfig.bugzilla_link_url =
-      NeedInfoConfig.bugzilla_link_url.replace(NeedInfoConfig.bugzilla_domain, NeedInfoConfig.bugzilla_test_domain);
 
-    console.log("Bugzilla target:", NeedInfoConfig.bugzilla_test_domain);
-  } else {
-    console.log("Bugzilla target:", NeedInfoConfig.bugzilla_domain);
-  }
+  updateDomains();
 
   // user bugzilla id
   var userId = getUserId();
@@ -166,7 +154,8 @@ function retrieveInfoFor(url, userQuery)
   $.ajax({
     url: url,
     success: function (data) {
-      displayBugs(url, userQuery, data);
+      populateBugs(url, userQuery, data);
+      sortByDefault();
     }
   })
   .error(function (jqXHR, textStatus, errorThrown) {
@@ -179,7 +168,7 @@ function retrieveInfoFor(url, userQuery)
   });
 }
 
-function displayBugs(url, type, data) {
+function populateBugs(url, type, data) {
   data.bugs.forEach(function (bug) {
     // console.log(bug);
     // console.log("flags", bug.flags);
@@ -222,7 +211,6 @@ function displayBugs(url, type, data) {
         //console.log(bug.comments[commentIdx]);
     }
   });
-  dateSort();
 }
 
 function addRec(ct, bugId, flagId, assignee, s, p, from, msg, cmtIdx, title) {
@@ -348,7 +336,6 @@ function refreshList(e) {
     e.preventDefault();
   }
   bugset = [];
-  sortTrack['date'] = true;
   clearRows();
   loadList();
 }
@@ -360,6 +347,36 @@ var sortTrack = {
   'priority': true,
 };
 
+function updateDefaultSortSettings(type, order) {
+  saveDefaultSortSettings(type, sortTrack[type]);
+}
+
+function sortByDefault() {
+  let results = getDefaultSortSettings();
+  let type = 'date';
+  if (results.sort != null && results.order != null) {
+    type = results.sort;
+    sortTrack[type] = results.order == 'true' ? true:false;
+  }
+
+  saveDefaultSortSettings(type, sortTrack[type]);
+
+  switch (type) {
+    case 'date':
+      dateSort();
+    break;
+    case 'bugid':
+      bugIdSort();
+    break;
+    case 'severity':
+      severitySort();
+    break;
+    case 'priority':
+      prioritySort();
+    break;
+  };
+}
+
 /* column title click handlers */
 
 function dateSort() {
@@ -368,6 +385,7 @@ function dateSort() {
   } else {
     bugset.sort(sortDateDesc);
   }
+  updateDefaultSortSettings('date', sortTrack['date']);
   sortTrack['date'] = !sortTrack['date'];
 
   clearRows();
@@ -381,6 +399,7 @@ function bugIdSort() {
   } else {
     bugset.sort(sortBugIdDesc);
   }
+  updateDefaultSortSettings('bugid', sortTrack['bugid']);
   sortTrack['bugid'] = !sortTrack['bugid'];
 
   clearRows();
@@ -394,6 +413,7 @@ function severitySort() {
   } else {
     bugset.sort(sortSeverityDesc);
   }
+  updateDefaultSortSettings('severity', sortTrack['severity']);
   sortTrack['severity'] = !sortTrack['severity'];
 
   clearRows();
@@ -407,6 +427,7 @@ function prioritySort() {
   } else {
     bugset.sort(sortPriorityDesc);
   }
+  updateDefaultSortSettings('priority', sortTrack['priority']);
   sortTrack['priority'] = !sortTrack['priority'];
 
   clearRows();
@@ -415,9 +436,6 @@ function prioritySort() {
 }
 
 function updateButtonState(enabled) {
-  if (NeedInfoConfig.api_key.length == 0) {
-    enabled = false;
-  }
   buttons.forEach(function (button) {
     document.getElementById(button).disabled = !enabled;
   });
@@ -425,9 +443,22 @@ function updateButtonState(enabled) {
 
 function updateButtonsState() {
   let list = getCheckedBugIds();
-  updateButtonState(list.length > 0);
+  let enabled = list.length > 0;
+  if (NeedInfoConfig.api_key.length == 0) {
+    enabled = false;
+  }
+  // blanket update all buttons
+  updateButtonState(enabled);
+
+  // XXX Special case due to the spam issue when submitting
+  // comments - only enable the clear w/comment when we have
+  // one check box checked.
+  if (enabled) {
+    document.getElementById('button-clearcmt').disabled = !(list.length == 1);
+  }
 }
 
+// Always returns a valid list
 function getCheckedBugIds() {
   let list = [];
   bugset.every(function (bug) {
@@ -787,6 +818,10 @@ function invokeRedirectToSetter() {
 // prompt-redirect-to-confirm-comment
 
 function invokeRedirectTo() {
+  document.getElementById('autofill-user-search').disabled = true;
+  document.getElementById("prompt-redirect-to-confirm-to").value = "";
+  $('#autofill-user-search').empty();
+
   ChangeList = getCheckedBugIds();
   if (!ChangeList.length || ChangeList.length > 1)
     return;
@@ -804,10 +839,7 @@ function invokeRedirectTo() {
       if (!comment.length) {
         comment = null;
       }
-      let to = document.getElementById("prompt-redirect-to-confirm-to").value;
-      if (!to.length) {
-        to = null;
-      }
+      let to = getRedirectToAccount();
       queueChanges('redirect-flag-to', comment, to);
     } else {
       // Update buttons after cancel
@@ -820,3 +852,78 @@ function invokeRedirectTo() {
 function invokeRedirectToAssignee() {
 }
 
+function submitUserSearch(value) {
+  let url = NeedInfoConfig.bugzilla_user_url;
+  url = url.replace('{value}', value);
+  if (NeedInfoConfig.api_key.length) {
+    url += "&api_key=" + NeedInfoConfig.api_key;
+  }
+  $('#autofill-user-search').empty();
+  $.ajax({
+    url: url,
+    success: function (data) {
+      // data.users.name and real_name
+      data.users.forEach(function (val) {
+        let name = "" + val.real_name;
+        let email = "" + val.name;
+        if (name.length == 0) {
+          name = ' ';
+        }
+        name += ' (' + email + ')';
+        $('#autofill-user-search').append(new Option(name, email));
+      });
+      document.getElementById('autofill-user-search').disabled = false;
+    }
+  })
+  .error(function(jqXHR, textStatus, errorThrown) {
+    console.log("status:", textStatus);
+    console.log("error thrown:", errorThrown);
+    console.log("response text:", jqXHR.responseText);
+    try {
+      let info = JSON.parse(jqXHR.responseText);
+      let text = info.message ? info.message : errorThrown;
+      errorMsg(text);
+      return;
+    } catch(e) {
+    }
+    errorMsg(errorThrown);
+  });
+}
+
+
+function getRedirectToAccount() {
+  if (!document.getElementById('autofill-user-search').disabled &&
+      document.getElementById('autofill-user-search').value) {
+    //console.log(document.getElementById('autofill-user-search').value);
+    return document.getElementById('autofill-user-search').value;
+  }
+  let to = document.getElementById("prompt-redirect-to-confirm-to").value;
+  if (!to.length) {
+    to = null;
+  }
+  return to;
+}
+
+function searchForNick(element) {
+  $('#autofill-user-search').empty();
+  document.getElementById('autofill-user-search').disabled = true;
+
+  let value = element.value;
+  if (!value) {
+    return;
+  }
+  if (value.element < 3) {
+    return;
+  }
+
+  console.log('searching for', value);
+  submitUserSearch(value);
+}
+
+var SearchTimeoutId = -1;
+function onInputForBugzillaUser(element) {
+  clearTimeout(SearchTimeoutId);
+  SearchTimeoutId = setTimeout(function () {
+    searchForNick(element);
+  }, 750);
+}

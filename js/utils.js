@@ -7,9 +7,6 @@
 function getTeam() {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
-  //for (const [key, value] of urlParams.entries()) {
-  //  console.log(`${key}, ${value}`);
-  //}
   return urlParams.get('team');
 }
 
@@ -23,6 +20,25 @@ function getUserQuery() {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
   return urlParams.get('userquery');
+}
+
+function updateDomains() {
+  // If requested via the json config file, point all queries at
+  // a bugzilla test instance. 
+  let domain = NeedInfoConfig.bugzilla_domain;
+  if (NeedInfoConfig.use_test_domain) {
+    domain = NeedInfoConfig.bugzilla_test_domain;
+  }
+  NeedInfoConfig.bugzilla_search_url =
+    NeedInfoConfig.bugzilla_search_url.replace('{domain}', domain);
+  NeedInfoConfig.bugzilla_put_url =
+    NeedInfoConfig.bugzilla_put_url.replace('{domain}', domain);
+  NeedInfoConfig.bugzilla_link_url =
+    NeedInfoConfig.bugzilla_link_url.replace('{domain}', domain);
+  NeedInfoConfig.bugzilla_user_url =
+    NeedInfoConfig.bugzilla_user_url.replace('{domain}', domain);
+
+  console.log("Bugzilla target:", domain);
 }
 
 // generate random integer in the given range
@@ -75,6 +91,17 @@ function getFromStorage(keyname) {
 function clearStorage(keyname) {
   localStorage.removeItem(keyname);
   sessionStorage.removeItem(keyname);
+}
+
+function saveDefaultSortSettings(type, currentOrder) {
+  if (NeedInfoConfig.saveoptions) {
+    localStorage.setItem("sort", type); // string
+    localStorage.setItem("sortorder", currentOrder); // boolean
+  }
+}
+
+function getDefaultSortSettings() {
+  return { 'sort': getFromStorage('sort'), 'order': getFromStorage('sortorder') };
 }
 
 function loadSettingsInternal() {
