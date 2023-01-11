@@ -75,10 +75,10 @@ function trimAddress(account) {
 function getFromStorage(keyname) {
   let value = sessionStorage.getItem(keyname);
   if (value == null || !value.length) {
-    //console.log('session storage value for ', keyname, ' doesn not exist.');
+    //console.log('session storage value for ', keyname, ' does not exist.');
     value = localStorage.getItem(keyname);
     if (value == null || !value.length) {
-      //console.log('persistent storage value for ', keyname, ' doesn not exist.');
+      //console.log('persistent storage value for ', keyname, ' does not exist.');
     } else {
       //console.log('persistent storage value for ', keyname, ':', value);
     }
@@ -106,6 +106,7 @@ function getDefaultSortSettings() {
 
 function loadSettingsInternal() {
   let api_key = getFromStorage("api-key");
+
   NeedInfoConfig.api_key = (api_key == null) ? "" : api_key;
   NeedInfoConfig.ignoremyni = getFromStorage("ignoremyni") == (null || 'false') ? false : true;
   NeedInfoConfig.saveoptions = getFromStorage("save") == (null || 'false') ? false : true;
@@ -147,8 +148,8 @@ function saveSettings(e) {
   });
 
   // 'remember my settings' checkbox
-  var use_local = JSON.stringify(values).includes("remember");
-  console.log('use persistent storage:', use_local);
+  var usePersistent = JSON.stringify(values).includes("save");
+  console.log('use persistent storage:', usePersistent);
 
   // API key
   var old_api_key = "";
@@ -157,7 +158,7 @@ function saveSettings(e) {
     old_api_key = key;
   }
 
-  let storage = use_local ? localStorage : sessionStorage;
+  let storage = usePersistent ? localStorage : sessionStorage;
 
   clearStorage("api-key");
   storage.setItem("api-key", values.key);
