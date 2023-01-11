@@ -208,7 +208,6 @@ function populateBugs(url, type, data) {
     } else {
       processRow(flagCreationDate, bug.id, flagId, bug.assigned_to, bug.severity,
         bug.priority, bug.flags[0].setter, bug.comments[commentIdx].text, bug.comments[commentIdx].count, bug.summary);
-        //console.log(bug.comments[commentIdx]);
     }
   });
 }

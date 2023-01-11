@@ -12,20 +12,20 @@
     "developers": {
       "JimM": "jmathies@mozilla.com",
       "Bob": "bhood@mozilla.com",
-      "Sotaro": "sotaro.ikeda.g@gmail.com",
-      "JeffM": "jmuizelaar@mozilla.com",
-      "JimB": "jimb@mozilla.com",
-      "Lee": "lsalzman@mozilla.com",
-      "Kelsey": "jgilbert@mozilla.com",
-      "Ashley": "ahale@mozilla.com",
-      "Jamie": "jnicol@mozilla.com",
       "Andrew": "aosmond@mozilla.com",
+      "Ashley": "ahale@mozilla.com",
       "BradW": "bwerth@mozilla.com",
-      "Glenn": "gwatson@mozilla.com",
-      "Nical": "nical.bugzilla@gmail.com",
       "Erich": "egubler@mozilla.com",
-      "Tim": "tnikkel@gmail.com",
-      "Teo": "ttanasoaia@mozilla.com"
+      "Glenn": "gwatson@mozilla.com",
+      "Jamie": "jnicol@mozilla.com",
+      "JeffM": "jmuizelaar@mozilla.com",
+      "Kelsey": "jgilbert@mozilla.com",
+      "Lee": "lsalzman@mozilla.com",
+      "JimB": "jimb@mozilla.com",
+      "Nical": "nical.bugzilla@gmail.com",
+      "Sotaro": "sotaro.ikeda.g@gmail.com",
+      "Teo": "ttanasoaia@mozilla.com",
+      "Tim": "tnikkel@gmail.com"
     }
   }
 }
