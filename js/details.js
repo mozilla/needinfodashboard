@@ -171,7 +171,7 @@ function retrieveInfoFor(url, userQuery)
 function populateBugs(url, type, data) {
   data.bugs.forEach(function (bug) {
     // console.log(bug);
-    console.log("flags", bug.flags);
+    // console.log("flags", bug.flags);
     
     let flagCreationDate = bug.flags[0].creation_date;
     let flagId = bug.flags[0].id;
