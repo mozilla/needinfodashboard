@@ -64,9 +64,19 @@ function trimAddress(account) {
     }
   }
 
-  account = account.replace('release-mgmt-account-bot@mozilla.tld', 'nag-bot');
-  account = account.replace('update-bot@bmo.tld', 'update-bot');
   account = account.replace('nobody@mozilla.org', 'nobody');
+
+  // Todo: get the alias from bugzilla
+
+  // aryx.bugmail@gmx-topmail.de
+  account = account.replace('aryx.bugmail@gmx-topmail.de', 'Aryx');
+  // ryanvm@gmail.com
+  account = account.replace('ryanvm@gmail.com', 'RyanVM');
+  // nagbot
+  account = account.replace('release-mgmt-account-bot@mozilla.tld', 'nag-bot');
+  // updatebot
+  account = account.replace('update-bot@bmo.tld', 'update-bot');
+
   account = account.replace('@mozilla.org', '@moz');
   account = account.replace('@mozilla.com', '@moz');
   return account;
@@ -114,14 +124,13 @@ function loadSettingsInternal() {
 
   console.log('storage key:', NeedInfoConfig.api_key);
   console.log('ignore:', NeedInfoConfig.ignoremyni);
-  console.log('save:', NeedInfoConfig.saveoptions);
+  console.log('persist:', NeedInfoConfig.saveoptions);
   console.log('targets:', NeedInfoConfig.targetnew);
 }
 
 function openSettings() {
   if (NeedInfoConfig.api_key.length) {
-    var api_key = document.getElementById("api-key");
-    api_key.value = NeedInfoConfig.api_key;
+    document.getElementById("api-key").value = NeedInfoConfig.api_key;
   }
   document.getElementById("option-ignoremyni").checked = NeedInfoConfig.ignoremyni;
   document.getElementById("option-save").checked = NeedInfoConfig.saveoptions;
@@ -137,23 +146,19 @@ function closeSettings() {
 function saveSettings(e) {
   e.preventDefault();
 
-  var x = $("form").serializeArray();
-
-  var values = {};
+  let x = $("form").serializeArray();
+  let values = {};
   $.each(x, function (i, field) {
     values[field.name] = field.value;
-    // key <empty string>
-    // option-ignoremyni on
-    // options-save on
   });
 
   // 'remember my settings' checkbox
-  var usePersistent = JSON.stringify(values).includes("save");
+  let usePersistent = JSON.stringify(values).includes("save");
   console.log('use persistent storage:', usePersistent);
 
   // API key
-  var old_api_key = "";
-  var key = getFromStorage("api-key");
+  let old_api_key = "";
+  let key = getFromStorage("api-key");
   if (key != null) {
     old_api_key = key;
   }

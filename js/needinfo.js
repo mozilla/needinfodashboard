@@ -15,7 +15,8 @@ var LastErrorText = '';
  * css of comment text area in dialogs needs polish when resizing
 
  General
- * display additional nis for nagbot ni bugs
+ * Bugzilla aliases for NI email entries in details
+ * set Priority bulk action
  * redirect to triage owner based on google cal injestion?
  * bug assingee changes by nagbots, can we expose who got dropped?
     -  https://bugzilla.mozilla.org/show_bug.cgi?id=969395

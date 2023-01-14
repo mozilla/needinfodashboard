@@ -173,19 +173,8 @@ function populateBugs(url, type, data) {
     // console.log(bug);
     // console.log("flags", bug.flags);
     
-    // TODO: there may be multiple NIs to same dev here, which
-    // we currently do not detect. We could walk flags and add 
-    // entries for each (by duplicating bugs entries in the list?).
     let flagCreationDate = bug.flags[0].creation_date;
     let flagId = bug.flags[0].id;
-    if (bug.flags.length > 1) {
-      let index = 0;
-      console.log('Additional NIs for bug ', bug.id, ' -')
-      bug.flags.forEach(function (flag) {
-        console.log(index, flag.creation_date, flag.name, flag.setter);
-        index++;
-      });
-    }
 
     let index = 0;
     let commentIdx = -1;
@@ -204,15 +193,15 @@ function populateBugs(url, type, data) {
 
     if (commentIdx == -1) {
       processRow(flagCreationDate, bug.id, flagId, bug.assigned_to, bug.severity,
-        bug.priority, bug.flags[0].setter, "", 0, bug.summary);
+        bug.priority, bug.flags, "", 0, bug.summary);
     } else {
       processRow(flagCreationDate, bug.id, flagId, bug.assigned_to, bug.severity,
-        bug.priority, bug.flags[0].setter, bug.comments[commentIdx].text, bug.comments[commentIdx].count, bug.summary);
+        bug.priority, bug.flags, bug.comments[commentIdx].text, bug.comments[commentIdx].count, bug.summary);
     }
   });
 }
 
-function addRec(ct, bugId, flagId, assignee, s, p, from, msg, cmtIdx, title) {
+function addRec(ct, bugId, flagId, assignee, s, p, msg, cmtIdx, title, flags) {
   let record = {
     'date': ct, // NI Date
     'bugid': bugId,
@@ -221,7 +210,7 @@ function addRec(ct, bugId, flagId, assignee, s, p, from, msg, cmtIdx, title) {
     'title': title,
     'severity': s,
     'priority': p,
-    'nisetter': from,
+    'flags': flags,
     'msg': msg,
     'commentid': cmtIdx
   };
@@ -229,16 +218,21 @@ function addRec(ct, bugId, flagId, assignee, s, p, from, msg, cmtIdx, title) {
   return record;
 }
 
-function processRow(ct, bugId, flagId, assignee, s, p, from, msg, cmtIdx, title) {
+function processRow(ct, bugId, flagId, assignee, s, p, flags, msg, cmtIdx, title) {
+  /*
+   * flagId is the flagid of the ni that set this user's ni. We use it in comment links.
+   */
+
   let d = new Date(Date.parse(ct));
 
   // comment simplification steps
   let msgClean = msg;
   let clipIdx = msg.indexOf('For more information');
-  if (clipIdx != -1)
+  if (clipIdx != -1) {
     msgClean = msg.substring(0, clipIdx);
+  }
 
-  addRec(d, bugId, flagId, assignee, s, p, from, msgClean, cmtIdx, title);
+  addRec(d, bugId, flagId, assignee, s, p, msgClean, cmtIdx, title, flags);
 }
 
 function prepPage(userQuery) {
@@ -246,7 +240,7 @@ function prepPage(userQuery) {
     "<div class='name-checkbox'></div>" +
     "<div class='name-nidate-hdr' onclick='dateSort();'>NI Date</div>" +
     "<div class='name-bugid-hdr' onclick='bugIdSort();'>Bug ID</div>" +
-    "<div class='name-nifrom'>NI From</div>" +
+    "<div class='name-nifrom'>NIs</div>" +
     "<div class='name-assignee'>Assignee</div>" +
     "<div class='name-severity-hdr' onclick='severitySort();'>Sev</div>" +
     "<div class='name-priority-hdr' onclick='prioritySort();'>Pri</div>" +
@@ -284,12 +278,17 @@ function populateRow(record) {
   let titleLink = "<a class='nodecoration' target='" + tabTarget + "' href='" + bugUrl + "'>" + record.title + "</a>";
   let commentLink = "<a class='nodecoration' target='" + tabTarget + "' href='" + bugUrl + "#c" + record.commentid + "'>" + record.msg + "</a>";
   let assignee = trimAddress(record.assignee);
-  let setter = trimAddress(record.nisetter);
+
+  let flags = '';
+  record.flags.forEach(function (flag) {
+    flags += trimAddress(flag.setter) + ' -> ' + trimAddress(flag.requestee) + '<br/>';
+  });
+
   let content =
     "<div class='name-checkbox'><input type='checkbox' onclick='checkClick(this);' id='check-" + record.bugid + "'/></div>" +
     "<div class='name-nidate'>" + dateStr + "</div>" +
     "<div class='name-bugid'>" + bugLink + "</div>" +
-    "<div class='name-nifrom'>" + setter + "</div>" +
+    "<div class='name-nifrom'>" + flags + "</div>" +
     "<div class='name-assignee'>" + assignee + "</div>" +
     "<div class='name-severity'>" + record.severity + "</div>" +
     "<div class='name-priority'>" + record.priority + "</div>" +
@@ -893,7 +892,6 @@ function submitUserSearch(value) {
 function getRedirectToAccount() {
   if (!document.getElementById('autofill-user-search').disabled &&
       document.getElementById('autofill-user-search').value) {
-    //console.log(document.getElementById('autofill-user-search').value);
     return document.getElementById('autofill-user-search').value;
   }
   let to = document.getElementById("prompt-redirect-to-confirm-to").value;
