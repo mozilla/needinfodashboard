@@ -243,8 +243,7 @@ function errorMsg(text) {
 
 // this function's sole reason for existing is to provide
 // a capture context for the AJAX values...
-function retrieveInfoFor(url, id, key, userQuery)
-{
+function retrieveInfoFor(url, id, key, userQuery) {
   $.ajax({
     url: url,
     success: function (data) {
@@ -266,8 +265,7 @@ function retrieveInfoFor(url, id, key, userQuery)
   });
 }
 
-function displayCountFor(id, key, url, type, data)
-{
+function displayCountFor(id, key, url, type, data) {
   var ni_count = data.bugs.length;
   let tabTarget = NeedInfoConfig.targetnew ? "buglists" : "_blank";
 
@@ -293,7 +291,7 @@ function settingsUpdated() {
 }
 
 function checkConfig() {
-  if (NeedInfoConfig.api_key.length == 0) {
+  if (!NeedInfoConfig.api_key || NeedInfoConfig.api_key.length == 0) {
     document.getElementById('alert-icon').style.visibility = 'visible';
   } else {
     document.getElementById('alert-icon').style.visibility = 'hidden';

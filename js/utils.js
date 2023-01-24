@@ -129,7 +129,7 @@ function loadSettingsInternal() {
 }
 
 function openSettings() {
-  if (NeedInfoConfig.api_key.length) {
+  if (NeedInfoConfig.api_key && NeedInfoConfig.api_key.length) {
     document.getElementById("api-key").value = NeedInfoConfig.api_key;
   }
   document.getElementById("option-ignoremyni").checked = NeedInfoConfig.ignoremyni;
