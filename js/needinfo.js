@@ -56,7 +56,9 @@ function loadPage() {
 }
 
 function cleanupKey(key) {
-  return key.replace(' ', '-');
+  // We need to clean this up more, these are
+  // developer names that we use for element ids.
+  return key.replace(' ', '');
 }
 
 function prepPage() {
@@ -67,10 +69,10 @@ function prepPage() {
     "<div class='report-cdr'>Closed Dev Related</div>" +
     "<div class='report-onb'>Open Nagbot</div>" +
     "<div class='report-cnb'>Closed Nagbot</div>";
-  for (var key in NeedInfoConfig.developers) {
-    let modKey = cleanupKey(key);
+  for (var developer in NeedInfoConfig.developers) {
+    let modKey = cleanupKey(developer);
     content +=
-      "<div class='report-title'>" + modKey + "</div>" +
+      "<div class='report-title'>" + developer + "</div>" +
       "<div class='report-odr' id='data_odr_" + modKey + "'>?</div>" +
       "<div class='report-cdr' id='data_cdr_" + modKey + "'>?</div>" +
       "<div class='report-onb' id='data_onb_" + modKey + "'>?</div>" +
@@ -152,7 +154,7 @@ function main(json)
     url += "&o4=nowordssubstr";
     url += "&v4=RESOLVED%2CVERIFIED%2CCLOSED";
 
-    retrieveInfoFor(url, id, modKey, 'odr');
+    retrieveInfoFor(url, id, modKey, key, 'odr');
 
     //////////////////////////////////////////
     // Closed Developer Related
@@ -179,7 +181,7 @@ function main(json)
       url += "&v5=" + id;
     }
 
-    retrieveInfoFor(url, id, modKey, 'cdr');
+    retrieveInfoFor(url, id, modKey, key, 'cdr');
 
     //////////////////////////////////////////
     // Open Nagbot
@@ -199,7 +201,7 @@ function main(json)
     url += "&o4=nowordssubstr";
     url += "&v4=RESOLVED%2CVERIFIED%2CCLOSED";
 
-    retrieveInfoFor(url, id, modKey, 'onb');
+    retrieveInfoFor(url, id, modKey, key, 'onb');
 
     //////////////////////////////////////////
     // Closed Nagbot
@@ -219,7 +221,7 @@ function main(json)
     url += "&o4=anywordssubstr";
     url += "&v4=RESOLVED%2CVERIFIED%2CCLOSED";
 
-    retrieveInfoFor(url, id, modKey, 'cnb');
+    retrieveInfoFor(url, id, modKey, key, 'cnb');
   }
 }
 
@@ -249,11 +251,11 @@ function errorMsg(text) {
 
 // this function's sole reason for existing is to provide
 // a capture context for the AJAX values...
-function retrieveInfoFor(url, id, key, userQuery) {
+function retrieveInfoFor(url, id, key, developer, userQuery) {
   $.ajax({
     url: url,
     success: function (data) {
-      displayCountFor(id, key, url, userQuery, data);
+      displayCountFor(id, key, developer, url, userQuery, data);
     }
   })
   .error(function(jqXHR, textStatus, errorThrown) {
@@ -271,7 +273,7 @@ function retrieveInfoFor(url, id, key, userQuery) {
   });
 }
 
-function displayCountFor(id, key, url, type, data) {
+function displayCountFor(id, key, developer, url, type, data) {
   var ni_count = data.bugs.length;
   let tabTarget = NeedInfoConfig.targetnew ? "buglists" : "_blank";
 
