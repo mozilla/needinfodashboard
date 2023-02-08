@@ -55,6 +55,10 @@ function loadPage() {
   });
 }
 
+function cleanupKey(key) {
+  return key.replace(' ', '-');
+}
+
 function prepPage() {
   $("#report").empty();
   var content =
@@ -64,12 +68,13 @@ function prepPage() {
     "<div class='report-onb'>Open Nagbot</div>" +
     "<div class='report-cnb'>Closed Nagbot</div>";
   for (var key in NeedInfoConfig.developers) {
+    let modKey = cleanupKey(key);
     content +=
-      "<div class='report-title'>" + key + "</div>" +
-      "<div class='report-odr' id='data_odr_" + key + "'>?</div>" +
-      "<div class='report-cdr' id='data_cdr_" + key + "'>?</div>" +
-      "<div class='report-onb' id='data_onb_" + key + "'>?</div>" +
-      "<div class='report-cnb' id='data_cnb_" + key + "'>?</div>";
+      "<div class='report-title'>" + modKey + "</div>" +
+      "<div class='report-odr' id='data_odr_" + modKey + "'>?</div>" +
+      "<div class='report-cdr' id='data_cdr_" + modKey + "'>?</div>" +
+      "<div class='report-onb' id='data_onb_" + modKey + "'>?</div>" +
+      "<div class='report-cnb' id='data_cnb_" + modKey + "'>?</div>";
   }
   if (content.length) {
     $("#report").append(content);
@@ -100,6 +105,7 @@ function main(json)
 
   for (var key in NeedInfoConfig.developers) {
     let id = encodeURIComponent(NeedInfoConfig.developers[key]);
+    let modKey = cleanupKey(key);
     let url = NeedInfoConfig.bugzilla_search_url;
 
     //////////////////////////////////////////
@@ -146,7 +152,7 @@ function main(json)
     url += "&o4=nowordssubstr";
     url += "&v4=RESOLVED%2CVERIFIED%2CCLOSED";
 
-    retrieveInfoFor(url, id, key, 'odr');
+    retrieveInfoFor(url, id, modKey, 'odr');
 
     //////////////////////////////////////////
     // Closed Developer Related
@@ -173,7 +179,7 @@ function main(json)
       url += "&v5=" + id;
     }
 
-    retrieveInfoFor(url, id, key, 'cdr');
+    retrieveInfoFor(url, id, modKey, 'cdr');
 
     //////////////////////////////////////////
     // Open Nagbot
@@ -193,7 +199,7 @@ function main(json)
     url += "&o4=nowordssubstr";
     url += "&v4=RESOLVED%2CVERIFIED%2CCLOSED";
 
-    retrieveInfoFor(url, id, key, 'onb');
+    retrieveInfoFor(url, id, modKey, 'onb');
 
     //////////////////////////////////////////
     // Closed Nagbot
@@ -213,7 +219,7 @@ function main(json)
     url += "&o4=anywordssubstr";
     url += "&v4=RESOLVED%2CVERIFIED%2CCLOSED";
 
-    retrieveInfoFor(url, id, key, 'cnb');
+    retrieveInfoFor(url, id, modKey, 'cnb');
   }
 }
 
