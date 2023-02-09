@@ -219,9 +219,8 @@ function addRec(ct, bugId, flagId, assignee, s, p, msg, cmtIdx, title, flags) {
 }
 
 function processRow(ct, bugId, flagId, assignee, s, p, flags, msg, cmtIdx, title) {
-  /*
-   * flagId is the flagid of the ni that set this user's ni. We use it in comment links.
-   */
+  // flagId is the bugzilla flagid of the ni that set this user's ni. We use it
+  // in comment links.
 
   let d = new Date(Date.parse(ct));
 

@@ -55,12 +55,6 @@ function loadPage() {
   });
 }
 
-function cleanupKey(key) {
-  // We need to clean this up more, these are
-  // developer names that we use for element ids.
-  return key.replace(' ', '');
-}
-
 function prepPage() {
   $("#report").empty();
   var content =
@@ -69,14 +63,17 @@ function prepPage() {
     "<div class='report-cdr'>Closed Dev Related</div>" +
     "<div class='report-onb'>Open Nagbot</div>" +
     "<div class='report-cnb'>Closed Nagbot</div>";
+  // This is an elemet id idx and must match up when we
+  // populate each row in displayCountFor.
+  let elementIndex = 0;
   for (var developer in NeedInfoConfig.developers) {
-    let modKey = cleanupKey(developer);
+    elementIndex++;
     content +=
       "<div class='report-title'>" + developer + "</div>" +
-      "<div class='report-odr' id='data_odr_" + modKey + "'>?</div>" +
-      "<div class='report-cdr' id='data_cdr_" + modKey + "'>?</div>" +
-      "<div class='report-onb' id='data_onb_" + modKey + "'>?</div>" +
-      "<div class='report-cnb' id='data_cnb_" + modKey + "'>?</div>";
+      "<div class='report-odr' id='data_odr_" + elementIndex + "'>?</div>" +
+      "<div class='report-cdr' id='data_cdr_" + elementIndex + "'>?</div>" +
+      "<div class='report-onb' id='data_onb_" + elementIndex + "'>?</div>" +
+      "<div class='report-cnb' id='data_cnb_" + elementIndex + "'>?</div>";
   }
   if (content.length) {
     $("#report").append(content);
@@ -105,9 +102,10 @@ function main(json)
   if (DEV_DISABLE)
     return;
 
-  for (var key in NeedInfoConfig.developers) {
-    let id = encodeURIComponent(NeedInfoConfig.developers[key]);
-    let modKey = cleanupKey(key);
+  let elementIndex = 0;
+  for (let developer in NeedInfoConfig.developers) {
+    elementIndex++;
+    let id = encodeURIComponent(NeedInfoConfig.developers[developer]);
     let url = NeedInfoConfig.bugzilla_search_url;
 
     //////////////////////////////////////////
@@ -154,7 +152,7 @@ function main(json)
     url += "&o4=nowordssubstr";
     url += "&v4=RESOLVED%2CVERIFIED%2CCLOSED";
 
-    retrieveInfoFor(url, id, modKey, key, 'odr');
+    retrieveInfoFor(url, id, elementIndex, developer, 'odr');
 
     //////////////////////////////////////////
     // Closed Developer Related
@@ -181,7 +179,7 @@ function main(json)
       url += "&v5=" + id;
     }
 
-    retrieveInfoFor(url, id, modKey, key, 'cdr');
+    retrieveInfoFor(url, id, elementIndex, developer, 'cdr');
 
     //////////////////////////////////////////
     // Open Nagbot
@@ -201,7 +199,7 @@ function main(json)
     url += "&o4=nowordssubstr";
     url += "&v4=RESOLVED%2CVERIFIED%2CCLOSED";
 
-    retrieveInfoFor(url, id, modKey, key, 'onb');
+    retrieveInfoFor(url, id, elementIndex, developer, 'onb');
 
     //////////////////////////////////////////
     // Closed Nagbot
@@ -221,7 +219,7 @@ function main(json)
     url += "&o4=anywordssubstr";
     url += "&v4=RESOLVED%2CVERIFIED%2CCLOSED";
 
-    retrieveInfoFor(url, id, modKey, key, 'cnb');
+    retrieveInfoFor(url, id, elementIndex, developer, 'cnb');
   }
 }
 
@@ -251,11 +249,11 @@ function errorMsg(text) {
 
 // this function's sole reason for existing is to provide
 // a capture context for the AJAX values...
-function retrieveInfoFor(url, id, key, developer, userQuery) {
+function retrieveInfoFor(url, id, elementIndex, developer, userQuery) {
   $.ajax({
     url: url,
     success: function (data) {
-      displayCountFor(id, key, developer, url, userQuery, data);
+      displayCountFor(id, elementIndex, developer, url, userQuery, data);
     }
   })
   .error(function(jqXHR, textStatus, errorThrown) {
@@ -273,7 +271,7 @@ function retrieveInfoFor(url, id, key, developer, userQuery) {
   });
 }
 
-function displayCountFor(id, key, developer, url, type, data) {
+function displayCountFor(id, elementIndex, developer, url, type, data) {
   var ni_count = data.bugs.length;
   let tabTarget = NeedInfoConfig.targetnew ? "buglists" : "_blank";
 
@@ -289,8 +287,8 @@ function displayCountFor(id, key, developer, url, type, data) {
     bug_link = "&nbsp;";
   }
 
-  let link = "<div class='report-" + type + "' id='data_" + key + "'>" + bug_link + "</div>";
-  $("#data_" + type + "_" + key).replaceWith(link);
+  let link = "<div class='report-" + type + "' id='data_" + elementIndex + "'>" + bug_link + "</div>";
+  $("#data_" + type + "_" + elementIndex).replaceWith(link);
 }
 
 function settingsUpdated() {
