@@ -322,6 +322,7 @@ function errorMsg(text) {
 }
 
 function populateRows() {
+  document.getElementById('progress').style.visibility = 'hidden';
   bugset.forEach(function (rec) {
     populateRow(rec);
   });

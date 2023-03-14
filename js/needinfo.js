@@ -14,7 +14,12 @@ var LastErrorText = '';
  * Polish the css related to viewport size
  * css of comment text area in dialogs needs polish when resizing
 
- General
+ General Ideas
+ * Add mozilla authentication for employees.
+ * Add an account icon up top for employees? Can we do this for key users as well?
+ *  - Settings
+ *  - My Needinfos option
+ *  - My reports option  (we can use specialized team monikors for this, 'myself, 'myteam' so they can be bookmarked easily.)
  * Bugzilla aliases for NI email entries in details
  * set Priority bulk action
  * redirect to triage owner based on google cal injestion?
@@ -25,6 +30,7 @@ var LastErrorText = '';
 
  Details pane
  * how to expose more information without adding columns?
+ *  - work on the filtering option
  *  - bug creation date
  *  - component
  *  - sliding drop down with bug detail?
@@ -279,8 +285,8 @@ function displayCountFor(id, elementIndex, developer, url, type, data) {
   if (ni_count != 0) {
     let dash_link = "details.html?" + "team=" + getTeam() + "&userquery=" + type + "&userid=" + id;
     let bug_list = restToQueryUrl(url);
-    bug_link = "<div class='bug-link-container'><a class='bug-link' href='" + dash_link + "' target='nilist'>" + ni_count + "</a>";
-    bug_link += "<a class='bug-icon' href='" + bug_list + "' target='" + tabTarget + "'><img src='images/favicon.ico' /></a></div>";
+    bug_link = "<div class='bug-link-container'><a class='bug-link' title='Needinfo Details' href='" + dash_link + "' target='nilist'>" + ni_count + "</a>";
+    bug_link += "<a class='bug-icon' title='Bugzilla Bug List' href='" + bug_list + "' target='" + tabTarget + "'><img src='images/favicon.ico' /></a></div>";
   }
 
   if (!ni_count) {

@@ -404,6 +404,13 @@ a:hover {
   margin-top: -2px;
 }
 
+.progress {
+  position: absolute;
+  margin-left: 40%;
+  margin-top: 100px;
+  visibility: visible;
+}
+
 .status-text {
   visibility: hidden;
   margin-top: 2px;
