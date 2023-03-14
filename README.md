@@ -20,4 +20,5 @@ For testing changes there's a switch in each json config file that will point th
 instance of Bugzilla Mozilla maintains. For API key generation or new accounts generation on the test
 instance ask in chat.mozilla.org's bugzilla.mozilla.org channel.
 
-This dashbaord was originally based on Bob Hood's Need Info Leaderboard.
+This dashboard is developed and maintained by Jim Mathies. Starting codebase was based on Bob Hood's
+Need Info Leaderboard dashnboard.
