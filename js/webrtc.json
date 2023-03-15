@@ -11,13 +11,12 @@
     "bugs_query": "f1=requestees.login_name&o1=equals&v1={id}&v2=needinfo%3F&o2=equals&f2=flagtypes.name&include_fields=id,summary,comments,flags,severity,priority,assigned_to",
     "developers": {
       "Jim": "jmathies@mozilla.com",
-      "Alastor": "alwu@mozilla.com",
-      "Andrew": "aosmond@mozilla.com",
-      "Ashley": "azebrowski@mozilla.com",
-      "ChunMin": "cchang@mozilla.com",
-      "John": "jolin@mozilla.com",
-      "Mathew": "kinetik@flim.org",
-      "Paul": "padenot@mozilla.com"
+      "Byron": "docfaraday@gmail.com",
+      "Daniel": "dbaker@mozilla.com",
+      "Jib": "jib@mozilla.com",
+      "KarlT": "karlt@mozbugz.karlt.net",
+      "Michael": "mfroman@nostrum.com",
+      "Nico": "na-g@nostrum.com"
     }
   }
 }
