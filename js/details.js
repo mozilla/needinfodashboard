@@ -24,21 +24,18 @@ $(document).ready(function () {
 });
 
 function loadList() {
-  let team = getTeam();
-
-  if (team == undefined) {
-    console.log("missing team url parameter.")
-    return;
-  }
-
-  $.getJSON('js/' + team + '.json', function (data) {
-    main(data);
+  let jsonUrl = 'js/config.json';
+  $.getJSON(jsonUrl, function (configdata) {
+    main(configdata);
+  }).fail(function (jqXHR, textStatus, errorThrown) {
+    console.log("getJSON call failed for some reason.", jsonUrl, errorThrown)
   });
 }
 
 function main(json)
 {
-  NeedInfoConfig = json.needinfo;
+  NeedInfoConfig = json.bugzillaconfig;
+  NeedInfoConfig.developers = {};
 
   updateDomains();
 
@@ -889,7 +886,6 @@ function submitUserSearch(value) {
     errorMsg(errorThrown);
   });
 }
-
 
 function getRedirectToAccount() {
   if (!document.getElementById('autofill-user-search').disabled &&

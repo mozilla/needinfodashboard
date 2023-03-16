@@ -1,24 +1,13 @@
 {
-  "needinfo": {
-    "bugzilla_search_url": "https://{domain}/rest/bug?",
-    "bugzilla_put_url": "https://{domain}/rest/bug/{id}",
-    "bugzilla_link_url": "https://{domain}/show_bug.cgi?id={id}",
-    "bugzilla_user_url": "https://{domain}/rest/user?match={value}",
-    "bugzilla_domain": "bugzilla.mozilla.org",
-    "bugzilla_test_domain": "bugzilla-dev.allizom.org",
-    "use_test_domain": false,
-    "fields_query": "f1=requestees.login_name&o1=equals&v1={id}&v2=needinfo%3F&o2=equals&f2=flagtypes.name&include_fields=id,summary",
-    "bugs_query": "f1=requestees.login_name&o1=equals&v1={id}&v2=needinfo%3F&o2=equals&f2=flagtypes.name&include_fields=id,summary,comments,flags,severity,priority,assigned_to",
-    "developers": {
-      "Daniel Veditz": "dveditz@mozilla.com",
-      "June Wilde": "jewilde@mozilla.com",
-      "Tom Ritter": "tom@mozilla.com",
-      "Tom Schuster": "tschuster@mozilla.com",
-      "Frederik Braun": "fbraun@mozilla.com",
-      "Christian Holler": "choller@mozilla.com",
-      "Tyson Smith": "twsmith@mozilla.com",
-      "Jesse Schwartzentruber": "jschwartzentruber@mozilla.com",
-      "Jason Kratzer": "jkratzer@mozilla.com"      
-    }
+  "developers": {
+    "Daniel Veditz": "dveditz@mozilla.com",
+    "June Wilde": "jewilde@mozilla.com",
+    "Tom Ritter": "tom@mozilla.com",
+    "Tom Schuster": "tschuster@mozilla.com",
+    "Frederik Braun": "fbraun@mozilla.com",
+    "Christian Holler": "choller@mozilla.com",
+    "Tyson Smith": "twsmith@mozilla.com",
+    "Jesse Schwartzentruber": "jschwartzentruber@mozilla.com",
+    "Jason Kratzer": "jkratzer@mozilla.com"      
   }
 }

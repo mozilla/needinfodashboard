@@ -20,10 +20,12 @@
 
   <div class="command-button-container">
     <select id="team-select" onchange="teamSelectionChanged(this);">
+      <option class="team-option" value="empty"></option>
       <option class="team-option" value="media">Media Playback</option>
       <option class="team-option" value="webrtc">Web Conferencing</option>
       <option class="team-option" value="graphics">Graphics</option>
       <option class="team-option" value="secinf">Security Infrastructure</option>
+      <option class="team-option" value="specific-account">Specific Account...</option>
     </select>
     <div class="settings-button-container">
       <button class="command-button" onclick="openSettings()">Settings</button>
@@ -86,6 +88,26 @@
     </div>
   </div>
   <!-- Setting div end -->
+
+  <!-- dialog: query for a bugzilla account -->
+  <dialog id="prompt-query-account" oncancel="">
+    <div class="prompt-buttons-form">
+      <form method="dialog">
+        <div class="prompt-text-input">
+          <label id="redirct-label">Account:</label>
+          <input id="prompt-account-edit" type="text" placeholder="email"
+            oninput="onInputForBugzillaUser(this);" value="" autocomplete="off" />
+        </div>
+        <br />
+        <div class="prompt-text-input">
+          <select id="autofill-user-search" name="account" size="4">
+          </select>
+        </div>
+        <button id="btn-confirm" value="confirm">Confirm</button>
+        <button id="btn-cancel" autofocus value="cancel">Cancel</button>
+      </form>
+    </div>
+  </dialog>
 
 </body>
 </html>
