@@ -278,7 +278,6 @@ function teamSelectionChanged(el) {
   var team = el.options[el.selectedIndex].value;
   if (team == 'specific-account') {
     queryAccount();
-    // return the select to CurrentTeam somehow
     return;
   }
   window.location.href = replaceUrlParam(window.location.href, 'team', team);
