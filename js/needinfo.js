@@ -39,31 +39,63 @@ var CurrentTeam = null;
  * resolve incomplete?
 */
 
+// 'main'
 $(document).ready(function () {
-  var team = getTeam();
-  CurrentTeam = team;
-  if (team == undefined) {
-    window.location.href = window.location.href + "?team=empty"
-    return;
-  }
-
-  let sel = document.getElementById('team-select');
-  sel.value = team;
-
   loadConfig();
 });
 
+// Load the Bugzilla configuration json file and populate our NeedInfoConfig data
+// structure with config information. Then process url parameter input and choose
+// the appropriate data to display.
 function loadConfig() {
   let jsonUrl = 'js/config.json';
   $.getJSON(jsonUrl, function (configdata) {
     NeedInfoConfig = configdata.bugzillaconfig;
     updateDomains(NeedInfoConfig);
+
+    let team = getTeam();
+    CurrentTeam = team;
+
+    if (team == undefined) {
+      window.location.href = window.location.href + "?team=empty"
+      return;
+    }
+    let sel = document.getElementById('team-select');
+    sel.value = team;
+
+    let userid = getUserId();
+    if (userid != undefined && team == 'empty') {
+      // individual account request
+      loadUserSummary(userid);
+      return;
+    }
+
+    // Load the team summary
     loadTeamConfig();
   }).fail(function (jqXHR, textStatus, errorThrown) {
     console.log("getJSON call failed for some reason.", jsonUrl, errorThrown)
   });
 }
 
+// Load a summary for a specific bugzilla email account
+function loadUserSummary(email) {
+  CurrentTeam = 'empty';
+  let sel = document.getElementById('team-select');
+  sel.value = CurrentTeam;
+
+  // populate additional cookie data in NeedInfoConfig
+  loadSettingsInternal();
+
+  LastErrorText = '';
+  $("#errors").empty();
+
+  NeedInfoConfig.developers = {};
+  NeedInfoConfig.developers[email] = email;
+  loadPage();
+}
+
+// Load a summary for a configured team based on
+// the team's json config file.
 function loadTeamConfig() {
   // populate additional cookie data in NeedInfoConfig
   loadSettingsInternal();
@@ -115,17 +147,6 @@ function prepPage() {
     $("#report").append(content);
   }
   checkConfig();
-}
-
-// Called after the dialog is displayed and an account it selected
-function loadUserPage(email) {
-  CurrentTeam = 'empty';
-  let sel = document.getElementById('team-select');
-  sel.value = CurrentTeam;
-
-  NeedInfoConfig.developers = {};
-  NeedInfoConfig.developers[email] = email;
-  loadPage();
 }
 
 function loadPage() {
@@ -262,18 +283,6 @@ function refreshList(e) {
   loadConfig();
 }
 
-function replaceUrlParam(url, paramName, paramValue) {
-  if (paramValue == null) {
-    paramValue = '';
-  }
-  var pattern = new RegExp('\\b(' + paramName + '=).*?(&|#|$)');
-  if (url.search(pattern) >= 0) {
-    return url.replace(pattern, '$1' + paramValue + '$2');
-  }
-  url = url.replace(/[?#]$/, '');
-  return url + (url.indexOf('?') > 0 ? '&' : '?') + paramName + '=' + paramValue;
-}
-
 function teamSelectionChanged(el) {
   var team = el.options[el.selectedIndex].value;
   if (team == 'specific-account') {
@@ -360,7 +369,9 @@ function getRedirectToAccount() {
 }
 
 function openDetailsForAccount(email) {
-   loadUserPage(email);
+  let url = replaceUrlParam(window.location.href, 'userid', email);
+  url = replaceUrlParam(url, 'team', 'empty')
+  window.location.href = url;
 }
 
 function queryAccount() {
