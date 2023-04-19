@@ -170,11 +170,11 @@ a:hover {
   font-family: Moz;
 }
 
-.report-title, .report-odr, .report-cdr, .report-onb, .report-cnb {
+.report-title, .report-odr, .report-otr, .report-cdr, .report-onb, .report-cnb {
   border: 0px solid blue;
 }
 
-.report-title, .report-odr, .report-cdr, .report-onb, .report-cnb {
+.report-title, .report-odr, .report-otr, .report-cdr, .report-onb, .report-cnb {
   min-height: 4vh;
   text-align: left;
   border-bottom: 1px solid #e0e0e0;
@@ -190,18 +190,23 @@ a:hover {
   text-align: center;
 }
 
-.report-cdr {
+.report-otr {
   grid-column: 3;
   text-align: center;
 }
 
-.report-onb {
+.report-cdr {
   grid-column: 4;
   text-align: center;
 }
 
-.report-cnb {
+.report-onb {
   grid-column: 5;
+  text-align: center;
+}
+
+.report-cnb {
+  grid-column: 6;
   text-align: center;
 }
 

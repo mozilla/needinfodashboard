@@ -14,9 +14,9 @@ var CurrentTeam = null;
  * multiple puts with the same comment results in errors on every request except the first. Some sort of anti-spam feature?
  * Polish the css related to viewport size
  * css of comment text area in dialogs needs polish when resizing
+ * move column headers to the html page somehow
 
  General Ideas
- * Add mozilla authentication for employees?
  * Add an account icon up top for employees? Can we do this for key users as well?
  *  - Settings
  *  - My Needinfos option
@@ -128,6 +128,7 @@ function prepPage() {
   var content =
     "<div class='report-title'>Engineer</div>" +
     "<div class='report-odr'>Open Dev Related</div>" +
+    "<div class='report-otr' title='Bugs with any needinfos for you that track the current nightly, beta, or release versions of Firefox.'>Open Tracked</div>" +
     "<div class='report-cdr'>Closed Dev Related</div>" +
     "<div class='report-onb'>Open Nagbot</div>" +
     "<div class='report-cnb'>Closed Nagbot</div>";
@@ -139,6 +140,7 @@ function prepPage() {
     content +=
       "<div class='report-title'>" + developer + "</div>" +
       "<div class='report-odr' id='data_odr_" + elementIndex + "'>?</div>" +
+      "<div class='report-otr' id='data_otr_" + elementIndex + "'>?</div>" +
       "<div class='report-cdr' id='data_cdr_" + elementIndex + "'>?</div>" +
       "<div class='report-onb' id='data_onb_" + elementIndex + "'>?</div>" +
       "<div class='report-cnb' id='data_cnb_" + elementIndex + "'>?</div>";
@@ -161,9 +163,9 @@ function loadPage() {
     let id = encodeURIComponent(NeedInfoConfig.developers[developer]);
     let url = NeedInfoConfig.bugzilla_search_url;
 
-    //////////////////////////////////////////
+    /////////////////////////////////////////////////////////
     // Base query and resulting fields request
-    //////////////////////////////////////////
+    /////////////////////////////////////////////////////////
 
     // include_fields=id,summary
 
@@ -180,9 +182,9 @@ function loadPage() {
     }
     url += NeedInfoConfig.fields_query.replace("{id}", id);
 
-    //////////////////////////////////////////
+    /////////////////////////////////////////////////////////
     // Open Developer Related
-    //////////////////////////////////////////
+    /////////////////////////////////////////////////////////
 
     // f3=setters.login_name
     // o3=notequals
@@ -207,9 +209,55 @@ function loadPage() {
 
     retrieveInfoFor(url, id, elementIndex, developer, 'odr');
 
-    //////////////////////////////////////////
+    /////////////////////////////////////////////////////////
+    // Open and Tracked
+    // Query uses the generic tag names that bugzilla maps
+    // to the current version tags.
+    /////////////////////////////////////////////////////////
+
+    url = NeedInfoConfig.bugzilla_search_url;
+    if (NeedInfoConfig.api_key.length) {
+      url += "api_key=" + NeedInfoConfig.api_key + "&";
+    }
+    url += NeedInfoConfig.fields_query.replace("{id}", id);
+
+    // f4=bug_status
+    // o4=nowordssubstr / anywordssubstr
+    // v4=RESOLVED%2CVERIFIED%2CCLOSED
+
+    url += "&f3=bug_status";
+    url += "&o3=nowordssubstr";
+    url += "&v3=RESOLVED%2CVERIFIED%2CCLOSED";
+
+    // f5=cf_tracking_firefox_beta
+    // o5=anywords
+    // v5=%2B
+
+    url += '&f4=OP';
+
+    url += '&j4=OR';
+
+    url += "&f5=cf_tracking_firefox_nightly";
+    url += "&o5=anywords";
+    url += "&v5=%2B";
+
+    url += "&f6=cf_tracking_firefox_beta";
+    url += "&o6=anywords";
+    url += "&v6=%2B";
+
+    url += "&f7=cf_tracking_firefox_release";
+    url += "&o7=anywords";
+    url += "&v7=%2B";
+
+    url += '&f8=CP'
+
+    console.log(url);
+    
+    retrieveInfoFor(url, id, elementIndex, developer, 'otr');
+
+    /////////////////////////////////////////////////////////
     // Closed Developer Related
-    //////////////////////////////////////////
+    /////////////////////////////////////////////////////////
 
     url = NeedInfoConfig.bugzilla_search_url;
     if (NeedInfoConfig.api_key.length) {
@@ -234,9 +282,9 @@ function loadPage() {
 
     retrieveInfoFor(url, id, elementIndex, developer, 'cdr');
 
-    //////////////////////////////////////////
+    /////////////////////////////////////////////////////////
     // Open Nagbot
-    //////////////////////////////////////////
+    /////////////////////////////////////////////////////////
 
     url = NeedInfoConfig.bugzilla_search_url;
     if (NeedInfoConfig.api_key.length) {
@@ -254,9 +302,9 @@ function loadPage() {
 
     retrieveInfoFor(url, id, elementIndex, developer, 'onb');
 
-    //////////////////////////////////////////
+    /////////////////////////////////////////////////////////
     // Closed Nagbot
-    //////////////////////////////////////////
+    /////////////////////////////////////////////////////////
 
     url = NeedInfoConfig.bugzilla_search_url;
     if (NeedInfoConfig.api_key.length) {
