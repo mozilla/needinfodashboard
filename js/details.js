@@ -96,6 +96,44 @@ function main(json)
       url += "&v4=RESOLVED%2CVERIFIED%2CCLOSED";
       break;
 
+    /////////////////////////////////////////////////////////
+    // Open and Tracked
+    // Query uses the generic tag names that bugzilla maps
+    // to the current version tags.
+    /////////////////////////////////////////////////////////
+    case 'otr':
+
+    // f4=bug_status
+    // o4=nowordssubstr / anywordssubstr
+    // v4=RESOLVED%2CVERIFIED%2CCLOSED
+
+    url += "&f3=bug_status";
+    url += "&o3=nowordssubstr";
+    url += "&v3=RESOLVED%2CVERIFIED%2CCLOSED";
+
+    // f5=cf_tracking_firefox_beta
+    // o5=anywords
+    // v5=%2B
+
+    url += '&f4=OP';
+
+    url += '&j4=OR';
+
+    url += "&f5=cf_tracking_firefox_nightly";
+    url += "&o5=anywords";
+    url += "&v5=%2B";
+
+    url += "&f6=cf_tracking_firefox_beta";
+    url += "&o6=anywords";
+    url += "&v6=%2B";
+
+    url += "&f7=cf_tracking_firefox_release";
+    url += "&o7=anywords";
+    url += "&v7=%2B";
+
+    url += '&f8=CP'
+    break;
+
     //////////////////////////////////////////
     // Closed Developer Related
     //////////////////////////////////////////

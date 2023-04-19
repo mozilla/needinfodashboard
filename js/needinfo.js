@@ -251,8 +251,6 @@ function loadPage() {
 
     url += '&f8=CP'
 
-    console.log(url);
-    
     retrieveInfoFor(url, id, elementIndex, developer, 'otr');
 
     /////////////////////////////////////////////////////////
