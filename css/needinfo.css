@@ -182,6 +182,10 @@ a:hover {
 }
 
 .report-title {
+  text-decoration:auto;
+}
+
+.report-title {
   grid-column: 1;
 }
 

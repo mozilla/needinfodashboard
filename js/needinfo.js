@@ -67,6 +67,8 @@ function loadConfig() {
     if (userid != undefined && team == 'empty') {
       // individual account request
       loadUserSummary(userid);
+      // get empty-option
+      document.getElementById('empty-option').text = userid;
       return;
     }
 
@@ -92,6 +94,20 @@ function loadUserSummary(email) {
   NeedInfoConfig.developers = {};
   NeedInfoConfig.developers[email] = email;
   loadPage();
+}
+
+function event_loadUserSummary(e, developer) {
+  if (e) {
+    e.preventDefault();
+  }
+  let userid = NeedInfoConfig.developers[developer];
+  openDetailsForAccount(userid);
+}
+
+function openDetailsForAccount(email) {
+  let url = replaceUrlParam(window.location.href, 'userid', email);
+  url = replaceUrlParam(url, 'team', 'empty')
+  window.location.href = url;
 }
 
 // Load a summary for a configured team based on
@@ -138,7 +154,7 @@ function prepPage() {
   for (var developer in NeedInfoConfig.developers) {
     elementIndex++;
     content +=
-      "<div class='report-title'>" + developer + "</div>" +
+      "<a href='' onclick=\"event_loadUserSummary(event, '" + developer + "')\"><div class='report-title'>" + developer + "</div></a>" +
       "<div class='report-odr' id='data_odr_" + elementIndex + "'>?</div>" +
       "<div class='report-otr' id='data_otr_" + elementIndex + "'>?</div>" +
       "<div class='report-cdr' id='data_cdr_" + elementIndex + "'>?</div>" +
@@ -412,12 +428,6 @@ function getRedirectToAccount() {
     to = null;
   }
   return to;
-}
-
-function openDetailsForAccount(email) {
-  let url = replaceUrlParam(window.location.href, 'userid', email);
-  url = replaceUrlParam(url, 'team', 'empty')
-  window.location.href = url;
 }
 
 function queryAccount() {
