@@ -228,9 +228,9 @@ a:hover {
   font-family: Moz;
 }
 
-.name-nidate-hdr, .name-bugid-hdr, .name-severity-hdr, .name-priority-hdr,
+.name-nidate-hdr, .name-bugid-hdr, .name-severity-hdr, .name-priority-hdr, .name-platform-hdr,
 .name-checkbox, .name-nidate, .name-bugid, .name-assignee, .name-severity, .name-priority,
-.name-nifrom, .name-nimsg, .name-bugtitle {
+.name-platform, .name-nifrom, .name-nimsg, .name-bugtitle {
   text-align: left;
   border: 1px solid #eee;
   font-size: 1.3vmin;
@@ -262,6 +262,10 @@ a:hover {
   grid-column: 7;
 }
 
+.name-platform-hdr {
+  grid-column: 8;
+}
+
 .name-nidate {
   grid-column: 2;
   min-width: 8vmin;
@@ -269,7 +273,7 @@ a:hover {
 
 .name-bugid {
   grid-column: 3;
-  min-width: 8vmin;
+  min-width: 6vmin;
 }
 
 .name-nifrom {
@@ -292,13 +296,17 @@ a:hover {
   min-width: 3vmin;
 }
 
-.name-bugtitle {
+.name-platform {
   grid-column: 8;
+}
+
+ .name-bugtitle {
+  grid-column: 9;
   min-width:28vmin;
 }
 
 .name-nimsg {
-  grid-column: 9;
+  grid-column: 10;
   width:auto;
   min-width: 28vmin;
 }

@@ -371,6 +371,7 @@ function retrieveInfoFor(url, id, elementIndex, developer, userQuery) {
     }
   })
   .error(function(jqXHR, textStatus, errorThrown) {
+    displayErrorFor(id, elementIndex, developer, url, userQuery);
     console.log("status:", textStatus);
     console.log("error thrown:", errorThrown);
     console.log("response text:", jqXHR.responseText);
@@ -383,6 +384,9 @@ function retrieveInfoFor(url, id, elementIndex, developer, userQuery) {
     }
     errorMsg(errorThrown);
   });
+}
+
+function displayErrorFor(id, elementIndex, developer, url, type) {
 }
 
 function displayCountFor(id, elementIndex, developer, url, type, data) {

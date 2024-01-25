@@ -228,15 +228,15 @@ function populateBugs(url, type, data) {
 
     if (commentIdx == -1) {
       processRow(flagCreationDate, bug.id, flagId, bug.assigned_to, bug.severity,
-        bug.priority, bug.flags, "", 0, bug.summary);
+        bug.priority, bug.op_sys, bug.flags, "", 0, bug.summary);
     } else {
       processRow(flagCreationDate, bug.id, flagId, bug.assigned_to, bug.severity,
-        bug.priority, bug.flags, bug.comments[commentIdx].text, bug.comments[commentIdx].count, bug.summary);
+        bug.priority, bug.op_sys, bug.flags, bug.comments[commentIdx].text, bug.comments[commentIdx].count, bug.summary);
     }
   });
 }
 
-function addRec(ct, bugId, flagId, assignee, s, p, msg, cmtIdx, title, flags) {
+function addRec(ct, bugId, flagId, assignee, s, p, platform, msg, cmtIdx, title, flags) {
   let record = {
     'date': ct, // NI Date
     'bugid': bugId,
@@ -245,6 +245,7 @@ function addRec(ct, bugId, flagId, assignee, s, p, msg, cmtIdx, title, flags) {
     'title': title,
     'severity': s,
     'priority': p,
+    'platform': platform,
     'flags': flags,
     'msg': msg,
     'commentid': cmtIdx
@@ -253,7 +254,7 @@ function addRec(ct, bugId, flagId, assignee, s, p, msg, cmtIdx, title, flags) {
   return record;
 }
 
-function processRow(ct, bugId, flagId, assignee, s, p, flags, msg, cmtIdx, title) {
+function processRow(ct, bugId, flagId, assignee, s, p, platform, flags, msg, cmtIdx, title) {
   // flagId is the bugzilla flagid of the ni that set this user's ni. We use it
   // in comment links.
 
@@ -266,7 +267,10 @@ function processRow(ct, bugId, flagId, assignee, s, p, flags, msg, cmtIdx, title
     msgClean = msg.substring(0, clipIdx);
   }
 
-  addRec(d, bugId, flagId, assignee, s, p, msgClean, cmtIdx, title, flags);
+  if (platform == 'Unspecified')
+    platform = '';
+
+  addRec(d, bugId, flagId, assignee, s, p, platform, msgClean, cmtIdx, title, flags);
 }
 
 function prepPage(userQuery) {
@@ -278,6 +282,7 @@ function prepPage(userQuery) {
     "<div class='name-assignee'>Assignee</div>" +
     "<div class='name-severity-hdr' onclick='severitySort();'>Sev</div>" +
     "<div class='name-priority-hdr' onclick='prioritySort();'>Pri</div>" +
+    "<div class='name-platform-hdr'>OS</div>" +
     "<div class='name-bugtitle'>Title</div>" +
     "<div class='name-nimsg'>NI Message</div>";
   $("#report").append(header);
@@ -328,6 +333,7 @@ function populateRow(record) {
     "<div class='name-assignee'>" + assignee + "</div>" +
     "<div class='name-severity'>" + record.severity + "</div>" +
     "<div class='name-priority'>" + record.priority + "</div>" +
+    "<div class='name-platform'>" + record.platform + "</div>" +
     "<div class='name-bugtitle'>" + titleLink + "</div>" +
     "<div class='name-nimsg'>" + commentLink + "</div>";
   $("#report").append(content);

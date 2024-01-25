@@ -76,7 +76,7 @@ function trimAddress(account) {
     }
   }
 
-  account = account.replace('nobody@mozilla.org', 'nobody');
+  account = account.replace('nobody@mozilla.org', '');
 
   // Todo: get the alias from bugzilla
 
