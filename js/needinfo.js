@@ -12,10 +12,6 @@ var CurrentTeam = null;
 /*
  Bugs
  * multiple puts with the same comment results in errors on every request except the first. Some sort of anti-spam feature?
- * Polish the css related to viewport size
- * css of comment text area in dialogs needs polish when resizing
- * move column headers to the html page somehow
-
  General Ideas
  * Add an account icon up top for employees? Can we do this for key users as well?
  *  - Settings
@@ -35,8 +31,7 @@ var CurrentTeam = null;
  *  - bug creation date
  *  - component
  *  - sliding drop down with bug detail?
- * expose additional needinfos in the details pane
- * resolve incomplete?
+ * resolve incomplete feature?
 */
 
 // 'main'
@@ -176,6 +171,9 @@ function loadPage() {
   let elementIndex = 0;
   for (let developer in NeedInfoConfig.developers) {
     elementIndex++;
+    // This should be the id of the dev we are querying for, not the
+    // current user. We use this to filter selfnis when we query for
+    // each developer's list.
     let id = encodeURIComponent(NeedInfoConfig.developers[developer]);
     let url = NeedInfoConfig.bugzilla_search_url;
 

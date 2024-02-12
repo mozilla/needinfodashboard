@@ -238,6 +238,10 @@ a:hover {
   padding: 2px;
 }
 
+.name-nifromadd {
+  color: darkgray;
+}
+
 .name-checkbox {
   grid-column: 1;
 }

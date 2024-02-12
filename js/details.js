@@ -208,10 +208,40 @@ function populateBugs(url, type, data) {
     // console.log(bug);
     // console.log("flags", bug.flags);
     
-    let flagCreationDate = bug.flags[0].creation_date;
-    let flagId = bug.flags[0].id;
+    /*
+    creation_date: "2021-03-30T16:47:15Z"
+    id: 2037178
+    modification_date: "2021-03-30T16:47:15Z"
+    name: "needinfo"
+    requestee: "aosmond@mozilla.com"
+    setter: "aryx.bugmail@gmx-topmail.de"
+    status: "?"
+    type_id: 800
+    */
 
-    let index = 0;
+    // Grab the first needinfo id for this user. This is not perfect since
+    // we can have multiple. If the user clears an ni using the helpers in
+    // this page, only the first will get cleared. Maybe we can fix this up
+    // later.
+    let id = getUserId();
+    let flagId, flagCreationDate, flagIdx = -1;
+    for (let idx = 0; idx < bug.flags.length; idx++) {
+      if (bug.flags[idx].name != 'needinfo') 
+        continue;
+      if (bug.flags[idx].requestee == id) {
+        flagCreationDate = bug.flags[idx].creation_date;
+        flagId = bug.flags[idx].id;
+        flagIdx = idx;
+        break;
+      }
+    }
+
+    if (flagIdx == -1) {
+      errorMsg("Didn't find a flag that matched a needinfo we were looking for?? Bailing.");
+      return true;
+    }
+
+    index = 0;
     let commentIdx = -1;
     bug.comments.every(function (comment) {
       if (flagCreationDate == comment.creation_time) {
@@ -227,20 +257,21 @@ function populateBugs(url, type, data) {
     });
 
     if (commentIdx == -1) {
-      processRow(flagCreationDate, bug.id, flagId, bug.assigned_to, bug.severity,
+      processRow(flagCreationDate, bug.id, flagId, flagIdx, bug.assigned_to, bug.severity,
         bug.priority, bug.op_sys, bug.flags, "", 0, bug.summary);
     } else {
-      processRow(flagCreationDate, bug.id, flagId, bug.assigned_to, bug.severity,
+      processRow(flagCreationDate, bug.id, flagId, flagIdx, bug.assigned_to, bug.severity,
         bug.priority, bug.op_sys, bug.flags, bug.comments[commentIdx].text, bug.comments[commentIdx].count, bug.summary);
     }
   });
 }
 
-function addRec(ct, bugId, flagId, assignee, s, p, platform, msg, cmtIdx, title, flags) {
+function addRec(ct, bugId, flagId, flagIdx, assignee, s, p, platform, msg, cmtIdx, title, flags) {
   let record = {
     'date': ct, // NI Date
     'bugid': bugId,
     'flagid': flagId,
+    'flagidx': flagIdx,
     'assignee': assignee,
     'title': title,
     'severity': s,
@@ -254,7 +285,7 @@ function addRec(ct, bugId, flagId, assignee, s, p, platform, msg, cmtIdx, title,
   return record;
 }
 
-function processRow(ct, bugId, flagId, assignee, s, p, platform, flags, msg, cmtIdx, title) {
+function processRow(ct, bugId, flagId, flagIdx, assignee, s, p, platform, flags, msg, cmtIdx, title) {
   // flagId is the bugzilla flagid of the ni that set this user's ni. We use it
   // in comment links.
 
@@ -270,7 +301,7 @@ function processRow(ct, bugId, flagId, assignee, s, p, platform, flags, msg, cmt
   if (platform == 'Unspecified')
     platform = '';
 
-  addRec(d, bugId, flagId, assignee, s, p, platform, msgClean, cmtIdx, title, flags);
+  addRec(d, bugId, flagId, flagIdx, assignee, s, p, platform, msgClean, cmtIdx, title, flags);
 }
 
 function prepPage(userQuery) {
@@ -278,7 +309,7 @@ function prepPage(userQuery) {
     "<div class='name-checkbox'></div>" +
     "<div class='name-nidate-hdr' onclick='dateSort();'>NI Date</div>" +
     "<div class='name-bugid-hdr' onclick='bugIdSort();'>Bug ID</div>" +
-    "<div class='name-nifrom'>NIs</div>" +
+    "<div class='name-nifrom'>NeedInfo</div>" +
     "<div class='name-assignee'>Assignee</div>" +
     "<div class='name-severity-hdr' onclick='severitySort();'>Sev</div>" +
     "<div class='name-priority-hdr' onclick='prioritySort();'>Pri</div>" +
@@ -318,10 +349,21 @@ function populateRow(record) {
   let commentLink = "<a class='nodecoration' target='" + tabTarget + "' href='" + bugUrl + "#c" + record.commentid + "'>" + record.msg + "</a>";
   let assignee = trimAddress(record.assignee);
 
-  let flags = '';
+  let index = -1, first = true;
+  let flagText = '';
+  let extraFlagText = '';
   record.flags.forEach(function (flag) {
-    if (flag.name == 'needinfo') {
-      flags += trimAddress(flag.setter) + ' -> ' + trimAddress(flag.requestee) + '<br/>';
+    index++;
+    if (flag.name != 'needinfo') 
+      return true;
+    if (record.flagidx == index) {
+      flagText = trimAddress(flag.setter) + '<br/>';
+    } else {
+      if (first) {
+        first = false;
+        extraFlagText = "<br/>additional nis:<br/>";
+      }
+      extraFlagText += trimAddress(flag.setter) + ' &rArr; ' + trimAddress(flag.requestee) + '<br/>';
     }
   });
 
@@ -329,7 +371,7 @@ function populateRow(record) {
     "<div class='name-checkbox'><input type='checkbox' onclick='checkClick(this);' id='check-" + record.bugid + "'/></div>" +
     "<div class='name-nidate'>" + dateStr + "</div>" +
     "<div class='name-bugid'>" + bugLink + "</div>" +
-    "<div class='name-nifrom'>" + flags + "</div>" +
+    "<div class='name-nifrom'>" + flagText + "<span class='name-nifromadd'>" + extraFlagText + "</span></div>" +
     "<div class='name-assignee'>" + assignee + "</div>" +
     "<div class='name-severity'>" + record.severity + "</div>" +
     "<div class='name-priority'>" + record.priority + "</div>" +
