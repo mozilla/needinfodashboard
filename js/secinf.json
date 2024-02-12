@@ -1,13 +1,14 @@
 {
   "developers": {
     "Daniel Veditz": "dveditz@mozilla.com",
-    "June Wilde": "jewilde@mozilla.com",
+    "Malte Jürgens": "mjurgens@mozilla.com",
     "Tom Ritter": "tom@mozilla.com",
     "Tom Schuster": "tschuster@mozilla.com",
     "Frederik Braun": "fbraun@mozilla.com",
     "Christian Holler": "choller@mozilla.com",
     "Tyson Smith": "twsmith@mozilla.com",
     "Jesse Schwartzentruber": "jschwartzentruber@mozilla.com",
-    "Jason Kratzer": "jkratzer@mozilla.com"      
+    "Jason Kratzer": "jkratzer@mozilla.com",
+    "Simon Friedberger": "sfriedberger@mozilla.com"
   }
 }
