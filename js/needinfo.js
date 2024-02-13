@@ -390,6 +390,7 @@ function displayErrorFor(id, elementIndex, developer, url, type) {
 function displayCountFor(id, elementIndex, developer, url, type, data) {
   var ni_count = data.bugs.length;
   let tabTarget = NeedInfoConfig.targetnew ? "buglists" : "_blank";
+  console.log(data);
 
   var bug_link = "" + ni_count;
   if (ni_count != 0) {
