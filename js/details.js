@@ -585,30 +585,6 @@ function getBugRec(bugId) {
   return record;
 }
 
-/*
-let PendingPuts = [];
-let BugWorker = new Worker('js/bugworker.js');
-
-BugWorker.onmessage = (event) => {
-  let msg = event.data;
-  console.log('worker response:', msg.message);
-  switch(msg.message) {
-    case 'complete':
-    break;
-    case 'change':
-    updateAfterChanges(msg.bugid);
-    break;
-    case 'error':
-    updateAfterError(msg.bugid, msg.text);
-    break;
-  }
-}
-
-function submitCommands() {
-  BugWorker.postMessage(PendingPuts);
-}
-*/
-
 function submitCommand(url, bugId, jsonData) {
   console.log("submitting changes to bugzilla:", bugId);
   $.ajax({
@@ -646,11 +622,11 @@ function submitCommands() {
   let timer = 100;
   let bug = PendingPuts.pop();
   while (bug != undefined) {
-    console.log(timer, bug.bugid, bug.url, bug.json);
+    //console.log(timer, bug.bugid, bug.url, bug.json);
     setTimeout(function (bug) {
       submitCommand(bug.url, bug.bugid, bug.json);
     }, timer, bug);
-    timer += 100;
+    timer += 10;
     bug = PendingPuts.pop();
   }
 }
@@ -793,6 +769,10 @@ function updateAfterChanges(bugid) {
   }
 }
 
+function getRandomIntStr(max) {
+  return '' + Math.floor(Math.random() * max);
+}
+
 function queueChanges(type, comment, to) {
   clearPendingCommands();
 
@@ -811,6 +791,18 @@ function queueChanges(type, comment, to) {
   ChangeList.forEach(function (bugId) {
     queueBugChange(type, bugId, comment, to);
   });
+
+  /*
+  // WIP anti-spam rejection protection
+  let submittedComment = comment;
+  ChangeList.forEach(function (bugId) {
+    queueBugChange(type, bugId, submittedComment, to);
+    if (ChangeList.length > 0 && comment.length > 0) {
+      submittedComment = comment + ' (' + getRandomIntStr(1000) + ')';
+    }
+  });
+  */
+
   submitCommands();
 }
 
