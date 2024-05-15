@@ -1,6 +1,6 @@
 A handy Bugzilla needinfo dashboard for managing needinfo flags for teams. The main management page
-lists active needinfos broken down into four columns - developer related needinfos on open and
-closed bugs, and release management related needinfos. Each column provides links to both
+lists active needinfos broken down into five columns - developer related needinfos on open, tracked,
+and closed bugs, and release management related needinfos. Each column provides links to both
 Bugzilla bug lists as well as a need info details sub page. The details page provides a list of
 each needinfo matched to the bugzilla comment when the flag was set, as well as additional meta
 data such as bug title, severity, priority, and assignee. A basic set of bulk action options are
