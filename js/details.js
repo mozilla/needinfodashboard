@@ -279,7 +279,8 @@ function addRec(ct, bugId, flagId, flagIdx, assignee, s, p, platform, msg, cmtId
     'platform': platform,
     'flags': flags,
     'msg': msg,
-    'commentid': cmtIdx
+    'commentid': cmtIdx,
+    'checked': false
   };
   bugset.push(record);
   return record;
@@ -367,8 +368,13 @@ function populateRow(record) {
     }
   });
 
+  let checkBox = "<input type='checkbox' onclick='checkClick(this);' id='check-" + record.bugid + "'";
+  if (record.checked)
+    checkBox += " checked ";
+  checkBox += "/>";
+  
   let content =
-    "<div class='name-checkbox'><input type='checkbox' onclick='checkClick(this);' id='check-" + record.bugid + "'/></div>" +
+    "<div class='name-checkbox'>" + checkBox + "</div>" +
     "<div class='name-nidate'>" + dateStr + "</div>" +
     "<div class='name-bugid'>" + bugLink + "</div>" +
     "<div class='name-nifrom'>" + flagText + "<span class='name-nifromadd'>" + extraFlagText + "</span></div>" +
@@ -442,6 +448,7 @@ function sortByDefault() {
     sortTrack[type] = results.order == 'true' ? true:false;
   }
 
+  // saved checked bugs
   saveDefaultSortSettings(type, sortTrack[type]);
 
   switch (type) {
@@ -462,6 +469,18 @@ function sortByDefault() {
 
 /* column title click handlers */
 
+function updateCheckedState() {
+  let checkedIds = getCheckedBugIds();
+  bugset.forEach((rec) => {
+    rec.checked = false;
+  });
+  if (checkedIds.length) {
+    checkedIds.forEach((id) => {
+      getBugRec(id).checked = true;    
+    });
+  }
+}
+
 function dateSort() {
   if (sortTrack['date']) {
     bugset.sort(sortDateAsc);
@@ -471,6 +490,7 @@ function dateSort() {
   updateDefaultSortSettings('date', sortTrack['date']);
   sortTrack['date'] = !sortTrack['date'];
 
+  updateCheckedState();
   clearRows();
   prepPage();
   populateRows();
@@ -485,6 +505,7 @@ function bugIdSort() {
   updateDefaultSortSettings('bugid', sortTrack['bugid']);
   sortTrack['bugid'] = !sortTrack['bugid'];
 
+  updateCheckedState();
   clearRows();
   prepPage();
   populateRows();
@@ -499,6 +520,7 @@ function severitySort() {
   updateDefaultSortSettings('severity', sortTrack['severity']);
   sortTrack['severity'] = !sortTrack['severity'];
 
+  updateCheckedState();
   clearRows();
   prepPage();
   populateRows();
@@ -513,6 +535,7 @@ function prioritySort() {
   updateDefaultSortSettings('priority', sortTrack['priority']);
   sortTrack['priority'] = !sortTrack['priority'];
 
+  updateCheckedState();
   clearRows();
   prepPage();
   populateRows();
@@ -547,7 +570,7 @@ function getCheckedBugIds() {
   bugset.every(function (bug) {
     let checkBox = document.getElementById('check-' + bug.bugid);
     if (checkBox == null) {
-      console.log('Mismatched check boxes with bug ids, something is messed up. Bailing.');
+      //console.log('Mismatched check boxes with bug ids, something is messed up. Bailing.');
       list = [];
       return false;
     }
