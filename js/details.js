@@ -307,7 +307,7 @@ function processRow(ct, bugId, flagId, flagIdx, assignee, s, p, platform, flags,
 
 function prepPage(userQuery) {
   let header =
-    "<div class='name-checkbox'></div>" +
+    "<div class='name-checkbox'><input type='checkbox' id='check-all' onclick='allCheckClick(this);'/></div>" +
     "<div class='name-nidate-hdr' onclick='dateSort();'>NI Date</div>" +
     "<div class='name-bugid-hdr' onclick='bugIdSort();'>Bug ID</div>" +
     "<div class='name-nifrom'>NeedInfo</div>" +
@@ -590,6 +590,18 @@ function clearCheckedBugs() {
       checkBox.checked = false;
     }
   });
+}
+
+function allCheckClick(e) {
+  let check = e.checked;
+  bugset.forEach(function (rec) {
+    rec.checked = e.checked ? true : false;
+  });
+  clearRows();
+  prepPage();
+  populateRows();
+  document.getElementById('check-all').checked = check;
+  updateButtonsState();
 }
 
 function checkClick(e) {
