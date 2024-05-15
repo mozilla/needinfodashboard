@@ -383,9 +383,14 @@ a:hover {
   font-family: Moz;
 }
 
-#team-select, #team-option {
+.team-select {
   padding: 5px;
   font-family: Moz;
+}
+
+.team-option {
+  padding: 5px;
+  font-family:Arial, Helvetica, sans-serif;
 }
 
 .command-button {
