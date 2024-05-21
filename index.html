@@ -93,22 +93,26 @@
 
   <!-- dialog: query for a bugzilla account -->
   <dialog id="prompt-query-account" oncancel="">
-    <div class="prompt-buttons-form">
-      <form method="dialog">
-        <div class="prompt-text-input">
-          <label id="redirct-label">Account:</label>
-          <input id="prompt-account-edit" type="text" placeholder="email or nick"
-            oninput="onInputForBugzillaUser(this);" value="" autocomplete="off" />
+    <form method="dialog">
+      <div class="prompt-query-account-container">
+        <div class="prompt-row1">
+          <input class="prompt-account-edit" id="prompt-account-edit" type="text" placeholder="email or nick"
+                 oninput="onInputForBugzillaUser(this);" value="" autocomplete="off" />
         </div>
-        <br />
-        <div class="prompt-text-input">
-          <select id="autofill-user-search" name="account" size="4">
-          </select>
+
+        <div class="prompt-text-input prompt-row3">
+          <select class="prompt-user-search" id="autofill-user-search" name="account" size="4"></select>
         </div>
-        <button id="btn-confirm" value="confirm">Confirm</button>
-        <button id="btn-cancel" autofocus value="cancel">Cancel</button>
-      </form>
-    </div>
+
+        <div class="prompt-row4">
+          <button id="btn-confirm" value="confirm">Confirm</button>
+        </div>
+
+        <div class="prompt-row5">
+          <button class="prompt-row5" id="btn-cancel" autofocus value="cancel">Cancel</button>
+        </div>
+      </div>
+    </form>
   </dialog>
 
 </body>

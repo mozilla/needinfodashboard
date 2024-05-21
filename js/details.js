@@ -205,7 +205,7 @@ function retrieveInfoFor(url, userQuery)
 
 function populateBugs(url, type, data) {
   data.bugs.forEach(function (bug) {
-    // console.log(bug);
+    //console.log(bug);
     // console.log("flags", bug.flags);
     
     /*
@@ -224,6 +224,7 @@ function populateBugs(url, type, data) {
     // this page, only the first will get cleared. Maybe we can fix this up
     // later.
     let id = getUserId();
+    let setter = 'unknown';
     let flagId, flagCreationDate, flagIdx = -1;
     for (let idx = 0; idx < bug.flags.length; idx++) {
       if (bug.flags[idx].name != 'needinfo') 
@@ -232,6 +233,7 @@ function populateBugs(url, type, data) {
         flagCreationDate = bug.flags[idx].creation_date;
         flagId = bug.flags[idx].id;
         flagIdx = idx;
+        setter = bug.flags[idx].setter;
         break;
       }
     }
@@ -258,15 +260,16 @@ function populateBugs(url, type, data) {
 
     if (commentIdx == -1) {
       processRow(flagCreationDate, bug.id, flagId, flagIdx, bug.assigned_to, bug.severity,
-        bug.priority, bug.op_sys, bug.flags, "", 0, bug.summary);
+        bug.priority, bug.op_sys, bug.flags, "", 0, bug.summary, setter);
     } else {
       processRow(flagCreationDate, bug.id, flagId, flagIdx, bug.assigned_to, bug.severity,
-        bug.priority, bug.op_sys, bug.flags, bug.comments[commentIdx].text, bug.comments[commentIdx].count, bug.summary);
+        bug.priority, bug.op_sys, bug.flags, bug.comments[commentIdx].text, bug.comments[commentIdx].count,
+        bug.summary, setter);
     }
   });
 }
 
-function addRec(ct, bugId, flagId, flagIdx, assignee, s, p, platform, msg, cmtIdx, title, flags) {
+function addRec(ct, bugId, flagId, flagIdx, assignee, s, p, platform, msg, cmtIdx, title, flags, nisetter) {
   let record = {
     'date': ct, // NI Date
     'bugid': bugId,
@@ -280,13 +283,14 @@ function addRec(ct, bugId, flagId, flagIdx, assignee, s, p, platform, msg, cmtId
     'flags': flags,
     'msg': msg,
     'commentid': cmtIdx,
+    'nisetter': nisetter,
     'checked': false
   };
   bugset.push(record);
   return record;
 }
 
-function processRow(ct, bugId, flagId, flagIdx, assignee, s, p, platform, flags, msg, cmtIdx, title) {
+function processRow(ct, bugId, flagId, flagIdx, assignee, s, p, platform, flags, msg, cmtIdx, title, nisetter) {
   // flagId is the bugzilla flagid of the ni that set this user's ni. We use it
   // in comment links.
 
@@ -302,7 +306,7 @@ function processRow(ct, bugId, flagId, flagIdx, assignee, s, p, platform, flags,
   if (platform == 'Unspecified')
     platform = '';
 
-  addRec(d, bugId, flagId, flagIdx, assignee, s, p, platform, msgClean, cmtIdx, title, flags);
+  addRec(d, bugId, flagId, flagIdx, assignee, s, p, platform, msgClean, cmtIdx, title, flags, nisetter);
 }
 
 function prepPage(userQuery) {
@@ -902,8 +906,7 @@ function invokeRedirectToSetter() {
     return;
 
   document.getElementById('prompt-redirect-confirm-bugcount').textContent = ChangeList.length;
-  document.getElementById('prompt-setter').textContent =
-    'Redirecting to: ' + trimAddress(bug.nisetter);
+  document.getElementById('prompt-setter').textContent = trimAddress(bug.nisetter);
 
   let dlg = document.getElementById("prompt-redirect-confirm");
   dlg.returnValue = "cancel";

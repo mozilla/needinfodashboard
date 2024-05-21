@@ -450,41 +450,7 @@ a:hover {
   color: gray;
 }
 
-/* prompts for details */
-#prompt-confirm {
-  border: 2px solid gray;
-}
-
-.prompt-confirm-info-grid {
-  display: grid;
-  gap: 0px;
-  border: 0px solid gray;
-  font-family: Moz;
-  align-items: center;
-}
-
-.prompt-text {
-  font-size: 2vmin;
-  align-self: center;
-  justify-self: center;
-}
-
-.prompt-details {
-  font-size: 2vmin;
-  font-family: Moz;
-  display: inline-block;
-  float: left;
-  width: 100%;
-  margin-bottom: 10px;
-}
-
-.prompt-emphasis-text {
-  font-size: 5vmin;
-  align-self: center;
-  justify-self: center;
-  color: #cc0000;
-}
-
+/* generic use dialog grid rows */
 .prompt-row1 {
   grid-row: 1;
 }
@@ -497,87 +463,174 @@ a:hover {
   grid-row: 3;
 }
 
-.prompt-buttons-form {
-  margin-top: 10px;
-  border: 0px solid green;
+.prompt-row4 {
+  grid-row: 4;
 }
 
-.prompt-buttons-form  #btn-confirm, #btn-cancel {
+.prompt-row5 {
+  grid-row: 5;
+}
+
+.prompt-row6 {
+  grid-row: 6;
+}
+
+/* generic use dialog grid cols */
+.prompt-col1 {
+  grid-column: 1;
+}
+
+.prompt-col2 {
+  grid-column: 2;
+
+}
+
+/* standardized dialog buttons */
+#btn-confirm, #btn-cancel {
   padding: 12px 20px;
   border: none;
   background-color: #8ebf42;
   color: #fff;
   cursor: pointer;
   width: 100%;
-  margin-bottom: 15px;
 }
 
 #btn-cancel {
   background-color: #cc0000;
 }
 
+/* index.html dialogs */
+
+/* specific account search dialog */
+#prompt-query-account {
+  width: 40%;
+  padding: 10px;
+}
+
+/* specific account search dialog container */
+.prompt-query-account-container {
+  display: grid;
+  grid-gap: 10px;
+  width: 100%;
+}
+
+/* detail.html dialogs */
+
+/* generic dialog content container grid */
+.prompt-container {
+  display: grid;
+  grid-gap: 10px;
+  width: 100%;
+}
+
+/* generic these changes will impact x bugs info grid */
+.prompt-confirm-info-grid {
+  display: grid;
+  gap: 0px;
+  font-family: Moz;
+  align-items: center;
+}
+
+.prompt-account-grid {
+  display: grid;
+  gap: 0px;
+  font-family: Moz;
+}
+
+/* generic text element styling */
+.prompt-text {
+  font-size: 2vmin;
+  align-self: center;
+  justify-self: center;
+}
+
+/* generic highlighted text element styling */
+.prompt-emphasis-text {
+  font-size: 5vmin;
+  align-self: center;
+  justify-self: center;
+  color: #cc0000;
+}
+
+/* generic comment text area */
 .prompt-comment-textarea {
   width: 100%;
-  border: none;
-  background: #eee;
   resize: both;
+  background: #eee;
+  border: 1px solid #ccc;
 }
 
 .prompt-comment-textarea:focus {
-  background-color: #ddd;
+  background: #ddd;
   outline: none;
 }
 
 .text-area-container {
-  border: 0px solid red;
 }
 
-.prompt-text-input {
-  font-size: 1.5vmin;
+.account-label {
+  font-size: 1.4vmin;
+  font-family: Moz;
+  float: left;
+  width: auto;
+}
+
+.account-label-soft {
+  font-size: 1.4vmin;
+  font-family: Moz;
+  float: left;
+  width: auto;
+  color: #777;
+}
+
+/* generic text input for bugzilla nicks or emails */
+.prompt-account-edit {
+  font-size: 1.4vmin;
+  font-family: Moz;
+  width: auto;
+  border: 1px solid #ccc;
+  background: #eee;
+}
+
+/* generic user bug nick search selecttion element */
+.prompt-user-search {
+  font-size: 1.4vmin;
+  width: 100%;
+  height: auto;
+  background: #eee;
+  border: 1px solid #ccc;
+}
+
+.prompt-user-search:focus {
+  background-color: #ddd;
+  outline: none;
+}
+
+/* comnfirm changes with NO comment dialog */
+#prompt-confirm {
+  width: 40%;
+}
+
+/* comnfirm changes with a comment dialog */
+#prompt-comment-confirm {
+  width: 40%;
+}
+
+/* confirm changes with a redirect to the setter and comment dialog */
+#prompt-redirect-confirm {
+  width: 40%;
+}
+
+/* confirm changes with a redirect to someone and comment dialog */
+#prompt-redirect-to-confirm {
+  width: 40%;
+}
+
+/* redirecting to (setter) info div */
+.prompt-details {
+  font-size: 1.4vmin;
   font-family: Moz;
   display: inline-block;
   float: left;
   width: 100%;
-  margin-bottom: 10px;
-  border: 0px solid blue;
 }
-
-#redirct-label {
-  width: auto;
-}
-
-#prompt-redirect-to-confirm-to {
-  font-size: 1.5vmin;
-  width: 100%;
-  background: #eee;
-  border: 0px solid red;
-  height: auto;
-}
-
-#prompt-redirect-to-confirm-to:focus {
-  background-color: #ddd;
-  outline: none;
-}
-
-#autofill-user-search {
-  font-size: 1.5vmin;
-  width: 100%;
-  background: #eee;
-  border: 0px solid red;
-  height: auto;
-}
-
-#autofill-user-search:focus {
-  background-color: #ddd;
-  outline: none;
-}
-
-#prompt-clear-confirm-comment {
-}
-
-#prompt-redirect-confirm-comment {
-}
-
-#prompt-redirect-to-confirm-comment {
-}
-

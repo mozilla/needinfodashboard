@@ -85,80 +85,106 @@
     </div>
   </div>
   <!-- Setting div end -->
-  <!-- dialog: clear needinfo without a comment -->
+  <!-- dialog: clear needinfo with NO comment -->
   <dialog id="prompt-confirm" oncancel="">
-    <div class="prompt-confirm-info-grid">
-      <div class="prompt-text prompt-row1">These changes will impact</div>
-      <div id="prompt-confirm-bugcount" class="prompt-emphasis-text prompt-row2">err</div>
-      <div class="prompt-text prompt-row3">bug(s).</div>
-    </div>
-    <div class="prompt-buttons-form">
-      <form method="dialog">
-        <button id="btn-confirm" value="confirm">Confirm</button>
-        <button id="btn-cancel" autofocus value="cancel">Cancel</button>
-      </form>
-    </div>
+    <form method="dialog">
+      <div class="prompt-container">
+
+        <div class="prompt-row1 prompt-confirm-info-grid">
+          <div class="prompt-text prompt-row1">These changes will impact</div>
+          <div id="prompt-confirm-bugcount" class="prompt-emphasis-text prompt-row2">err</div>
+          <div class="prompt-text prompt-row3">bug(s).</div>
+        </div>
+
+        <button class="prompt-row2" id="btn-confirm" value="confirm">Confirm</button>
+        <button class="prompt-row3" id="btn-cancel" autofocus value="cancel">Cancel</button>
+      </div>
+    </form>
   </dialog>
+
   <!-- dialog: clear needinfo with a comment -->
   <dialog id="prompt-comment-confirm" oncancel="">
-    <div class="prompt-confirm-info-grid">
-      <div class="prompt-text prompt-row1">These changes will impact</div>
-      <div id="prompt-comment-confirm-bugcount" class="prompt-emphasis-text prompt-row2">err</div>
-      <div class="prompt-text prompt-row3">bug(s).</div>
-    </div>
-    <div class="prompt-buttons-form">
-      <form method="dialog">
-        <div id="prompt-div3" class="text-area-container">
-          <textarea class="prompt-comment-textarea" id="prompt-comment-confirm-comment" rows="3" cols="35" type="text" placeholder="comment"></textarea>
+    <form method="dialog">
+      <div class="prompt-container">
+
+        <div class="prompt-row1 prompt-confirm-info-grid">
+          <div class="prompt-text prompt-row1">These changes will impact</div>
+          <div id="prompt-comment-confirm-bugcount" class="prompt-emphasis-text prompt-row2">err</div>
+          <div class="prompt-text prompt-row3">bug(s).</div>
         </div>
-        <button id="btn-confirm" value="confirm">Confirm</button>
-        <button id="btn-cancel" autofocus value="cancel">Cancel</button>
-      </form>
-    </div>
+
+        <div class="prompt-row2 text-area-container">
+          <textarea class="prompt-comment-textarea" id="prompt-comment-confirm-comment"
+                    rows="3" cols="35" type="text" placeholder="comment"></textarea>
+        </div>
+
+        <button class="prompt-row3" id="btn-confirm" value="confirm">Confirm</button>
+
+        <button class="prompt-row4" id="btn-cancel" autofocus value="cancel">Cancel</button>
+      </div>
+    </form>
   </dialog>
+
   <!-- dialog: redirect needinfo to setter with a comment -->
   <dialog id="prompt-redirect-confirm" oncancel="">
-    <div class="prompt-confirm-info-grid">
-      <div class="prompt-text prompt-row1">These changes will impact</div>
-      <div id="prompt-redirect-confirm-bugcount" class="prompt-emphasis-text prompt-row2">err</div>
-      <div class="prompt-text prompt-row3">bug(s).</div>
-    </div>
-    <div class="prompt-buttons-form">
-      <form method="dialog">
-        <div class="prompt-details" id="prompt-setter"></div><br />
-        <div id="prompt-div3" class="text-area-container">
-          <textarea class="prompt-comment-textarea" id="prompt-redirect-confirm-comment" rows="3" cols="35" type="text" placeholder="comment"></textarea>
+    <form method="dialog">
+      <div class="prompt-container">
+
+        <div class="prompt-row1 prompt-confirm-info-grid">
+          <div class="prompt-text prompt-row1">These changes will impact</div>
+          <div id="prompt-redirect-confirm-bugcount" class="prompt-emphasis-text prompt-row2">err</div>
+          <div class="prompt-text prompt-row3">bug(s).</div>
         </div>
-        <button id="btn-confirm" value="confirm">Confirm</button>
-        <button id="btn-cancel" autofocus value="cancel">Cancel</button>
-      </form>
-    </div>
+
+        <div class="prompt-row2 prompt-details">
+          <div class="account-label-soft">Redirecting to &nbsp;</div>
+          <div id="prompt-setter" class="account-label"></div>
+        </div>
+
+        <div class="prompt-row3 text-area-container">
+          <textarea class="prompt-comment-textarea" id="prompt-redirect-confirm-comment"
+                    rows="3" cols="35" type="text" placeholder="comment"></textarea>
+        </div>
+
+        <button class="prompt-row4" id="btn-confirm" value="confirm">Confirm</button>
+
+        <button class="prompt-row5" id="btn-cancel" autofocus value="cancel">Cancel</button>
+
+      </div>
+    </form>
   </dialog>
+
   <!-- dialog: redirect needinfo to someone with a comment -->
   <dialog id="prompt-redirect-to-confirm" oncancel="">
-    <div class="prompt-confirm-info-grid">
-      <div class="prompt-text prompt-row1">These changes will impact</div>
-      <div id="prompt-redirect-to-confirm-bugcount" class="prompt-emphasis-text prompt-row2">err</div>
-      <div class="prompt-text prompt-row3">bug(s).</div>
-    </div>
-    <div class="prompt-buttons-form">
-      <form method="dialog">
-        <div class="prompt-text-input">
-          <label id="redirct-label">Redirect To:</label><input id="prompt-redirect-to-confirm-to" type="text" placeholder="email"
-                                                               oninput="onInputForBugzillaUser(this);" value="" autocomplete="off"/>
+    <form method="dialog">
+      <div class="prompt-container">
+
+        <div class="prompt-row1 prompt-confirm-info-grid">
+          <div class="prompt-text prompt-row1">These changes will impact</div>
+          <div id="prompt-redirect-to-confirm-bugcount" class="prompt-emphasis-text prompt-row2">err</div>
+          <div class="prompt-text prompt-row3">bug(s).</div>
         </div>
-        <br />
-        <div class="prompt-text-input">
-          <select id="autofill-user-search" name="account" size="4">
-          </select>
+
+        <div class="prompt-row2 prompt-account-grid">
+          <input class="prompt-account-edit" id="prompt-redirect-to-confirm-to" type="text" placeholder="email or nick"
+            oninput="onInputForBugzillaUser(this);" value="" autocomplete="off" />
         </div>
-        <div id="prompt-div3" class="text-area-container">
-          <textarea class="prompt-comment-textarea" id="prompt-redirect-to-confirm-comment" rows="3" cols="35" type="text" placeholder="comment"></textarea>
+
+        <div class="prompt-row3 prompt-text-input">
+          <select class="prompt-user-search" id="autofill-user-search" name="account" size="4"></select>
         </div>
-        <button id="btn-confirm" value="confirm">Confirm</button>
-        <button id="btn-cancel" autofocus value="cancel">Cancel</button>
-      </form>
-    </div>
+
+        <div class="prompt-row4 text-area-container">
+          <textarea class="prompt-comment-textarea" id="prompt-redirect-to-confirm-comment"
+                    rows="3" cols="35" type="text" placeholder="comment"></textarea>
+        </div>
+
+        <button class="prompt-row5" id="btn-confirm" value="confirm">Confirm</button>
+        <button class="prompt-row6" id="btn-cancel" autofocus value="cancel">Cancel</button>
+
+      </div>
+    </form>
   </dialog>
+
 </body>
 </html>
