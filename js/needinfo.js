@@ -192,6 +192,16 @@ function populatePageStats() {
   document.getElementById('cnb-total').textContent = PageStats.nagClosed;
 }
 
+// creation_time
+function getMaxDateParameter() {
+  let date = document.getElementById('oldest-search-date').value;
+  // console.log('date', date); // '2024-05-08'  | bugzilla: '2014-09-29T14:25:35Z'
+  if (date.length) {
+    return '&creation_time=' + date;
+  }
+  return '';
+}
+
 function loadPage() {
   prepPage();
 
@@ -221,10 +231,14 @@ function loadPage() {
     // o2=equals
     // v2=needinfo?
 
+    // bugzilla api key
     if (NeedInfoConfig.api_key.length) {
       url += "api_key=" + NeedInfoConfig.api_key + "&";
     }
     url += NeedInfoConfig.fields_query.replace("{id}", id);
+
+    // if requested, max lifetime date
+    url += getMaxDateParameter();
 
     /////////////////////////////////////////////////////////
     // Open Developer Related

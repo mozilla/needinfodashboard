@@ -158,8 +158,6 @@ function openSettings() {
   dlg.show();
 }
 
-// q3kZYQOjqoC7s7tg7nVoTTjFxGDyzMxBR4A94Prv
-
 function saveSettings() {
   let apiKey = document.getElementById("api-key").value;
   let ignoreMyNI = document.getElementById("option-ignoremyni").checked ? true : false;

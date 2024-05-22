@@ -285,14 +285,25 @@ a:hover {
 
 /* COMMAND BUTTONS */
 
-/* index.html - team select, refresh, separator, settings, alert */
+/* index.html - team select, separator, date, refresh, settings, alert */
 
 .index-command-button-container {
   display: grid;
-  grid-template-columns: 300px auto 10% 10% 5px;
+  grid-template-columns: 300px auto 10% 10% 10% 5px;
   grid-gap: 10px;
   font-family: Moz;
   margin-top: 10px;
+}
+
+.date-picker {
+  font-family: Moz;
+  background: ButtonFace;
+  font-size: 1.2vmin;
+  font-family: Moz;
+  padding-left: 10px;
+  padding-right: 10px;
+  border: 1px solid grey;
+  border-radius: 2px;
 }
 
 .team-select {
