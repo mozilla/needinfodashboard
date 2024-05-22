@@ -37,6 +37,7 @@ var PageStats;
 
 // 'main'
 $(document).ready(function () {
+  document.getElementById('oldest-search-date').value = getTodaysDateMinusOneYear();
   loadConfig();
 });
 
@@ -192,7 +193,6 @@ function populatePageStats() {
   document.getElementById('cnb-total').textContent = PageStats.nagClosed;
 }
 
-// creation_time
 function getMaxDateParameter() {
   let date = document.getElementById('oldest-search-date').value;
   // console.log('date', date); // '2024-05-08'  | bugzilla: '2014-09-29T14:25:35Z'
@@ -279,6 +279,9 @@ function loadPage() {
     }
     url += NeedInfoConfig.fields_query.replace("{id}", id);
 
+    // if requested, max lifetime date
+    url += getMaxDateParameter();
+
     // f4=bug_status
     // o4=nowordssubstr / anywordssubstr
     // v4=RESOLVED%2CVERIFIED%2CCLOSED
@@ -321,6 +324,9 @@ function loadPage() {
     }
     url += NeedInfoConfig.fields_query.replace("{id}", id);
 
+    // if requested, max lifetime date
+    url += getMaxDateParameter();
+
     url += "&f3=setters.login_name";
     url += "&o3=notequals";
     url += "&v3=release-mgmt-account-bot%40mozilla.tld";
@@ -348,6 +354,9 @@ function loadPage() {
     }
     url += NeedInfoConfig.fields_query.replace("{id}", id);
 
+    // if requested, max lifetime date
+    url += getMaxDateParameter();
+
     url += "&f3=setters.login_name";
     url += "&o3=equals";
     url += "&v3=release-mgmt-account-bot%40mozilla.tld";
@@ -367,6 +376,9 @@ function loadPage() {
       url += "api_key=" + NeedInfoConfig.api_key + "&";
     }
     url += NeedInfoConfig.fields_query.replace("{id}", id);
+
+    // if requested, max lifetime date
+    url += getMaxDateParameter();
 
     url += "&f3=setters.login_name";
     url += "&o3=equals";
@@ -437,7 +449,7 @@ function displayCountFor(id, elementIndex, developer, url, type, data) {
 
   var bug_link = "" + ni_count;
   if (ni_count != 0) {
-    let dash_link = "details.html?" + "&userquery=" + type + "&userid=" + id;
+    let dash_link = "details.html?" + "&userquery=" + type + "&userid=" + id + getMaxDateParameter();
     let bug_list = restToQueryUrl(url);
     bug_link = "<div class='bug-link-container'><a class='bug-link' title='Needinfo Details' href='" + dash_link + "' target='nilist'>" + ni_count + "</a>";
     bug_link += "<a class='bug-icon' title='Bugzilla Bug List' href='" + bug_list + "' target='" + tabTarget + "'><img src='images/favicon.ico' /></a></div>";

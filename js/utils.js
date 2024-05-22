@@ -22,6 +22,12 @@ function getUserQuery() {
   return urlParams.get('userquery');
 }
 
+function getQueryDate() {
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  return urlParams.get('creation_time');
+}
+
 function replaceUrlParam(url, paramName, paramValue) {
   if (paramValue == null) {
     paramValue = '';
@@ -56,6 +62,17 @@ function updateDomains() {
 // generate random integer in the given range
 function randomNumber(min, max) { 
     return Math.round(Math.random() * (max - min) + min);
+}
+
+function getTodaysDateMinusOneYear() {
+  let d = new Date(Date.now());
+  d.setFullYear(d.getFullYear() - 1);
+  let date = [
+    d.getFullYear(),
+    ('0' + (d.getMonth() + 1)).slice(-2),
+    ('0' + d.getDate()).slice(-2)
+  ].join('-');
+  return date;
 }
 
 function restToQueryUrl(url) {

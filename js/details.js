@@ -40,18 +40,21 @@ function main(json)
   updateDomains();
 
   // user bugzilla id
-  var userId = getUserId();
+  let userId = getUserId();
   if (userId == undefined) {
     console.log("missing user id url parameter.")
     return;
   }
 
   // odr, cdr, onb, cnb
-  var userQuery = getUserQuery();
+  let userQuery = getUserQuery();
   if (userQuery == undefined) {
     console.log("missing user query url parameter.")
     return;
   }
+
+  // query date if it exists
+  let queryDate = getQueryDate();
 
   loadSettingsInternal();
   updateButtonsState();
@@ -76,6 +79,10 @@ function main(json)
     url += "api_key=" + NeedInfoConfig.api_key + "&";
   }
   url += NeedInfoConfig.bugs_query.replace("{id}", id);
+
+  if (queryDate && queryDate.length) {
+    url += '&creation_time=' + queryDate;
+  }
 
   switch (userQuery) {
     //////////////////////////////////////////
