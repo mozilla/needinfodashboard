@@ -148,29 +148,31 @@ function prepPage() {
     "<div class='report-cnb'>Closed Nagbot</div>";
   // This is an elemet id idx and must match up when we
   // populate each row in displayCountFor.
-  let elementIndex = 0;
-  for (var developer in NeedInfoConfig.developers) {
-    elementIndex++;
+  let devIndex = 0;
+  for (let developer in NeedInfoConfig.developers) {
+    devIndex++;
     content +=
       "<a href='' onclick=\"event_loadUserSummary(event, '" + developer + "')\"><div class='report-title'>" + developer + "</div></a>" +
-      "<div class='report-odr' id='data_odr_" + elementIndex + "'>?</div>" +
-      "<div class='report-otr' id='data_otr_" + elementIndex + "'>?</div>" +
-      "<div class='report-cdr' id='data_cdr_" + elementIndex + "'>?</div>" +
-      "<div class='report-onb' id='data_onb_" + elementIndex + "'>?</div>" +
-      "<div class='report-cnb' id='data_cnb_" + elementIndex + "'>?</div>";
+      "<div class='report-odr' id='data_odr_" + devIndex + "'>?</div>" +
+      "<div class='report-otr' id='data_otr_" + devIndex + "'>?</div>" +
+      "<div class='report-cdr' id='data_cdr_" + devIndex + "'>?</div>" +
+      "<div class='report-onb' id='data_onb_" + devIndex + "'>?</div>" +
+      "<div class='report-cnb' id='data_cnb_" + devIndex + "'>?</div>";
   }
   if (content.length) {
     $("#report").append(content);
   }
 
-  content =
-    "<div class='report-title'>TOTALS</div>" +
-    "<div class='report-odr' id='odr-total'>"+ PageStats.devOpen + "</div>" +
-    "<div class='report-otr' id='otr-total'>"+ PageStats.tracked + "</div>" +
-    "<div class='report-cdr' id='cdr-total'>"+ PageStats.devClosed + "</div>" +
-    "<div class='report-onb' id='onb-total'>"+ PageStats.nagOpen + "</div>" +
-    "<div class='report-cnb' id='cnb-total'>"+ PageStats.nagClosed + "</div>";
-  $("#report").append(content);
+  if (devIndex > 1) {
+    content =
+      "<div class='report-title'>TOTALS</div>" +
+      "<div class='report-odr' id='odr-total'>"+ PageStats.devOpen + "</div>" +
+      "<div class='report-otr' id='otr-total'>"+ PageStats.tracked + "</div>" +
+      "<div class='report-cdr' id='cdr-total'>"+ PageStats.devClosed + "</div>" +
+      "<div class='report-onb' id='onb-total'>"+ PageStats.nagOpen + "</div>" +
+      "<div class='report-cnb' id='cnb-total'>"+ PageStats.nagClosed + "</div>";
+    $("#report").append(content);
+  }
 
   checkConfig();
 }
@@ -186,11 +188,13 @@ function resetPageStats() {
 }
 
 function populatePageStats() {
-  document.getElementById('odr-total').textContent = PageStats.devOpen;
-  document.getElementById('otr-total').textContent = PageStats.tracked;
-  document.getElementById('cdr-total').textContent = PageStats.devClosed;
-  document.getElementById('onb-total').textContent = PageStats.nagOpen;
-  document.getElementById('cnb-total').textContent = PageStats.nagClosed;
+  if (document.getElementById('odr-total')) {
+    document.getElementById('odr-total').textContent = PageStats.devOpen;
+    document.getElementById('otr-total').textContent = PageStats.tracked;
+    document.getElementById('cdr-total').textContent = PageStats.devClosed;
+    document.getElementById('onb-total').textContent = PageStats.nagOpen;
+    document.getElementById('cnb-total').textContent = PageStats.nagClosed;
+  }
 }
 
 function getMaxDateParameter() {
