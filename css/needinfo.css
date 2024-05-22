@@ -66,94 +66,6 @@ a:hover {
   color: highlight;
 }
 
-/* Settings pop-up */
-
-.settingsPopup {
-  color: black;
-  position: relative;
-  text-align: center;
-  font-family: Moz;
-  font-size: 1vmin;
-  width: 10%;
-}
-
-.formPopup {
-  display: none;
-  position: fixed;
-  left: 50%;
-  top: 5%;
-  transform: translate(-50%, 5%);
-  border: 2px solid #999999;
-  z-index: 9;
-}
-
-.formContainer {
-  padding: 20px;
-  background-color: #fff;
-}
-
-.formContainer input[type=text] {
-  width: 100%;
-  padding: 15px;
-  border: none;
-  background: #eee;
-}
-
-.formContainer input[type=text]:focus {
-  background-color: #ddd;
-  outline: none;
-}
-
-.formContainer .btn {
-  padding: 12px 20px;
-  border: none;
-  background-color: #8ebf42;
-  color: #fff;
-  cursor: pointer;
-  width: 100%;
-  margin-bottom: 15px;
-  opacity: 0.8;
-}
-
-.formContainer .cancel {
-  background-color: #cc0000;
-}
-
-.formContainer .btn:hover,
-.settings-button:hover {
-  opacity: 1;
-}
-
-.settings-container {
-  display: grid;
-  gap: 0px;
-  grid-row-gap: 0px;
-  width: 100%;
-  margin-top: 15px;
-  margin-bottom: 35px;
-}
-
-.settings-header {
-  grid-column: 1 / span 2;
-  margin-top: 20px;
-  border-bottom: 1px solid #e0e0e0;
-}
-
-.settings-col1 {
-  grid-column: 1;
-  justify-self: end;
-  padding-right: 10px;
-}
-
-.settings-col2 {
-  grid-column: 2;
-  justify-self: start;
-}
-
-.settings-label {
-  margin-top: 3px;
-}
-
 /* index pane css */
 .table-container {
   padding-top: 25px;
@@ -363,71 +275,7 @@ a:hover {
   color: #808080;
 }
 
-
-/* Form controls on pages */
-.command-button-container {
-  padding-left: 2vmin;
-  padding-right: 2vmin;
-  width: 100%;
-  border: 0px solid green;
-}
-
-.command-button:disabled {
-  cursor: default;
-}
-
-.stats {
-  padding-top: 3px;
-  float: left;
-  font-size: 1.75vmin;
-  font-family: Moz;
-}
-
-.team-select {
-  padding: 5px;
-  font-family: Moz;
-}
-
-.team-option {
-  padding: 5px;
-  font-family:Arial, Helvetica, sans-serif;
-}
-
-.command-button {
-  padding: 5px;
-  margin-left: 10px;
-  font-family: Moz;
-  float: right;
-}
-
-.command-button-hidden {
-  padding: 5px;
-  margin-left: 10px;
-  font-family: Moz;
-  float: right;
-  visibility: collapse;
-}
-
-.button-separator {
-  display: inline-block;
-  float: right;
-  padding: 10px;
-}
-
-.settings-button-container {
-  padding: 0px;
-  margin: 0px;
-  border: 0px solid blue;
-  float: right;
-}
-
-.alert-icon {
-  position: absolute;
-  visibility: hidden;
-  margin-left: 65px;
-  margin-top: -2px;
-}
-
+/* circular throbber for page loads */
 .progress {
   position: absolute;
   margin-left: 40%;
@@ -435,13 +283,78 @@ a:hover {
   visibility: visible;
 }
 
-.status-text {
+/* COMMAND BUTTONS */
+
+/* index.html - team select, refresh, separator, settings, alert */
+
+.index-command-button-container {
+  display: grid;
+  grid-template-columns: 300px auto 10% 10% 5px;
+  grid-gap: 10px;
+  font-family: Moz;
+  margin-top: 10px;
+}
+
+.team-select {
+  margin-left: 10px;
+  font-family: Moz;
+}
+
+.team-option {
+  padding: 5px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* details.html - stats, status, redir-setter, redir-to, clear-cmt, clear, separator, refresh, settings, alert */
+
+.details-command-button-container {
+  display: grid;
+  grid-template-columns: auto 250px repeat(4, 10%) auto 10% 10% 5px;
+  grid-gap: 10px;
+  font-family: Moz;
+  margin-top: 10px;
+}
+
+.command-button:disabled {
+  cursor: default;
+}
+
+.command-button {
+  font-size: 1.2vmin;
+  font-family: Moz;
+  padding-left: 10px;
+  padding-right: 10px;
+  border: 1px solid grey;
+  border-radius: 2px;
+}
+
+.command-button-hidden {
+  visibility: collapse;
+}
+
+.stats {
+  padding-left: 10px;
+  align-self: center;
+}
+
+.button-separator {
+}
+
+.settings-button-container {
+}
+
+.alert-icon {
   visibility: hidden;
+  margin-left: -10px;
+  margin-top: 0px;
+}
+
+.status-text {
+  visibility: collapse;
   margin-top: 2px;
   padding: 3px 15px 3px 15px;
   border-radius: 2px;
-  float: right;
-  font-size: 1.75vmin;
+  font-size: 1.2vmin;
   font-family: Moz;
   border: 1px solid #eeeeee;
   background-image: linear-gradient(to right, rgb(186 232 188), rgb(186 232 188));
@@ -449,6 +362,8 @@ a:hover {
   background-repeat: no-repeat;
   color: gray;
 }
+
+/* DIALOGS */
 
 /* generic use dialog grid rows */
 .prompt-row1 {
@@ -482,11 +397,11 @@ a:hover {
 
 .prompt-col2 {
   grid-column: 2;
-
 }
 
 /* standardized dialog buttons */
-#btn-confirm, #btn-cancel {
+.btn-confirm,
+.btn-cancel {
   padding: 12px 20px;
   border: none;
   background-color: #8ebf42;
@@ -495,9 +410,61 @@ a:hover {
   width: 100%;
 }
 
-#btn-cancel {
+.btn-cancel {
   background-color: #cc0000;
 }
+
+/* shared dialogs */
+
+/* settings dialog */
+#settings-dialog {
+  width: 40%;
+}
+
+.settings-container {
+  display: grid;
+  grid-gap: 10px;
+  width: 100%;
+  font-size: 1.4vmin;
+  font-family: Moz;
+}
+
+#api-key {
+  font-size: 1.4vmin;
+  font-family: Moz;
+  width: auto;
+  border: 1px solid #ccc;
+  background: #eee;
+}
+
+.settings-options-container {
+  display: grid;
+  gap: 0px;
+  grid-row-gap: 0px;
+  width: 100%;
+}
+
+.settings-header {
+  grid-column: 1 / span 2;
+  margin-top: 20px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.settings-col1 {
+  grid-column: 1;
+  justify-self: end;
+  padding-right: 10px;
+}
+
+.settings-col2 {
+  grid-column: 2;
+  justify-self: start;
+}
+
+.settings-label {
+  margin-top: 3px;
+}
+
 
 /* index.html dialogs */
 

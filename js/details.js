@@ -9,7 +9,7 @@ var bugset = [];
 
 // buttons that get enabled only when there is an api key saved.
 var buttons = ['button-clear', 'button-clearcmt',
-  'button-redir', 'button-redirassignee', 'button-redirsetter'];
+  'button-redir', 'button-redirsetter']; //'button-redirassignee'
 
 // list of bugs we are submitting changes for.
 var ChangeListSize = 0;
@@ -554,18 +554,18 @@ function updateButtonState(enabled) {
 function updateButtonsState() {
   let list = getCheckedBugIds();
   let enabled = list.length > 0;
+  let single = list.length == 1;
+
   if (NeedInfoConfig.api_key.length == 0) {
     enabled = false;
   }
   // blanket update all buttons
   updateButtonState(enabled);
 
-  // XXX Special case due to the spam issue when submitting
-  // comments - only enable the clear w/comment when we have
-  // one check box checked.
+  // spam blocking prevents this
   if (enabled) {
-    document.getElementById('button-clearcmt').disabled = !(list.length == 1);
-  }
+    document.getElementById('button-clearcmt').disabled = !single;
+   }
 }
 
 // Always returns a valid list
@@ -656,29 +656,6 @@ function submitCommand(url, bugId, jsonData) {
     });
 }
 
-// attempting to get around spam blocking with duplicate comments. Didn't work.
-function submitCommands() {
-  let timer = 100;
-  let bug = PendingPuts.pop();
-  while (bug != undefined) {
-    //console.log(timer, bug.bugid, bug.url, bug.json);
-    setTimeout(function (bug) {
-      submitCommand(bug.url, bug.bugid, bug.json);
-    }, timer, bug);
-    timer += 10;
-    bug = PendingPuts.pop();
-  }
-}
-
-function clearPendingCommands() {
-  // Clear sequence of commands
-  PendingPuts = [];
-}
-
-function queueCommand(url, bugId, json) {
-  PendingPuts.push({'url': url, 'bugid': bugId, 'json': json});
-}
-
 function queueBugChange(type, bugId, comment, to) {
   // change types:
   //  clear-flag        - valid params: none
@@ -694,13 +671,10 @@ function queueBugChange(type, bugId, comment, to) {
 
   // Testing UI progress meter for multiple bug changes
   if (ChangeListTest) {
-    if (ChangeListSize == ChangeList.length) {
-      TestDelay = 1000;
-    }
     setTimeout(function () {
       updateAfterChanges(bugId);
     }, TestDelay);
-    TestDelay += 750;
+    TestDelay += 500;
     return;
   }
 
@@ -769,7 +743,7 @@ function queueBugChange(type, bugId, comment, to) {
     url += "?api_key=" + NeedInfoConfig.api_key;
   }
 
-  queueCommand(url, bugId, json);
+  submitCommand(url, bugId, json);
 }
 
 function updateStatus(percent) {
@@ -791,7 +765,7 @@ function updateAfterError(bugid, text) {
   errorMsg("<br/>");
 
   if (ChangeList.length == 0) {
-    document.getElementById('status').style.visibility = 'hidden';
+    document.getElementById('status').style.visibility = 'collapse';
     clearCheckedBugs();
     updateButtonsState();
   }
@@ -804,7 +778,7 @@ function updateAfterChanges(bugid) {
 
   if (ChangeList.length == 0) {
     refreshList(null);
-    document.getElementById('status').style.visibility = 'hidden';
+    document.getElementById('status').style.visibility = 'collapse';
   }
 }
 
@@ -813,8 +787,6 @@ function getRandomIntStr(max) {
 }
 
 function queueChanges(type, comment, to) {
-  clearPendingCommands();
-
   if (!ChangeList.length)
     return;
 
@@ -822,6 +794,7 @@ function queueChanges(type, comment, to) {
   updateButtonState(false);
 
   ChangeListSize = ChangeList.length;
+  TestDelay = 1000;
 
   // Show status
   updateStatus(0);
@@ -830,19 +803,6 @@ function queueChanges(type, comment, to) {
   ChangeList.forEach(function (bugId) {
     queueBugChange(type, bugId, comment, to);
   });
-
-  /*
-  // WIP anti-spam rejection protection
-  let submittedComment = comment;
-  ChangeList.forEach(function (bugId) {
-    queueBugChange(type, bugId, submittedComment, to);
-    if (ChangeList.length > 0 && comment.length > 0) {
-      submittedComment = comment + ' (' + getRandomIntStr(1000) + ')';
-    }
-  });
-  */
-
-  submitCommands();
 }
 
 // prompt-confirm
@@ -873,8 +833,11 @@ function invokeClearNI() {
 
 function invokeClearNIWithComment() {
   ChangeList = getCheckedBugIds();
+
+  // due to spam protection, can't handle multiple bugs
   if (!ChangeList.length || ChangeList.length > 1)
     return;
+
   document.getElementById('prompt-comment-confirm-bugcount').textContent = ChangeList.length;
 
   let dlg = document.getElementById("prompt-comment-confirm");
@@ -899,8 +862,12 @@ function invokeClearNIWithComment() {
 
 function invokeRedirectToSetter() {
   ChangeList = getCheckedBugIds();
-  if (!ChangeList.length || ChangeList.length > 1)
+
+  // Can handle multiple bugs, however if they set a comment, spam bocking
+  // will probably get in the way.
+  if (!ChangeList.length)
     return;
+
   let bug = getBugRec(ChangeList[0]);
   if (bug == null)
     return;
@@ -936,8 +903,11 @@ function invokeRedirectTo() {
   $('#autofill-user-search').empty();
 
   ChangeList = getCheckedBugIds();
-  if (!ChangeList.length || ChangeList.length > 1)
+
+  // Can handle multiple bugs
+  if (!ChangeList.length)
     return;
+
   let bug = getBugRec(ChangeList[0]);
   if (bug == null)
     return;
@@ -960,9 +930,6 @@ function invokeRedirectTo() {
     }
   }, { once: true });
   dlg.show();
-}
-
-function invokeRedirectToAssignee() {
 }
 
 function submitUserSearch(value) {

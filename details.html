@@ -18,21 +18,20 @@
     <div class="title-details" id="title"></div>
   </div>
 
-  <div class="command-button-container">
+  <div class="details-command-button-container">
     <div id="stats" class="stats"></div>
-    <div class="settings-button-container">
-      <button class="command-button" onclick="openSettings()">Settings</button>
-      <img id="alert-icon" class="alert-icon" src="images/alert-icon.png" width="10px" height="10px" />
-    </div>
+    <div id="status" class="status-text">hello</div>
+    <!-- <button class="command-button-hidden" id="button-redirassignee" onclick="">Redirect to Assignee</button> -->
+    <button class="command-button" id="button-redirsetter" onclick="invokeRedirectToSetter();">Redirect to Setter</button>
+    <button class="command-button" id="button-redir" onclick="invokeRedirectTo();">Redirect to...</button>
+    <button class="command-button" id="button-clearcmt" onclick="invokeClearNIWithComment();">Clear w/Comment</button>
+    <button class="command-button" id="button-clear" onclick="invokeClearNI();">Clear</button>
     <div class="button-separator"></div>
     <button class="command-button" onclick="refreshList(event);">Refresh</button>
-    <button class="command-button" id="button-clear" onclick="invokeClearNI();">Clear</button>
-    <button class="command-button" id="button-clearcmt" onclick="invokeClearNIWithComment();">Clear w/Comment</button>
-    <button class="command-button" id="button-redir" onclick="invokeRedirectTo();">Redirect to...</button>
-    <button class="command-button" id="button-redirsetter" onclick="invokeRedirectToSetter();">Redirect to Setter</button>
-    <button class="command-button-hidden" id="button-redirassignee" onclick="">Redirect to Assignee</button>
-    <div id="status" class="status-text"></div>
+    <button class="command-button" onclick="openSettings()">Settings</button>
+    <img id="alert-icon" class="alert-icon" src="images/alert-icon.png" width="10px" height="10px" />
   </div>
+  <!-- main list loading circle indicator -->
   <div id="progress" class="progress"><img src="images/loadingicon.gif" /></div>
   <div class="details-container" id="report">
   </div>
@@ -42,17 +41,19 @@
   <br />
   <span class="footer">Source <a href="https://github.com/mozilla/needinfodashboard">available on Github</a></span>
 
-  <!-- Setting div start -->
-  <div class="settingsPopup">
-    <div class="formPopup" id="popupForm">
-      <form class="formContainer" onsubmit="saveSettings(event);">
-        <h2>Settings</h2>
-        <label for="api-key">
+  <!-- dialog: setting and alert icon -->
+  <dialog id="settings-dialog" oncancel="">
+    <form method="dialog">
+      <div class="settings-container">
+
+        <div class="prompt-row1">Settings</div>
+
+        <label class="prompt-row2" for="api-key">
           API Key&nbsp;<a href="https://wiki.mozilla.org/Bugzilla:REST_API#with_two_factor_authentication" target="_blank" rel="noopener noreferrer"><img src="images/info.png" width="15"></a>
         </label>
-        <input type="text" id="api-key" placeholder="Bugzilla API Key" name="key" />
+        <input class="prompt-row3" type="text" id="api-key" placeholder="Bugzilla API Key" name="key" />
 
-        <div class="settings-container">
+        <div class="prompt-row4 settings-options-container">
           <div class="settings-header">
             <div class="settings-label-title">Search Options</div>
           </div>
@@ -79,12 +80,12 @@
           </div>
         </div>
 
-        <button type="submit" class="btn" id="applySettingsButton">Apply</button>
-        <button type="button" class="btn cancel" onclick="closeSettings()">Cancel</button>
-      </form>
-    </div>
-  </div>
-  <!-- Setting div end -->
+        <button class="prompt-row5 btn-confirm" value="confirm">Apply</button>
+        <button class="prompt-row6 btn-cancel" autofocus value="cancel">Cancel</button>
+      </div>
+    </form>
+  </dialog>
+
   <!-- dialog: clear needinfo with NO comment -->
   <dialog id="prompt-confirm" oncancel="">
     <form method="dialog">
@@ -96,8 +97,8 @@
           <div class="prompt-text prompt-row3">bug(s).</div>
         </div>
 
-        <button class="prompt-row2" id="btn-confirm" value="confirm">Confirm</button>
-        <button class="prompt-row3" id="btn-cancel" autofocus value="cancel">Cancel</button>
+        <button class="prompt-row2 btn-confirm" value="confirm">Confirm</button>
+        <button class="prompt-row3 btn-cancel" autofocus value="cancel">Cancel</button>
       </div>
     </form>
   </dialog>
@@ -118,9 +119,8 @@
                     rows="3" cols="35" type="text" placeholder="comment"></textarea>
         </div>
 
-        <button class="prompt-row3" id="btn-confirm" value="confirm">Confirm</button>
-
-        <button class="prompt-row4" id="btn-cancel" autofocus value="cancel">Cancel</button>
+        <button class="prompt-row3 btn-confirm" value="confirm">Confirm</button>
+        <button class="prompt-row4 btn-cancel" autofocus value="cancel">Cancel</button>
       </div>
     </form>
   </dialog>
@@ -146,9 +146,8 @@
                     rows="3" cols="35" type="text" placeholder="comment"></textarea>
         </div>
 
-        <button class="prompt-row4" id="btn-confirm" value="confirm">Confirm</button>
-
-        <button class="prompt-row5" id="btn-cancel" autofocus value="cancel">Cancel</button>
+        <button class="prompt-row4 btn-confirm" value="confirm">Confirm</button>
+        <button class="prompt-row5 btn-cancel" autofocus value="cancel">Cancel</button>
 
       </div>
     </form>
@@ -167,7 +166,7 @@
 
         <div class="prompt-row2 prompt-account-grid">
           <input class="prompt-account-edit" id="prompt-redirect-to-confirm-to" type="text" placeholder="email or nick"
-            oninput="onInputForBugzillaUser(this);" value="" autocomplete="off" />
+                 oninput="onInputForBugzillaUser(this);" value="" autocomplete="off" />
         </div>
 
         <div class="prompt-row3 prompt-text-input">
@@ -179,8 +178,8 @@
                     rows="3" cols="35" type="text" placeholder="comment"></textarea>
         </div>
 
-        <button class="prompt-row5" id="btn-confirm" value="confirm">Confirm</button>
-        <button class="prompt-row6" id="btn-cancel" autofocus value="cancel">Cancel</button>
+        <button class="prompt-row5 btn-confirm" value="confirm">Confirm</button>
+        <button class="prompt-row6 btn-cancel" autofocus value="cancel">Cancel</button>
 
       </div>
     </form>

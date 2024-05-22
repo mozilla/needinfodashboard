@@ -148,24 +148,24 @@ function openSettings() {
   document.getElementById("option-save").checked = NeedInfoConfig.saveoptions;
   document.getElementById("option-targets").checked = NeedInfoConfig.targetnew;
 
-  document.getElementById("popupForm").style.display = "block";
+  let dlg = document.getElementById("settings-dialog");
+  dlg.returnValue = "cancel";
+  dlg.addEventListener('close', (event) => {
+    if (dlg.returnValue == 'confirm') {
+      saveSettings();
+    }
+  }, { once: true });
+  dlg.show();
 }
 
-function closeSettings() {
-  document.getElementById("popupForm").style.display = "none";
-}
+// q3kZYQOjqoC7s7tg7nVoTTjFxGDyzMxBR4A94Prv
 
-function saveSettings(e) {
-  e.preventDefault();
+function saveSettings() {
+  let apiKey = document.getElementById("api-key").value;
+  let ignoreMyNI = document.getElementById("option-ignoremyni").checked ? true : false;
+  let usePersistent = document.getElementById("option-save").checked ? true : false;
+  let targetNewTab = document.getElementById("option-targets").checked ? true : false;
 
-  let x = $("form").serializeArray();
-  let values = {};
-  $.each(x, function (i, field) {
-    values[field.name] = field.value;
-  });
-
-  // 'remember my settings' checkbox
-  let usePersistent = JSON.stringify(values).includes("save");
   console.log('use persistent storage:', usePersistent);
 
   // API key
@@ -178,19 +178,20 @@ function saveSettings(e) {
   let storage = usePersistent ? localStorage : sessionStorage;
 
   clearStorage("api-key");
-  storage.setItem("api-key", values.key);
+  storage.setItem("api-key", apiKey);
 
   clearStorage("ignoremyni");
-  storage.setItem("ignoremyni", values.ignoremyni == 'on' ? true : false);
+  storage.setItem("ignoremyni", ignoreMyNI);
 
   clearStorage("save");
-  storage.setItem("save", values.save == 'on' ? true : false);
+  storage.setItem("save", usePersistent);
 
   clearStorage("target");
-  storage.setItem("target", values.target == 'on' ? true : false);
+  storage.setItem("target", targetNewTab);
 
-  closeSettings();
   loadSettingsInternal();
+
+  // callback to page js
   settingsUpdated();
 }
 

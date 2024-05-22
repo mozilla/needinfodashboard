@@ -18,7 +18,7 @@
     <div class="title" id="title">Need Info Manager</div>
   </div>
 
-  <div class="command-button-container">
+  <div class="index-command-button-container">
     <select id="team-select" class="team-select" onchange="teamSelectionChanged(this);">
       <option id="empty-option" class="team-option" value="empty"></option>
       <option class="team-option" value="graphics">Graphics</option>
@@ -29,12 +29,10 @@
       <option class="team-option" value="webrtc">Web Conferencing</option>
       <option class="team-option" value="specific-account">Specific Account...</option>
     </select>
-    <div class="settings-button-container">
-      <button class="command-button" onclick="openSettings()">Settings</button>
-      <img id="alert-icon" class="alert-icon" src="images/alert-icon.png" width="10px" height="10px" />
-    </div>
     <div class="button-separator"></div>
     <button class="command-button" onclick="refreshList(event);">Refresh</button>
+    <button class="command-button" onclick="openSettings()">Settings</button>
+    <img id="alert-icon" class="alert-icon" src="images/alert-icon.png" width="10px" height="10px" />
   </div>
 
   <center>
@@ -47,17 +45,19 @@
   <br />
   <span class="footer">Source <a href="https://github.com/mozilla/needinfodashboard">available on Github</a></span>
 
-  <!-- Setting div start -->
-  <div class="settingsPopup">
-    <div class="formPopup" id="popupForm">
-      <form class="formContainer" onsubmit="saveSettings(event);">
-        <h2>Settings</h2>
-        <label for="api-key">
+  <!-- dialog: setting and alert icon -->
+  <dialog id="settings-dialog" oncancel="">
+    <form method="dialog">
+      <div class="settings-container">
+
+        <div class="prompt-row1">Settings</div>
+
+        <label class="prompt-row2" for="api-key">
           API Key&nbsp;<a href="https://wiki.mozilla.org/Bugzilla:REST_API#with_two_factor_authentication" target="_blank" rel="noopener noreferrer"><img src="images/info.png" width="15"></a>
         </label>
-        <input type="text" id="api-key" placeholder="Bugzilla API Key" name="key" />
+        <input class="prompt-row3" type="text" id="api-key" placeholder="Bugzilla API Key" name="key" />
 
-        <div class="settings-container">
+        <div class="prompt-row4 settings-options-container">
           <div class="settings-header">
             <div class="settings-label-title">Search Options</div>
           </div>
@@ -84,12 +84,11 @@
           </div>
         </div>
 
-        <button type="submit" class="btn" id="applySettingsButton">Apply</button>
-        <button type="button" class="btn cancel" onclick="closeSettings()">Cancel</button>
-      </form>
-    </div>
-  </div>
-  <!-- Setting div end -->
+        <button class="prompt-row5 btn-confirm" value="confirm">Apply</button>
+        <button class="prompt-row6 btn-cancel" autofocus value="cancel">Cancel</button>
+      </div>
+    </form>
+  </dialog>
 
   <!-- dialog: query for a bugzilla account -->
   <dialog id="prompt-query-account" oncancel="">
