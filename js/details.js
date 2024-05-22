@@ -625,6 +625,9 @@ function getBugRec(bugId) {
 }
 
 function submitCommand(url, bugId, jsonData) {
+  if (ChangeListTest) {
+    return;
+  }
   console.log("submitting changes to bugzilla:", bugId);
   $.ajax({
     url: url,
@@ -654,6 +657,42 @@ function submitCommand(url, bugId, jsonData) {
       }
       updateAfterError(bugId, errorThrown);
     });
+}
+
+function updateStatus(percent) {
+  let style = Math.ceil(percent) + '%';
+  document.getElementById('status').style.visibility = 'visible';
+  document.getElementById('status').style.backgroundSize = style;
+}
+
+function updateStatusText() {
+  document.getElementById('status').textContent = ChangeList.length + " responses pending..";
+}
+
+function updateAfterError(bugid, text) {
+  ChangeList = ChangeList.filter((value) => value != bugid);
+  updateStatus(((ChangeListSize - ChangeList.length) / ChangeListSize) * 100.0);
+  updateStatusText();
+
+  errorMsg("request error for bug " + bugid + " '" + text + "'");
+  errorMsg("<br/>");
+
+  if (ChangeList.length == 0) {
+    document.getElementById('status').style.visibility = 'collapse';
+    clearCheckedBugs();
+    updateButtonsState();
+  }
+}
+
+function updateAfterChanges(bugid) {
+  ChangeList = ChangeList.filter((value) => value != bugid);
+  updateStatus(((ChangeListSize - ChangeList.length) / ChangeListSize) * 100.0);
+  updateStatusText();
+
+  if (ChangeList.length == 0) {
+    refreshList(null);
+    document.getElementById('status').style.visibility = 'collapse';
+  }
 }
 
 function queueBugChange(type, bugId, comment, to) {
@@ -746,42 +785,6 @@ function queueBugChange(type, bugId, comment, to) {
   submitCommand(url, bugId, json);
 }
 
-function updateStatus(percent) {
-  let style = Math.ceil(percent) + '%';
-  document.getElementById('status').style.visibility = 'visible';
-  document.getElementById('status').style.backgroundSize = style;
-}
-
-function updateStatusText() {
-  document.getElementById('status').textContent = ChangeList.length + " responses pending..";
-}
-
-function updateAfterError(bugid, text) {
-  ChangeList = ChangeList.filter((value) => value != bugid);
-  updateStatus(((ChangeListSize - ChangeList.length) / ChangeListSize) * 100.0);
-  updateStatusText();
-
-  errorMsg("request error for bug " + bugid + " '" + text + "'");
-  errorMsg("<br/>");
-
-  if (ChangeList.length == 0) {
-    document.getElementById('status').style.visibility = 'collapse';
-    clearCheckedBugs();
-    updateButtonsState();
-  }
-}
-
-function updateAfterChanges(bugid) {
-  ChangeList = ChangeList.filter((value) => value != bugid);
-  updateStatus(((ChangeListSize - ChangeList.length) / ChangeListSize) * 100.0);
-  updateStatusText();
-
-  if (ChangeList.length == 0) {
-    refreshList(null);
-    document.getElementById('status').style.visibility = 'collapse';
-  }
-}
-
 function getRandomIntStr(max) {
   return '' + Math.floor(Math.random() * max);
 }
@@ -805,6 +808,7 @@ function queueChanges(type, comment, to) {
   });
 }
 
+// Warning dialog and elements
 // prompt-confirm
 // prompt-confirm-bugcount
 
@@ -827,6 +831,7 @@ function invokeClearNI() {
   dlg.show();
 }
 
+// Warning dialog and elements
 // prompt-comment-confirm
 // prompt-comment-confirm-bugcount
 // prompt-comment-confirm-comment
@@ -856,6 +861,7 @@ function invokeClearNIWithComment() {
   dlg.show();
 }
 
+// Warning dialog and elements
 // prompt-redirect-confirm
 // prompt-redirect-confirm-bugcount
 // prompt-redirect-confirm-comment
@@ -892,6 +898,7 @@ function invokeRedirectToSetter() {
   dlg.show();
 }
 
+// Warning dialog and elements
 // prompt-redirect-to-confirm
 // prompt-redirect-to-confirm-bugcount
 // prompt-redirect-to-confirm-to

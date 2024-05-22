@@ -8,6 +8,7 @@ var NeedInfoConfig = null;
 var DEV_DISABLE = false;
 var LastErrorText = '';
 var CurrentTeam = null;
+var PageStats;
 
 /*
  Bugs
@@ -135,6 +136,7 @@ function loadTeamConfig() {
 }
 
 function prepPage() {
+  resetPageStats();
   $("#report").empty();
   var content =
     "<div class='report-title'>Engineer</div>" +
@@ -159,7 +161,35 @@ function prepPage() {
   if (content.length) {
     $("#report").append(content);
   }
+
+  content =
+    "<div class='report-title'>TOTALS</div>" +
+    "<div class='report-odr' id='odr-total'>"+ PageStats.devOpen + "</div>" +
+    "<div class='report-otr' id='otr-total'>"+ PageStats.tracked + "</div>" +
+    "<div class='report-cdr' id='cdr-total'>"+ PageStats.devClosed + "</div>" +
+    "<div class='report-onb' id='onb-total'>"+ PageStats.nagOpen + "</div>" +
+    "<div class='report-cnb' id='cnb-total'>"+ PageStats.nagClosed + "</div>";
+  $("#report").append(content);
+
   checkConfig();
+}
+
+function resetPageStats() {
+  PageStats = {
+    devOpen: 0,
+    devClosed: 0,
+    tracked: 0,
+    nagOpen: 0,
+    nagClosed: 0
+  };
+}
+
+function populatePageStats() {
+  document.getElementById('odr-total').textContent = PageStats.devOpen;
+  document.getElementById('otr-total').textContent = PageStats.tracked;
+  document.getElementById('cdr-total').textContent = PageStats.devClosed;
+  document.getElementById('onb-total').textContent = PageStats.nagOpen;
+  document.getElementById('cnb-total').textContent = PageStats.nagClosed;
 }
 
 function loadPage() {
@@ -402,6 +432,25 @@ function displayCountFor(id, elementIndex, developer, url, type, data) {
   if (!ni_count) {
     bug_link = "&nbsp;";
   }
+
+  switch(type) {
+    case 'odr':
+    PageStats.devOpen += ni_count;
+    break;
+    case 'otr':
+    PageStats.tracked += ni_count;
+    break;
+    case 'cdr':
+    PageStats.devClosed += ni_count;
+    break;
+    case 'onb':
+    PageStats.nagOpen += ni_count;
+    break;
+    case 'cnb':
+    PageStats.nagClosed += ni_count;
+    break;
+  }
+  populatePageStats();
 
   let link = "<div class='report-" + type + "' id='data_" + elementIndex + "'>" + bug_link + "</div>";
   $("#data_" + type + "_" + elementIndex).replaceWith(link);
