@@ -12,18 +12,17 @@ var PageStats;
 
 /*
  Bugs
- * multiple puts with the same comment results in errors on every request except the first. Some sort of anti-spam feature?
+ * multiple puts with the same comment results in errors on every request except
+     the first. Hits some sort of Bugzilla anti-spam feature?
+
  General Ideas
  * Add an account icon up top for employees? Can we do this for key users as well?
- *  - Settings
- *  - My Needinfos option
- *  - My reports option  (we can use specialized team monikors for this, 'myself, 'myteam' so they can be bookmarked easily.)
  * Bugzilla aliases for NI email entries in details
- * set Priority bulk action
+ * set Priority and Severity bulk action?
  * redirect to triage owner based on google cal injestion?
- * bug assingee changes by nagbots, can we expose who got dropped?
+ * Bug assingee changes by nagbots, can we expose who got dropped?
     -  https://bugzilla.mozilla.org/show_bug.cgi?id=969395
- * dealing with double needinfos 
+ * Dealing with double needinfos 
     -  https://bugzilla.mozilla.org/show_bug.cgi?id=1667635#c31
 
  Details pane
@@ -197,12 +196,22 @@ function populatePageStats() {
   }
 }
 
-function getMaxDateParameter() {
+function getBugzillaMaxDateQuery() {
   let date = document.getElementById('oldest-search-date').value;
   // console.log('date', date); // '2024-05-08'  | bugzilla: '2014-09-29T14:25:35Z'
   if (date.length) {
     // chfieldfrom=2023-05-23&chfield=[Bug creation]
     return '&chfield=[Bug creation]' + '&chfieldfrom=' + date;
+  }
+  return '';
+}
+
+function getMaxDateParameter() {
+  let date = document.getElementById('oldest-search-date').value;
+  // console.log('date', date); // '2024-05-08'  | bugzilla: '2014-09-29T14:25:35Z'
+  if (date.length) {
+    // chfieldfrom=2023-05-23&chfield=[Bug creation]
+    return '&creation_time=' + date;
   }
   return '';
 }
@@ -220,11 +229,6 @@ function loadPage() {
     // current user. We use this to filter selfnis when we query for
     // each developer's list.
     let id = encodeURIComponent(NeedInfoConfig.developers[developer]);
-    let url = NeedInfoConfig.bugzilla_search_url;
-
-    /////////////////////////////////////////////////////////
-    // Base query and resulting fields request
-    /////////////////////////////////////////////////////////
 
     // include_fields=id,summary
 
@@ -236,18 +240,18 @@ function loadPage() {
     // o2=equals
     // v2=needinfo?
 
-    // bugzilla api key
+    /////////////////////////////////////////////////////////
+    // Open Developer Related
+    /////////////////////////////////////////////////////////
+
+    let url = NeedInfoConfig.bugzilla_search_url;
     if (NeedInfoConfig.api_key.length) {
       url += "api_key=" + NeedInfoConfig.api_key + "&";
     }
     url += NeedInfoConfig.fields_query.replace("{id}", id);
 
     // if requested, max lifetime date
-    url += getMaxDateParameter();
-
-    /////////////////////////////////////////////////////////
-    // Open Developer Related
-    /////////////////////////////////////////////////////////
+    url += getBugzillaMaxDateQuery();
 
     // f3=setters.login_name
     // o3=notequals
@@ -274,9 +278,9 @@ function loadPage() {
 
     /////////////////////////////////////////////////////////
     // Open and Tracked
+    /////////////////////////////////////////////////////////
     // Query uses the generic tag names that bugzilla maps
     // to the current version tags.
-    /////////////////////////////////////////////////////////
 
     url = NeedInfoConfig.bugzilla_search_url;
     if (NeedInfoConfig.api_key.length) {
@@ -285,7 +289,7 @@ function loadPage() {
     url += NeedInfoConfig.fields_query.replace("{id}", id);
 
     // if requested, max lifetime date
-    url += getMaxDateParameter();
+    url += getBugzillaMaxDateQuery();
 
     // f4=bug_status
     // o4=nowordssubstr / anywordssubstr
@@ -330,7 +334,7 @@ function loadPage() {
     url += NeedInfoConfig.fields_query.replace("{id}", id);
 
     // if requested, max lifetime date
-    url += getMaxDateParameter();
+    url += getBugzillaMaxDateQuery();
 
     url += "&f3=setters.login_name";
     url += "&o3=notequals";
@@ -360,7 +364,7 @@ function loadPage() {
     url += NeedInfoConfig.fields_query.replace("{id}", id);
 
     // if requested, max lifetime date
-    url += getMaxDateParameter();
+    url += getBugzillaMaxDateQuery();
 
     url += "&f3=setters.login_name";
     url += "&o3=equals";
@@ -383,7 +387,7 @@ function loadPage() {
     url += NeedInfoConfig.fields_query.replace("{id}", id);
 
     // if requested, max lifetime date
-    url += getMaxDateParameter();
+    url += getBugzillaMaxDateQuery();
 
     url += "&f3=setters.login_name";
     url += "&o3=equals";

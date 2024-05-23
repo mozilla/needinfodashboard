@@ -1,3 +1,0 @@
-https://bugzilla.mozilla.org/buglist.cgi?v1=jmathies%40mozilla.com&v4=RESOLVED%2CVERIFIED%2CCLOSED&list_id=17046189&v3=release-mgmt-account-bot%40mozilla.tld&f3=setters.login_name&f4=bug_status&f1=requestees.login_name&chfield=%5BBug%20creation%5D&o2=equals&o3=equals&o4=nowordssubstr&o1=equals&f2=flagtypes.name&v2=needinfo%3F&query_format=advanced&
-chfieldfrom=2023-05-23
-chfield=[Bug creation]

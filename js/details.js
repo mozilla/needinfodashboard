@@ -32,8 +32,19 @@ function loadList() {
   });
 }
 
-function main(json)
-{
+function getBugzillaMaxDateQuery() {
+  // query date if it exists
+  let queryDate = getQueryDate();
+
+  // console.log('date', date); // '2024-05-08'  | bugzilla: '2014-09-29T14:25:35Z'
+  if (queryDate && queryDate.length) {
+    // chfieldfrom=2023-05-23&chfield=[Bug creation]
+    return '&chfield=[Bug creation]' + '&chfieldfrom=' + queryDate;
+  }
+  return '';
+}
+
+function main(json) {
   NeedInfoConfig = json.bugzillaconfig;
   NeedInfoConfig.developers = {};
 
@@ -52,9 +63,6 @@ function main(json)
     console.log("missing user query url parameter.")
     return;
   }
-
-  // query date if it exists
-  let queryDate = getQueryDate();
 
   loadSettingsInternal();
   updateButtonsState();
@@ -80,9 +88,7 @@ function main(json)
   }
   url += NeedInfoConfig.bugs_query.replace("{id}", id);
 
-  if (queryDate && queryDate.length) {
-    url += '&creation_time=' + queryDate;
-  }
+  url += getBugzillaMaxDateQuery();
 
   switch (userQuery) {
     //////////////////////////////////////////
