@@ -201,7 +201,8 @@ function getMaxDateParameter() {
   let date = document.getElementById('oldest-search-date').value;
   // console.log('date', date); // '2024-05-08'  | bugzilla: '2014-09-29T14:25:35Z'
   if (date.length) {
-    return '&creation_time=' + date;
+    // chfieldfrom=2023-05-23&chfield=[Bug creation]
+    return '&chfield=[Bug creation]' + '&chfieldfrom=' + date;
   }
   return '';
 }
