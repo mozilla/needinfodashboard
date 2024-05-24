@@ -230,7 +230,7 @@ function loadPage() {
     // each developer's list.
     let id = encodeURIComponent(NeedInfoConfig.developers[developer]);
 
-    // include_fields=id,summary
+    // exclude_fields=_all
 
     // v1={id}
     // o1=equals
@@ -253,10 +253,7 @@ function loadPage() {
     // if requested, max lifetime date
     url += getBugzillaMaxDateQuery();
 
-    // f3=setters.login_name
-    // o3=notequals
-    // v3=release-mgmt-account-bot%40mozilla.tld
-
+    // filter certain needinfo setters
     url += "&f3=setters.login_name";
     url += "&o3=nowordssubstr";
     url += "&v3=release-mgmt-account-bot%40mozilla.tld";
