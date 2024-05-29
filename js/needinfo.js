@@ -450,10 +450,15 @@ function displayErrorFor(id, elementIndex, developer, url, type) {
 }
 
 function displayCountFor(id, elementIndex, developer, url, type, data) {
-  var ni_count = data.bugs.length;
+  let ni_count = 0;
+  
+  if (data && data.bugs) {
+    ni_count = data.bugs.length;
+  }
+
   let tabTarget = NeedInfoConfig.targetnew ? "buglists" : "_blank";
 
-  var bug_link = "" + ni_count;
+  let bug_link = "" + ni_count;
   if (ni_count != 0) {
     let dash_link = "details.html?" + "&userquery=" + type + "&userid=" + id + getMaxDateParameter();
     let bug_list = restToQueryUrl(url);
