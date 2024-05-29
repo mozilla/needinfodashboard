@@ -217,21 +217,11 @@ function retrieveInfoFor(url, userQuery)
 }
 
 function populateBugs(url, type, data) {
+  if (!data || !data.bugs) {
+    errorMsg('Response data was null. Unexpected error.');
+    return;
+  }
   data.bugs.forEach(function (bug) {
-    //console.log(bug);
-    // console.log("flags", bug.flags);
-    
-    /*
-    creation_date: "2021-03-30T16:47:15Z"
-    id: 2037178
-    modification_date: "2021-03-30T16:47:15Z"
-    name: "needinfo"
-    requestee: "aosmond@mozilla.com"
-    setter: "aryx.bugmail@gmx-topmail.de"
-    status: "?"
-    type_id: 800
-    */
-
     // Grab the first needinfo id for this user. This is not perfect since
     // we can have multiple. If the user clears an ni using the helpers in
     // this page, only the first will get cleared. Maybe we can fix this up
