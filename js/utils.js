@@ -64,6 +64,7 @@ function randomNumber(min, max) {
     return Math.round(Math.random() * (max - min) + min);
 }
 
+// returns a string - '2024-01-01'
 function getTodaysDateMinusOneYear() {
   let d = new Date(Date.now());
   d.setFullYear(d.getFullYear() - 1);
@@ -143,15 +144,40 @@ function getDefaultSortSettings() {
   return { 'sort': getFromStorage('sort'), 'order': getFromStorage('sortorder') };
 }
 
-function loadSettingsInternal() {
-  let api_key = getFromStorage("api-key");
+function saveLastDate() {
+  let storage = NeedInfoConfig.saveoptions ? localStorage : sessionStorage;
 
-  NeedInfoConfig.api_key = (api_key == null) ? "" : api_key;
+  let el = document.getElementById('oldest-search-date');
+  if (!el)
+    return;
+
+  clearStorage("lastdate");
+
+  let lastDate = el.value;
+
+  // If null, it's never been set. if empty string, it's been
+  // cleared (no filter date). Otherwise it should be a date
+  // in string format.
+
+  if (lastDate == null) {
+    return;
+  }
+  storage.setItem("lastdate", lastDate);
+  //console.log('saving last date:', lastDate);
+}
+
+function loadSettingsInternal() {
+  let apiKey = getFromStorage("api-key");
+  let lastDate = getFromStorage("lastdate");
+
+  NeedInfoConfig.api_key = (apiKey == null) ? "" : apiKey;
+  NeedInfoConfig.lastdate = lastDate; // might be null or empty string
   NeedInfoConfig.ignoremyni = getFromStorage("ignoremyni") == (null || 'false') ? false : true;
   NeedInfoConfig.saveoptions = getFromStorage("save") == (null || 'false') ? false : true;
   NeedInfoConfig.targetnew = getFromStorage("target") == (null || 'false') ? false : true;
 
   console.log('storage key:', NeedInfoConfig.api_key);
+  console.log('lastdate:', NeedInfoConfig.lastdate);
   console.log('ignore:', NeedInfoConfig.ignoremyni);
   console.log('persist:', NeedInfoConfig.saveoptions);
   console.log('targets:', NeedInfoConfig.targetnew);

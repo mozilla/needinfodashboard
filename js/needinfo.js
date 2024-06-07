@@ -16,6 +16,7 @@ var PageStats;
      the first. Hits some sort of Bugzilla anti-spam feature?
 
  General Ideas
+ * performance - need to decrease the number of queries
  * Add an account icon up top for employees? Can we do this for key users as well?
  * Bugzilla aliases for NI email entries in details
  * set Priority and Severity bulk action?
@@ -36,7 +37,6 @@ var PageStats;
 
 // 'main'
 $(document).ready(function () {
-  document.getElementById('oldest-search-date').value = getTodaysDateMinusOneYear();
   loadConfig();
 });
 
@@ -84,6 +84,9 @@ function loadUserSummary(email) {
   // populate additional cookie data in NeedInfoConfig
   loadSettingsInternal();
 
+  document.getElementById('oldest-search-date').value = NeedInfoConfig.lastdate == null ? 
+    getTodaysDateMinusOneYear() : NeedInfoConfig.lastdate; 
+
   LastErrorText = '';
   $("#errors").empty();
 
@@ -111,6 +114,9 @@ function openDetailsForAccount(email) {
 function loadTeamConfig() {
   // populate additional cookie data in NeedInfoConfig
   loadSettingsInternal();
+
+  document.getElementById('oldest-search-date').value = NeedInfoConfig.lastdate == null ? 
+    getTodaysDateMinusOneYear() : NeedInfoConfig.lastdate; 
 
   NeedInfoConfig.developers = {};
 
@@ -196,10 +202,22 @@ function populatePageStats() {
   }
 }
 
+function lastDateChanged() {
+  console.log('lastDateChanged', document.getElementById('oldest-search-date').value);
+  saveLastDate();
+}
+
 function getBugzillaMaxDateQuery() {
-  let date = document.getElementById('oldest-search-date').value;
-  // console.log('date', date); // '2024-05-08'  | bugzilla: '2014-09-29T14:25:35Z'
-  if (date.length) {
+  let date = null;
+  if (NeedInfoConfig.lastdate) {
+    date = NeedInfoConfig.lastdate;
+  } else {
+    date = document.getElementById('oldest-search-date').value;
+  }
+
+  //console.log('query last date', date); // '2024-05-08'  | bugzilla: '2014-09-29T14:25:35Z'
+
+  if (date && date.length) {
     // chfieldfrom=2023-05-23&chfield=[Bug creation]
     return '&chfield=[Bug creation]' + '&chfieldfrom=' + date;
   }
