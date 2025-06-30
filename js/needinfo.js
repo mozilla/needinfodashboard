@@ -263,9 +263,6 @@ function loadPage() {
     /////////////////////////////////////////////////////////
 
     let url = NeedInfoConfig.bugzilla_search_url;
-    if (NeedInfoConfig.api_key.length) {
-      url += "api_key=" + NeedInfoConfig.api_key + "&";
-    }
     url += NeedInfoConfig.fields_query.replace("{id}", id);
 
     // if requested, max lifetime date
@@ -298,9 +295,6 @@ function loadPage() {
     // to the current version tags.
 
     url = NeedInfoConfig.bugzilla_search_url;
-    if (NeedInfoConfig.api_key.length) {
-      url += "api_key=" + NeedInfoConfig.api_key + "&";
-    }
     url += NeedInfoConfig.fields_query.replace("{id}", id);
 
     // if requested, max lifetime date
@@ -343,9 +337,6 @@ function loadPage() {
     /////////////////////////////////////////////////////////
 
     url = NeedInfoConfig.bugzilla_search_url;
-    if (NeedInfoConfig.api_key.length) {
-      url += "api_key=" + NeedInfoConfig.api_key + "&";
-    }
     url += NeedInfoConfig.fields_query.replace("{id}", id);
 
     // if requested, max lifetime date
@@ -373,9 +364,6 @@ function loadPage() {
     /////////////////////////////////////////////////////////
 
     url = NeedInfoConfig.bugzilla_search_url;
-    if (NeedInfoConfig.api_key.length) {
-      url += "api_key=" + NeedInfoConfig.api_key + "&";
-    }
     url += NeedInfoConfig.fields_query.replace("{id}", id);
 
     // if requested, max lifetime date
@@ -396,9 +384,6 @@ function loadPage() {
     /////////////////////////////////////////////////////////
 
     url = NeedInfoConfig.bugzilla_search_url;
-    if (NeedInfoConfig.api_key.length) {
-      url += "api_key=" + NeedInfoConfig.api_key + "&";
-    }
     url += NeedInfoConfig.fields_query.replace("{id}", id);
 
     // if requested, max lifetime date
@@ -444,6 +429,7 @@ function errorMsg(text) {
 function retrieveInfoFor(url, id, elementIndex, developer, userQuery) {
   $.ajax({
     url: url,
+    headers: {"X-Bugzilla-api-key": `${NeedInfoConfig.api_key}`},
     success: function (data) {
       displayCountFor(id, elementIndex, developer, url, userQuery, data);
     }
@@ -555,12 +541,10 @@ function queryAccount() {
 function submitUserSearch(value) {
   let url = NeedInfoConfig.bugzilla_user_url;
   url = url.replace('{value}', value);
-  if (NeedInfoConfig.api_key.length) {
-    url += "&api_key=" + NeedInfoConfig.api_key;
-  }
   $('#autofill-user-search').empty();
   $.ajax({
     url: url,
+    headers: {"X-Bugzilla-api-key": `${NeedInfoConfig.api_key}`},
     success: function (data) {
       // data.users.name and real_name
       data.users.forEach(function (val) {
