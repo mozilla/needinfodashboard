@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Need Info Manager</title>
   <link rel="stylesheet" type="text/css" href="css/needinfo.css">
-  <link rel="shortcut icon" type="image/png" href="images/nidashfavicon.png">
+  <link rel="icon" type="image/png" href="images/nidashfavicon.png">
   <script src="js/libs/jquery-1.12.0.min.js"></script>
   <script src="js/libs/jquery-cross-origin.min.js"></script>
   <script src="js/libs/purl-2.3.1/purl.js"></script>
@@ -14,7 +16,7 @@
 <body id="body">
   <div id="header-bg" class="header-bg"></div>
   <div class="header">
-    <img id="title-img" src="images/firefox.png" />
+    <img id="title-img" src="images/firefox.png" alt="Firefox" />
     <div class="title" id="title">Need Info Manager</div>
   </div>
 
@@ -34,29 +36,25 @@
     <input type="date" class="date-picker" id="oldest-search-date" onchange="lastDateChanged();"/>
     <button class="command-button" onclick="refreshList(event);">Refresh</button>
     <button class="command-button" onclick="openSettings()">Settings</button>
-    <img id="alert-icon" class="alert-icon" src="images/alert-icon.png" width="10px" height="10px" />
+    <img id="alert-icon" class="alert-icon" src="images/alert-icon.png" width="10" height="10" alt="" />
   </div>
 
-  <center>
-    <div class="table-container" id="report">
-    </div>
-  </center>
-  <br />
+  <div class="table-container" id="report">
+  </div>
   <div class="errors-container" id="errors">
   </div>
-  <br />
   <span class="footer">Would you like to add your team? Ping jimm on Slack or Matrix.</span>
   <span class="footer">The source for this dashbaord is <a href="https://github.com/mozilla/needinfodashboard">available on Github!</a> Bug reports and feature requests welcome.</span>
 
   <!-- dialog: setting and alert icon -->
-  <dialog id="settings-dialog" oncancel="">
+  <dialog id="settings-dialog">
     <form method="dialog">
       <div class="settings-container">
 
         <div class="prompt-row1">Settings</div>
 
         <label class="prompt-row2" for="api-key">
-          API Key&nbsp;<a href="https://wiki.mozilla.org/Bugzilla:REST_API#with_two_factor_authentication" target="_blank" rel="noopener noreferrer"><img src="images/info.png" width="15"></a>
+          API Key&nbsp;<a href="https://wiki.mozilla.org/Bugzilla:REST_API#with_two_factor_authentication" target="_blank" rel="noopener noreferrer"><img src="images/info.png" alt="info"></a>
         </label>
         <input class="prompt-row3" type="text" id="api-key" placeholder="Bugzilla API Key" name="key" />
 
@@ -94,7 +92,7 @@
   </dialog>
 
   <!-- dialog: query for a bugzilla account -->
-  <dialog id="prompt-query-account" oncancel="">
+  <dialog id="prompt-query-account">
     <form method="dialog">
       <div class="prompt-query-account-container">
         <div class="prompt-row1">

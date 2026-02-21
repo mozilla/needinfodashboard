@@ -4,7 +4,7 @@
 }
 
 body {
-  margin: 0px;
+  margin: 0;
 }
 
 .header {
@@ -14,13 +14,13 @@ body {
   text-align: center;
   font-size:  4.5vmin;
   font-family: Moz;
-  border:0px solid black;
+  border: 0 solid black;
 }
 
 .header-bg {
   position: absolute;
   z-index: -1;
-  margin: 0px;
+  margin: 0;
   height: 8vh;
   border-right: 100vw solid #FF9500;
 }
@@ -54,16 +54,13 @@ body {
   text-align: center;
 }
 
-a {
-}
-
 .nodecoration {
   text-decoration: none;
   color: black;
 }
 
 a:hover {
-  color: highlight;
+  color: #0060df;
 }
 
 /* index pane css */
@@ -74,14 +71,10 @@ a:hover {
   float: left;
   width: 100%;
   display: grid;
-  gap: 0px;
-  border: 0px solid gray;
+  gap: 0;
+  border: 0 solid gray;
   font-size: 2vmin;
   font-family: Moz;
-}
-
-.report-title, .report-odr, .report-otr, .report-cdr, .report-onb, .report-cnb {
-  border: 0px solid blue;
 }
 
 .report-title, .report-odr, .report-otr, .report-cdr, .report-onb, .report-cnb {
@@ -89,10 +82,6 @@ a:hover {
   text-align: left;
   border-bottom: 1px solid #e0e0e0;
   padding-top: 7px;
-}
-
-.report-title {
-  text-decoration:auto;
 }
 
 .report-title {
@@ -133,8 +122,8 @@ a:hover {
   float: left;
   width: 100%;
   display: grid;
-  gap: 0px;
-  border: 0px solid gray;
+  gap: 0;
+  border: 0 solid gray;
   font-family: Moz;
 }
 
@@ -214,7 +203,7 @@ a:hover {
   grid-column: 8;
 }
 
- .name-bugtitle {
+.name-bugtitle {
   grid-column: 9;
   min-width:28vmin;
 }
@@ -229,16 +218,13 @@ a:hover {
   display: inline-block;
   text-align: center;
   align-self: center;
-  border: 0px solid blue;
+  border: 0 solid blue;
   white-space: nowrap;
   width: 100px;
 }
 
-.bug-link {
-}
-
 .bug-icon {
-  border: 0px solid red;
+  border: 0 solid red;
   max-height: 5px;
   height: 5px;
   margin-left: 10px;
@@ -250,10 +236,9 @@ a:hover {
   padding-right: 2vmin;
   float: left;
   width: 100%;
-  border: 0px solid gray;
+  border: 0 solid gray;
   font-family: Moz;
   color: #cc0000;
-  display: inline-block;
   font-size: 1.5vmin;
 }
 
@@ -262,10 +247,9 @@ a:hover {
   padding-left: 2vmin;
   padding-right: 2vmin;
   width: 100%;
-  border: 0px solid gray;
+  border: 0 solid gray;
   font-family: Moz;
   color: #909090;
-  display: inline-block;
   font-size: 1.0vmin;
 }
 
@@ -289,7 +273,7 @@ a:hover {
 .index-command-button-container {
   display: grid;
   grid-template-columns: 300px auto 10% 10% 10% 5px;
-  grid-gap: 10px;
+  gap: 10px;
   font-family: Moz;
   margin-top: 10px;
 }
@@ -298,7 +282,6 @@ a:hover {
   font-family: Moz;
   background: ButtonFace;
   font-size: 1.2vmin;
-  font-family: Moz;
   padding-left: 10px;
   padding-right: 10px;
   border: 1px solid grey;
@@ -320,7 +303,7 @@ a:hover {
 .details-command-button-container {
   display: grid;
   grid-template-columns: auto 250px repeat(4, auto) 10px repeat(2, auto) 5px;
-  grid-gap: 10px;
+  gap: 10px;
   font-family: Moz;
   margin-top: 10px;
 }
@@ -347,16 +330,10 @@ a:hover {
   align-self: center;
 }
 
-.button-separator {
-}
-
-.settings-button-container {
-}
-
 .alert-icon {
   visibility: hidden;
   margin-left: -10px;
-  margin-top: 0px;
+  margin-top: 0;
 }
 
 .status-text {
@@ -382,6 +359,10 @@ a:hover {
 
 .prompt-row2 {
   grid-row: 2;
+}
+
+.prompt-row2 img {
+  width: 15px;
 }
 
 .prompt-row3 {
@@ -433,7 +414,7 @@ a:hover {
 
 .settings-container {
   display: grid;
-  grid-gap: 10px;
+  gap: 10px;
   width: 100%;
   font-size: 1.4vmin;
   font-family: Moz;
@@ -449,8 +430,7 @@ a:hover {
 
 .settings-options-container {
   display: grid;
-  gap: 0px;
-  grid-row-gap: 0px;
+  gap: 0;
   width: 100%;
 }
 
@@ -487,7 +467,7 @@ a:hover {
 /* specific account search dialog container */
 .prompt-query-account-container {
   display: grid;
-  grid-gap: 10px;
+  gap: 10px;
   width: 100%;
 }
 
@@ -496,21 +476,21 @@ a:hover {
 /* generic dialog content container grid */
 .prompt-container {
   display: grid;
-  grid-gap: 10px;
+  gap: 10px;
   width: 100%;
 }
 
 /* generic these changes will impact x bugs info grid */
 .prompt-confirm-info-grid {
   display: grid;
-  gap: 0px;
+  gap: 0;
   font-family: Moz;
   align-items: center;
 }
 
 .prompt-account-grid {
   display: grid;
-  gap: 0px;
+  gap: 0;
   font-family: Moz;
 }
 
@@ -540,9 +520,6 @@ a:hover {
 .prompt-comment-textarea:focus {
   background: #ddd;
   outline: none;
-}
-
-.text-area-container {
 }
 
 .account-label {
@@ -607,7 +584,6 @@ a:hover {
 .prompt-details {
   font-size: 1.4vmin;
   font-family: Moz;
-  display: inline-block;
   float: left;
   width: 100%;
 }

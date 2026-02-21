@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Need Info Manager</title>
   <link rel="stylesheet" type="text/css" href="css/needinfo.css">
-  <link rel="shortcut icon" type="image/png" href="images/nidashfavicon.png">
+  <link rel="icon" type="image/png" href="images/nidashfavicon.png">
   <script src="js/libs/jquery-1.12.0.min.js"></script>
   <script src="js/libs/jquery-cross-origin.min.js"></script>
   <script src="js/libs/purl-2.3.1/purl.js"></script>
@@ -21,8 +23,6 @@
   <div class="details-command-button-container">
     <div id="stats" class="stats"></div>
     <div id="status" class="status-text">hello</div>
-    <!-- <button class="command-button" id="button-selfni" onclick="">Needinfo Me</button>
-    <button class="command-button" id="button-saveforlater" onclick="">Remind Me Later</button> -->
     <button class="command-button" id="button-redirsetter" onclick="invokeRedirectToSetter();">Redirect to Setter</button>
     <button class="command-button" id="button-redir" onclick="invokeRedirectTo();">Redirect to...</button>
     <button class="command-button" id="button-clearcmt" onclick="invokeClearNIWithComment();">Clear w/Comment</button>
@@ -30,27 +30,25 @@
     <div class="button-separator"></div>
     <button class="command-button" onclick="refreshList(event);">Refresh</button>
     <button class="command-button" onclick="openSettings()">Settings</button>
-    <img id="alert-icon" class="alert-icon" src="images/alert-icon.png" width="10px" height="10px" />
+    <img id="alert-icon" class="alert-icon" src="images/alert-icon.png" width="10" height="10" alt="" />
   </div>
   <!-- main list loading circle indicator -->
-  <div id="progress" class="progress"><img src="images/loadingicon.gif" /></div>
+  <div id="progress" class="progress"><img src="images/loadingicon.gif" alt="" /></div>
   <div class="details-container" id="report">
   </div>
-  <br />
   <div class="errors-container" id="errors">
   </div>
-  <br />
   <span class="footer">Source <a href="https://github.com/mozilla/needinfodashboard">available on Github</a></span>
 
   <!-- dialog: setting and alert icon -->
-  <dialog id="settings-dialog" oncancel="">
+  <dialog id="settings-dialog">
     <form method="dialog">
       <div class="settings-container">
 
         <div class="prompt-row1">Settings</div>
 
         <label class="prompt-row2" for="api-key">
-          API Key&nbsp;<a href="https://wiki.mozilla.org/Bugzilla:REST_API#with_two_factor_authentication" target="_blank" rel="noopener noreferrer"><img src="images/info.png" width="15"></a>
+          API Key&nbsp;<a href="https://wiki.mozilla.org/Bugzilla:REST_API#with_two_factor_authentication" target="_blank" rel="noopener noreferrer"><img src="images/info.png" alt="info"></a>
         </label>
         <input class="prompt-row3" type="text" id="api-key" placeholder="Bugzilla API Key" name="key" />
 
@@ -88,7 +86,7 @@
   </dialog>
 
   <!-- dialog: clear needinfo with NO comment -->
-  <dialog id="prompt-confirm" oncancel="">
+  <dialog id="prompt-confirm">
     <form method="dialog">
       <div class="prompt-container">
 
@@ -105,7 +103,7 @@
   </dialog>
 
   <!-- dialog: clear needinfo with a comment -->
-  <dialog id="prompt-comment-confirm" oncancel="">
+  <dialog id="prompt-comment-confirm">
     <form method="dialog">
       <div class="prompt-container">
 
@@ -117,7 +115,7 @@
 
         <div class="prompt-row2 text-area-container">
           <textarea class="prompt-comment-textarea" id="prompt-comment-confirm-comment"
-                    rows="3" cols="35" type="text" placeholder="comment"></textarea>
+                    rows="3" cols="35" placeholder="comment"></textarea>
         </div>
 
         <button class="prompt-row3 btn-confirm" value="confirm">Confirm</button>
@@ -127,7 +125,7 @@
   </dialog>
 
   <!-- dialog: redirect needinfo to setter with a comment -->
-  <dialog id="prompt-redirect-confirm" oncancel="">
+  <dialog id="prompt-redirect-confirm">
     <form method="dialog">
       <div class="prompt-container">
 
@@ -144,7 +142,7 @@
 
         <div class="prompt-row3 text-area-container">
           <textarea class="prompt-comment-textarea" id="prompt-redirect-confirm-comment"
-                    rows="3" cols="35" type="text" placeholder="comment"></textarea>
+                    rows="3" cols="35" placeholder="comment"></textarea>
         </div>
 
         <button class="prompt-row4 btn-confirm" value="confirm">Confirm</button>
@@ -155,7 +153,7 @@
   </dialog>
 
   <!-- dialog: redirect needinfo to someone with a comment -->
-  <dialog id="prompt-redirect-to-confirm" oncancel="">
+  <dialog id="prompt-redirect-to-confirm">
     <form method="dialog">
       <div class="prompt-container">
 
@@ -176,7 +174,7 @@
 
         <div class="prompt-row4 text-area-container">
           <textarea class="prompt-comment-textarea" id="prompt-redirect-to-confirm-comment"
-                    rows="3" cols="35" type="text" placeholder="comment"></textarea>
+                    rows="3" cols="35" placeholder="comment"></textarea>
         </div>
 
         <button class="prompt-row5 btn-confirm" value="confirm">Confirm</button>

@@ -144,39 +144,41 @@ function loadTeamConfig() {
 function prepPage() {
   resetPageStats();
   $("#report").empty();
-  var content =
-    "<div class='report-title'>Engineer</div>" +
-    "<div class='report-odr'>Open Dev Related</div>" +
-    "<div class='report-otr' title='Bugs with any needinfos for you that track the current nightly, beta, or release versions of Firefox.'>Open Tracked</div>" +
-    "<div class='report-cdr'>Closed Dev Related</div>" +
-    "<div class='report-onb'>Open Nagbot</div>" +
-    "<div class='report-cnb'>Closed Nagbot</div>";
-  // This is an elemet id idx and must match up when we
+
+  var frag = document.createDocumentFragment();
+  frag.appendChild(el('div', { cls: 'report-title', text: 'Engineer' }));
+  frag.appendChild(el('div', { cls: 'report-odr', text: 'Open Dev Related' }));
+  frag.appendChild(el('div', { cls: 'report-otr', title: 'Bugs with any needinfos for you that track the current nightly, beta, or release versions of Firefox.', text: 'Open Tracked' }));
+  frag.appendChild(el('div', { cls: 'report-cdr', text: 'Closed Dev Related' }));
+  frag.appendChild(el('div', { cls: 'report-onb', text: 'Open Nagbot' }));
+  frag.appendChild(el('div', { cls: 'report-cnb', text: 'Closed Nagbot' }));
+
+  // This is an element id idx and must match up when we
   // populate each row in displayCountFor.
   let devIndex = 0;
   for (let developer in NeedInfoConfig.developers) {
     devIndex++;
-    content +=
-      "<a href='' onclick=\"event_loadUserSummary(event, '" + developer + "')\"><div class='report-title'>" + developer + "</div></a>" +
-      "<div class='report-odr' id='data_odr_" + devIndex + "'>?</div>" +
-      "<div class='report-otr' id='data_otr_" + devIndex + "'>?</div>" +
-      "<div class='report-cdr' id='data_cdr_" + devIndex + "'>?</div>" +
-      "<div class='report-onb' id='data_onb_" + devIndex + "'>?</div>" +
-      "<div class='report-cnb' id='data_cnb_" + devIndex + "'>?</div>";
+    let link = el('a', { href: '' });
+    link.addEventListener('click', function(e) { event_loadUserSummary(e, developer); });
+    link.appendChild(el('div', { cls: 'report-title', text: developer }));
+    frag.appendChild(link);
+    frag.appendChild(el('div', { cls: 'report-odr', id: 'data_odr_' + devIndex, text: '?' }));
+    frag.appendChild(el('div', { cls: 'report-otr', id: 'data_otr_' + devIndex, text: '?' }));
+    frag.appendChild(el('div', { cls: 'report-cdr', id: 'data_cdr_' + devIndex, text: '?' }));
+    frag.appendChild(el('div', { cls: 'report-onb', id: 'data_onb_' + devIndex, text: '?' }));
+    frag.appendChild(el('div', { cls: 'report-cnb', id: 'data_cnb_' + devIndex, text: '?' }));
   }
-  if (content.length) {
-    $("#report").append(content);
-  }
+  document.getElementById('report').appendChild(frag);
 
   if (devIndex > 1) {
-    content =
-      "<div class='report-title'>TOTALS</div>" +
-      "<div class='report-odr' id='odr-total'>"+ PageStats.devOpen + "</div>" +
-      "<div class='report-otr' id='otr-total'>"+ PageStats.tracked + "</div>" +
-      "<div class='report-cdr' id='cdr-total'>"+ PageStats.devClosed + "</div>" +
-      "<div class='report-onb' id='onb-total'>"+ PageStats.nagOpen + "</div>" +
-      "<div class='report-cnb' id='cnb-total'>"+ PageStats.nagClosed + "</div>";
-    $("#report").append(content);
+    var totalFrag = document.createDocumentFragment();
+    totalFrag.appendChild(el('div', { cls: 'report-title', text: 'TOTALS' }));
+    totalFrag.appendChild(el('div', { cls: 'report-odr', id: 'odr-total', text: '' + PageStats.devOpen }));
+    totalFrag.appendChild(el('div', { cls: 'report-otr', id: 'otr-total', text: '' + PageStats.tracked }));
+    totalFrag.appendChild(el('div', { cls: 'report-cdr', id: 'cdr-total', text: '' + PageStats.devClosed }));
+    totalFrag.appendChild(el('div', { cls: 'report-onb', id: 'onb-total', text: '' + PageStats.nagOpen }));
+    totalFrag.appendChild(el('div', { cls: 'report-cnb', id: 'cnb-total', text: '' + PageStats.nagClosed }));
+    document.getElementById('report').appendChild(totalFrag);
   }
 
   checkConfig();
@@ -469,23 +471,25 @@ function displayErrorFor(id, elementIndex, developer, url, type) {
 
 function displayCountFor(id, elementIndex, developer, url, type, data) {
   let ni_count = 0;
-  
+
   if (data && data.bugs) {
     ni_count = data.bugs.length;
   }
 
   let tabTarget = NeedInfoConfig.targetnew ? "buglists" : "_blank";
 
-  let bug_link = "" + ni_count;
+  let cell = el('div', { cls: 'report-' + type, id: 'data_' + elementIndex });
   if (ni_count != 0) {
     let dash_link = "details.html?" + "&userquery=" + type + "&userid=" + id + getMaxDateParameter();
     let bug_list = restToQueryUrl(url);
-    bug_link = "<div class='bug-link-container'><a class='bug-link' title='Needinfo Details' href='" + dash_link + "' target='nilist'>" + ni_count + "</a>";
-    bug_link += "<a class='bug-icon' title='Bugzilla Bug List' href='" + bug_list + "' target='" + tabTarget + "'><img src='images/favicon.ico' /></a></div>";
-  }
-
-  if (!ni_count) {
-    bug_link = "&nbsp;";
+    let container = el('div', { cls: 'bug-link-container' });
+    container.appendChild(el('a', { cls: 'bug-link', title: 'Needinfo Details', href: dash_link, target: 'nilist', text: '' + ni_count }));
+    container.appendChild(el('a', { cls: 'bug-icon', title: 'Bugzilla Bug List', href: bug_list, target: tabTarget }, [
+      el('img', { src: 'images/favicon.ico' })
+    ]));
+    cell.appendChild(container);
+  } else {
+    cell.appendChild(document.createTextNode('\u00A0'));
   }
 
   switch(type) {
@@ -507,8 +511,8 @@ function displayCountFor(id, elementIndex, developer, url, type, data) {
   }
   populatePageStats();
 
-  let link = "<div class='report-" + type + "' id='data_" + elementIndex + "'>" + bug_link + "</div>";
-  $("#data_" + type + "_" + elementIndex).replaceWith(link);
+  let placeholder = document.getElementById('data_' + type + '_' + elementIndex);
+  placeholder.parentNode.replaceChild(cell, placeholder);
 }
 
 function settingsUpdated() {

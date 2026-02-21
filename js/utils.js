@@ -40,6 +40,24 @@ function replaceUrlParam(url, paramName, paramValue) {
   return url + (url.indexOf('?') > 0 ? '&' : '?') + paramName + '=' + paramValue;
 }
 
+function el(tag, attrs, children) {
+  var node = document.createElement(tag);
+  if (attrs) {
+    for (var key in attrs) {
+      if (key === 'cls')       { node.className = attrs[key]; }
+      else if (key === 'text') { node.textContent = attrs[key]; }
+      else if (key === 'html') { node.innerHTML = attrs[key]; }  // trusted strings only
+      else                     { node[key] = attrs[key]; }
+    }
+  }
+  if (children) {
+    for (var i = 0; i < children.length; i++) {
+      if (children[i] != null) node.appendChild(children[i]);
+    }
+  }
+  return node;
+}
+
 function updateDomains() {
   // If requested via the json config file, point all queries at
   // a bugzilla test instance. 

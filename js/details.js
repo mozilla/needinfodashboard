@@ -313,18 +313,28 @@ function processRow(ct, bugId, flagId, flagIdx, assignee, s, p, platform, flags,
 }
 
 function prepPage(userQuery) {
-  let header =
-    "<div class='name-checkbox'><input type='checkbox' id='check-all' onclick='allCheckClick(this);'/></div>" +
-    "<div class='name-nidate-hdr' onclick='dateSort();'>NI Date</div>" +
-    "<div class='name-bugid-hdr' onclick='bugIdSort();'>Bug ID</div>" +
-    "<div class='name-nifrom'>NeedInfo</div>" +
-    "<div class='name-assignee'>Assignee</div>" +
-    "<div class='name-severity-hdr' onclick='severitySort();'>Sev</div>" +
-    "<div class='name-priority-hdr' onclick='prioritySort();'>Pri</div>" +
-    "<div class='name-platform-hdr'>OS</div>" +
-    "<div class='name-bugtitle'>Title</div>" +
-    "<div class='name-nimsg'>NI Message</div>";
-  $("#report").append(header);
+  var frag = document.createDocumentFragment();
+  var checkAll = el('input', { type: 'checkbox', id: 'check-all' });
+  checkAll.addEventListener('click', function() { allCheckClick(this); });
+  frag.appendChild(el('div', { cls: 'name-checkbox' }, [checkAll]));
+  var datehdr = el('div', { cls: 'name-nidate-hdr', text: 'NI Date' });
+  datehdr.addEventListener('click', dateSort);
+  frag.appendChild(datehdr);
+  var bugidhdr = el('div', { cls: 'name-bugid-hdr', text: 'Bug ID' });
+  bugidhdr.addEventListener('click', bugIdSort);
+  frag.appendChild(bugidhdr);
+  frag.appendChild(el('div', { cls: 'name-nifrom', text: 'NeedInfo' }));
+  frag.appendChild(el('div', { cls: 'name-assignee', text: 'Assignee' }));
+  var sevhdr = el('div', { cls: 'name-severity-hdr', text: 'Sev' });
+  sevhdr.addEventListener('click', severitySort);
+  frag.appendChild(sevhdr);
+  var prihdr = el('div', { cls: 'name-priority-hdr', text: 'Pri' });
+  prihdr.addEventListener('click', prioritySort);
+  frag.appendChild(prihdr);
+  frag.appendChild(el('div', { cls: 'name-platform-hdr', text: 'OS' }));
+  frag.appendChild(el('div', { cls: 'name-bugtitle', text: 'Title' }));
+  frag.appendChild(el('div', { cls: 'name-nimsg', text: 'NI Message' }));
+  document.getElementById('report').appendChild(frag);
 
   let textHdr = '';
   // odr, cdr, onb, cnb
@@ -352,46 +362,52 @@ function populateRow(record) {
   let bugUrl = NeedInfoConfig.bugzilla_link_url.replace('{id}', record.bugid);
   let dateStr = record.date.toLocaleDateString(undefined, options);
   let tabTarget = NeedInfoConfig.targetnew ? "nidetails" : "_blank";
-  let bugLink = "<a target='" + tabTarget + "' href='" + bugUrl + "'>" + record.bugid + "</a>";
-  let titleLink = "<a class='nodecoration' target='" + tabTarget + "' href='" + bugUrl + "'>" + record.title + "</a>";
-  let commentLink = "<a class='nodecoration' target='" + tabTarget + "' href='" + bugUrl + "#c" + record.commentid + "'>" + record.msg + "</a>";
+  let bugLink = el('a', { target: tabTarget, href: bugUrl, text: record.bugid });
+  let titleLink = el('a', { cls: 'nodecoration', target: tabTarget, href: bugUrl, text: record.title });
+  let commentLink = el('a', { cls: 'nodecoration', target: tabTarget, href: bugUrl + '#c' + record.commentid, text: record.msg });
   let assignee = trimAddress(record.assignee);
 
   let index = -1, first = true;
-  let flagText = '';
-  let extraFlagText = '';
+  let flagNodes = [];
+  let extraFlagNodes = [];
   record.flags.forEach(function (flag) {
     index++;
-    if (flag.name != 'needinfo') 
-      return true;
+    if (flag.name != 'needinfo')
+      return;
     if (record.flagidx == index) {
-      flagText = trimAddress(flag.setter) + '<br/>';
+      flagNodes.push(document.createTextNode(trimAddress(flag.setter)));
+      flagNodes.push(el('br', {}));
     } else {
       if (first) {
         first = false;
-        extraFlagText = "<br/>additional nis:<br/>";
+        extraFlagNodes.push(el('br', {}));
+        extraFlagNodes.push(document.createTextNode('additional nis:'));
+        extraFlagNodes.push(el('br', {}));
       }
-      extraFlagText += trimAddress(flag.setter) + ' &rArr; ' + trimAddress(flag.requestee) + '<br/>';
+      extraFlagNodes.push(document.createTextNode(trimAddress(flag.setter) + ' \u21D2 ' + trimAddress(flag.requestee)));
+      extraFlagNodes.push(el('br', {}));
     }
   });
 
-  let checkBox = "<input type='checkbox' onclick='checkClick(this);' id='check-" + record.bugid + "'";
-  if (record.checked)
-    checkBox += " checked ";
-  checkBox += "/>";
-  
-  let content =
-    "<div class='name-checkbox'>" + checkBox + "</div>" +
-    "<div class='name-nidate'>" + dateStr + "</div>" +
-    "<div class='name-bugid'>" + bugLink + "</div>" +
-    "<div class='name-nifrom'>" + flagText + "<span class='name-nifromadd'>" + extraFlagText + "</span></div>" +
-    "<div class='name-assignee'>" + assignee + "</div>" +
-    "<div class='name-severity'>" + record.severity + "</div>" +
-    "<div class='name-priority'>" + record.priority + "</div>" +
-    "<div class='name-platform'>" + record.platform + "</div>" +
-    "<div class='name-bugtitle'>" + titleLink + "</div>" +
-    "<div class='name-nimsg'>" + commentLink + "</div>";
-  $("#report").append(content);
+  let checkBox = el('input', { type: 'checkbox', id: 'check-' + record.bugid });
+  if (record.checked) checkBox.checked = true;
+  checkBox.addEventListener('click', function() { checkClick(this); });
+
+  let extraFlagSpan = el('span', { cls: 'name-nifromadd' }, extraFlagNodes);
+  let nifromDiv = el('div', { cls: 'name-nifrom' }, flagNodes.concat([extraFlagSpan]));
+
+  var frag = document.createDocumentFragment();
+  frag.appendChild(el('div', { cls: 'name-checkbox' }, [checkBox]));
+  frag.appendChild(el('div', { cls: 'name-nidate', text: dateStr }));
+  frag.appendChild(el('div', { cls: 'name-bugid' }, [bugLink]));
+  frag.appendChild(nifromDiv);
+  frag.appendChild(el('div', { cls: 'name-assignee', text: assignee }));
+  frag.appendChild(el('div', { cls: 'name-severity', text: record.severity }));
+  frag.appendChild(el('div', { cls: 'name-priority', text: record.priority }));
+  frag.appendChild(el('div', { cls: 'name-platform', text: record.platform }));
+  frag.appendChild(el('div', { cls: 'name-bugtitle' }, [titleLink]));
+  frag.appendChild(el('div', { cls: 'name-nimsg' }, [commentLink]));
+  document.getElementById('report').appendChild(frag);
 }
 
 function checkConfig() {
