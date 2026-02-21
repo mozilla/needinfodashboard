@@ -157,6 +157,14 @@ a:hover {
   color: darkgray;
 }
 
+.row-even {
+  background-color: #f8f8f8;
+}
+
+.row-odd {
+  background-color: #ffffff;
+}
+
 .name-checkbox {
   grid-column: 1;
 }

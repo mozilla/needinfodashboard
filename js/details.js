@@ -357,7 +357,8 @@ function prepPage(userQuery) {
   $("#title").text(textHdr + ' Details for ' + getUserId());
 }
 
-function populateRow(record) {
+function populateRow(record, rowIndex) {
+  let rowCls = (rowIndex % 2 === 0) ? 'row-even' : 'row-odd';
   const options = { dateStyle: 'medium' };
   let bugUrl = NeedInfoConfig.bugzilla_link_url.replace('{id}', record.bugid);
   let dateStr = record.date.toLocaleDateString(undefined, options);
@@ -394,19 +395,19 @@ function populateRow(record) {
   checkBox.addEventListener('click', function() { checkClick(this); });
 
   let extraFlagSpan = el('span', { cls: 'name-nifromadd' }, extraFlagNodes);
-  let nifromDiv = el('div', { cls: 'name-nifrom' }, flagNodes.concat([extraFlagSpan]));
+  let nifromDiv = el('div', { cls: 'name-nifrom ' + rowCls }, flagNodes.concat([extraFlagSpan]));
 
   var frag = document.createDocumentFragment();
-  frag.appendChild(el('div', { cls: 'name-checkbox' }, [checkBox]));
-  frag.appendChild(el('div', { cls: 'name-nidate', text: dateStr }));
-  frag.appendChild(el('div', { cls: 'name-bugid' }, [bugLink]));
+  frag.appendChild(el('div', { cls: 'name-checkbox ' + rowCls }, [checkBox]));
+  frag.appendChild(el('div', { cls: 'name-nidate ' + rowCls, text: dateStr }));
+  frag.appendChild(el('div', { cls: 'name-bugid ' + rowCls }, [bugLink]));
   frag.appendChild(nifromDiv);
-  frag.appendChild(el('div', { cls: 'name-assignee', text: assignee }));
-  frag.appendChild(el('div', { cls: 'name-severity', text: record.severity }));
-  frag.appendChild(el('div', { cls: 'name-priority', text: record.priority }));
-  frag.appendChild(el('div', { cls: 'name-platform', text: record.platform }));
-  frag.appendChild(el('div', { cls: 'name-bugtitle' }, [titleLink]));
-  frag.appendChild(el('div', { cls: 'name-nimsg' }, [commentLink]));
+  frag.appendChild(el('div', { cls: 'name-assignee ' + rowCls, text: assignee }));
+  frag.appendChild(el('div', { cls: 'name-severity ' + rowCls, text: record.severity }));
+  frag.appendChild(el('div', { cls: 'name-priority ' + rowCls, text: record.priority }));
+  frag.appendChild(el('div', { cls: 'name-platform ' + rowCls, text: record.platform }));
+  frag.appendChild(el('div', { cls: 'name-bugtitle ' + rowCls }, [titleLink]));
+  frag.appendChild(el('div', { cls: 'name-nimsg ' + rowCls }, [commentLink]));
   document.getElementById('report').appendChild(frag);
 }
 
@@ -435,8 +436,8 @@ function errorMsg(text) {
 
 function populateRows() {
   document.getElementById('progress').style.visibility = 'hidden';
-  bugset.forEach(function (rec) {
-    populateRow(rec);
+  bugset.forEach(function (rec, index) {
+    populateRow(rec, index);
   });
   $("#stats").text("" + bugset.length + " Bugs");
   updateButtonsState();
