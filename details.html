@@ -15,7 +15,6 @@
 </head>
 
 <body id="body">
-  <div id="header-bg" class="header-bg"></div>
   <div class="header">
     <div class="title-details" id="title"></div>
   </div>
@@ -30,15 +29,17 @@
     <div class="button-separator"></div>
     <button class="command-button" onclick="refreshList(event);">Refresh</button>
     <button class="command-button" onclick="openSettings()">Settings</button>
-    <img id="alert-icon" class="alert-icon" src="images/alert-icon.png" width="10" height="10" alt="" />
+    <img id="alert-icon" class="alert-icon" src="images/alert-icon.png" width="10" height="10" alt="" title="Missing Bugzilla API Key. Select Settings to configure." />
   </div>
   <!-- main list loading circle indicator -->
-  <div id="progress" class="progress"><img src="images/loadingicon.gif" alt="" /></div>
+  <div id="progress" class="progress"></div>
   <div class="details-container" id="report">
   </div>
   <div class="errors-container" id="errors">
   </div>
-  <span class="footer">Source <a href="https://github.com/mozilla/needinfodashboard">available on Github</a></span>
+  <div class="footer">
+    <span>Source <a href="https://github.com/mozilla/needinfodashboard">available on Github</a></span>
+  </div>
 
   <!-- dialog: setting and alert icon -->
   <dialog id="settings-dialog">

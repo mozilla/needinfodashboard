@@ -21,4 +21,4 @@ instance of Bugzilla Mozilla maintains. For API key generation or new accounts g
 instance ask in chat.mozilla.org's bugzilla.mozilla.org channel.
 
 This dashboard is developed and maintained by Jim Mathies. Starting codebase was based on Bob Hood's
-Need Info Leaderboard dashnboard.
+Need Info Leaderboard dashboard.

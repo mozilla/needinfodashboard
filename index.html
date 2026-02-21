@@ -14,7 +14,6 @@
 </head>
 
 <body id="body">
-  <div id="header-bg" class="header-bg"></div>
   <div class="header">
     <img id="title-img" src="images/firefox.png" alt="Firefox" />
     <div class="title" id="title">Need Info Manager</div>
@@ -36,15 +35,18 @@
     <input type="date" class="date-picker" id="oldest-search-date" onchange="lastDateChanged();"/>
     <button class="command-button" onclick="refreshList(event);">Refresh</button>
     <button class="command-button" onclick="openSettings()">Settings</button>
-    <img id="alert-icon" class="alert-icon" src="images/alert-icon.png" width="10" height="10" alt="" />
+    <img id="alert-icon" class="alert-icon" src="images/alert-icon.png" width="10" height="10" alt="" title="Missing Bugzilla API Key. Select Settings to configure." />
   </div>
 
   <div class="table-container" id="report">
   </div>
   <div class="errors-container" id="errors">
   </div>
-  <span class="footer">Would you like to add your team? Ping jimm on Slack or Matrix.</span>
-  <span class="footer">The source for this dashbaord is <a href="https://github.com/mozilla/needinfodashboard">available on Github!</a> Bug reports and feature requests welcome.</span>
+  <div class="footer">
+    <span>Would you like to add your team? Ping jimm on Slack or Matrix.</span>
+    &nbsp;&nbsp;|&nbsp;&nbsp;
+    <span>The source for this dashboard is <a href="https://github.com/mozilla/needinfodashboard">available on Github!</a></span>
+  </div>
 
   <!-- dialog: setting and alert icon -->
   <dialog id="settings-dialog">
