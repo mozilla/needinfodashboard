@@ -154,7 +154,7 @@ function prepPage() {
   frag.appendChild(el('div', { cls: 'report-cnb', text: 'Closed Nagbot' }));
 
   // This is an element id idx and must match up when we
-  // populate each row in displayCountFor.
+  // populate each row in displayCellFor.
   let devIndex = 0;
   for (let developer in NeedInfoConfig.developers) {
     devIndex++;
@@ -250,171 +250,122 @@ function loadPage() {
     // each developer's list.
     let id = encodeURIComponent(NeedInfoConfig.developers[developer]);
 
-    // exclude_fields=_all
-
-    // v1={id}
-    // o1=equals
-    // f1=requestees.login_name
-
-    // f2=flagtypes.name
-    // o2=equals
-    // v2=needinfo?
-
     /////////////////////////////////////////////////////////
-    // Open Developer Related
+    // Build per-category Bugzilla link URLs (for icon links only, no AJAX)
+    // These use fields_query (exclude_fields=_all) so Bugzilla returns a
+    // standard bug list page when converted via restToQueryUrl().
     /////////////////////////////////////////////////////////
 
-    let url = NeedInfoConfig.bugzilla_search_url;
+    let linkUrls = {};
+    let url;
+
+    // ODR link URL
+    url = NeedInfoConfig.bugzilla_search_url;
     if (NeedInfoConfig.api_key.length) {
       url += "api_key=" + NeedInfoConfig.api_key + "&";
     }
     url += NeedInfoConfig.fields_query.replace("{id}", id);
-
-    // if requested, max lifetime date
     url += getBugzillaMaxDateQuery();
-
-    // filter certain needinfo setters
     url += "&f3=setters.login_name";
     url += "&o3=nowordssubstr";
     url += "&v3=release-mgmt-account-bot%40mozilla.tld";
-
-    // Ignore needinfos set by the account we're querying for.
     if (NeedInfoConfig.ignoremyni) {
       url += "," + id;
     }
-
-    // f4=bug_status
-    // o4=nowordssubstr / anywordssubstr
-    // v4=RESOLVED%2CVERIFIED%2CCLOSED
-
     url += "&f4=bug_status";
     url += "&o4=nowordssubstr";
     url += "&v4=RESOLVED%2CVERIFIED%2CCLOSED";
+    linkUrls.odr = url;
 
-    retrieveInfoFor(url, id, elementIndex, developer, 'odr');
-
-    /////////////////////////////////////////////////////////
-    // Open and Tracked
-    /////////////////////////////////////////////////////////
-    // Query uses the generic tag names that bugzilla maps
-    // to the current version tags.
-
+    // OTR link URL
     url = NeedInfoConfig.bugzilla_search_url;
     if (NeedInfoConfig.api_key.length) {
       url += "api_key=" + NeedInfoConfig.api_key + "&";
     }
     url += NeedInfoConfig.fields_query.replace("{id}", id);
-
-    // if requested, max lifetime date
     url += getBugzillaMaxDateQuery();
-
-    // f4=bug_status
-    // o4=nowordssubstr / anywordssubstr
-    // v4=RESOLVED%2CVERIFIED%2CCLOSED
-
     url += "&f3=bug_status";
     url += "&o3=nowordssubstr";
     url += "&v3=RESOLVED%2CVERIFIED%2CCLOSED";
-
-    // f5=cf_tracking_firefox_beta
-    // o5=anywords
-    // v5=%2B
-
     url += '&f4=OP';
-
     url += '&j4=OR';
-
     url += "&f5=cf_tracking_firefox_nightly";
     url += "&o5=anywords";
     url += "&v5=%2B";
-
     url += "&f6=cf_tracking_firefox_beta";
     url += "&o6=anywords";
     url += "&v6=%2B";
-
     url += "&f7=cf_tracking_firefox_release";
     url += "&o7=anywords";
     url += "&v7=%2B";
+    url += '&f8=CP';
+    linkUrls.otr = url;
 
-    url += '&f8=CP'
-
-    retrieveInfoFor(url, id, elementIndex, developer, 'otr');
-
-    /////////////////////////////////////////////////////////
-    // Closed Developer Related
-    /////////////////////////////////////////////////////////
-
+    // CDR link URL
     url = NeedInfoConfig.bugzilla_search_url;
     if (NeedInfoConfig.api_key.length) {
       url += "api_key=" + NeedInfoConfig.api_key + "&";
     }
     url += NeedInfoConfig.fields_query.replace("{id}", id);
-
-    // if requested, max lifetime date
     url += getBugzillaMaxDateQuery();
-
     url += "&f3=setters.login_name";
     url += "&o3=notequals";
     url += "&v3=release-mgmt-account-bot%40mozilla.tld";
-
     url += "&f4=bug_status";
     url += "&o4=anywordssubstr";
     url += "&v4=RESOLVED%2CVERIFIED%2CCLOSED";
-
-    // Ignore needinfos set by the account we're querying for.
     if (NeedInfoConfig.ignoremyni) {
       url += "&f5=setters.login_name";
       url += "&o5=notequals";
       url += "&v5=" + id;
     }
+    linkUrls.cdr = url;
 
-    retrieveInfoFor(url, id, elementIndex, developer, 'cdr');
-
-    /////////////////////////////////////////////////////////
-    // Open Nagbot
-    /////////////////////////////////////////////////////////
-
+    // ONB link URL
     url = NeedInfoConfig.bugzilla_search_url;
     if (NeedInfoConfig.api_key.length) {
       url += "api_key=" + NeedInfoConfig.api_key + "&";
     }
     url += NeedInfoConfig.fields_query.replace("{id}", id);
-
-    // if requested, max lifetime date
     url += getBugzillaMaxDateQuery();
-
     url += "&f3=setters.login_name";
     url += "&o3=equals";
     url += "&v3=release-mgmt-account-bot%40mozilla.tld";
-
     url += "&f4=bug_status";
     url += "&o4=nowordssubstr";
     url += "&v4=RESOLVED%2CVERIFIED%2CCLOSED";
+    linkUrls.onb = url;
 
-    retrieveInfoFor(url, id, elementIndex, developer, 'onb');
-
-    /////////////////////////////////////////////////////////
-    // Closed Nagbot
-    /////////////////////////////////////////////////////////
-
+    // CNB link URL
     url = NeedInfoConfig.bugzilla_search_url;
     if (NeedInfoConfig.api_key.length) {
       url += "api_key=" + NeedInfoConfig.api_key + "&";
     }
     url += NeedInfoConfig.fields_query.replace("{id}", id);
-
-    // if requested, max lifetime date
     url += getBugzillaMaxDateQuery();
-
     url += "&f3=setters.login_name";
     url += "&o3=equals";
     url += "&v3=release-mgmt-account-bot%40mozilla.tld";
-
     url += "&f4=bug_status";
     url += "&o4=anywordssubstr";
     url += "&v4=RESOLVED%2CVERIFIED%2CCLOSED";
+    linkUrls.cnb = url;
 
-    retrieveInfoFor(url, id, elementIndex, developer, 'cnb');
+    /////////////////////////////////////////////////////////
+    // Single combined AJAX query — fetches all needinfo? bugs for this
+    // developer with enough fields to bucket client-side (1 request instead of 5)
+    /////////////////////////////////////////////////////////
+
+    let combinedUrl = NeedInfoConfig.bugzilla_search_url;
+    if (NeedInfoConfig.api_key.length) {
+      combinedUrl += "api_key=" + NeedInfoConfig.api_key + "&";
+    }
+    combinedUrl += "f1=requestees.login_name&o1=equals&v1=" + id;
+    combinedUrl += "&f2=flagtypes.name&o2=equals&v2=needinfo%3F";
+    combinedUrl += "&include_fields=id,status,flags,cf_tracking_firefox_nightly,cf_tracking_firefox_beta,cf_tracking_firefox_release";
+    combinedUrl += getBugzillaMaxDateQuery();
+
+    retrieveInfoFor(combinedUrl, id, elementIndex, developer, linkUrls);
   }
 }
 
@@ -443,15 +394,15 @@ function errorMsg(text) {
 
 // this function's sole reason for existing is to provide
 // a capture context for the AJAX values...
-function retrieveInfoFor(url, id, elementIndex, developer, userQuery) {
+function retrieveInfoFor(url, id, elementIndex, developer, linkUrls) {
   $.ajax({
     url: url,
     success: function (data) {
-      displayCountFor(id, elementIndex, developer, url, userQuery, data);
+      processAllCountsFor(id, elementIndex, developer, linkUrls, data);
     }
   })
   .error(function(jqXHR, textStatus, errorThrown) {
-    displayErrorFor(id, elementIndex, developer, url, userQuery);
+    displayErrorFor(id, elementIndex, developer, url, null);
     console.log("status:", textStatus);
     console.log("error thrown:", errorThrown);
     console.log("response text:", jqXHR.responseText);
@@ -469,19 +420,67 @@ function retrieveInfoFor(url, id, elementIndex, developer, userQuery) {
 function displayErrorFor(id, elementIndex, developer, url, type) {
 }
 
-function displayCountFor(id, elementIndex, developer, url, type, data) {
-  let ni_count = 0;
+// Bucket all bugs from the combined query into the 5 categories client-side,
+// then render each cell. Called once per developer instead of 5 times.
+function processAllCountsFor(id, elementIndex, developer, linkUrls, data) {
+  const NAGBOT = 'release-mgmt-account-bot@mozilla.tld';
+  const CLOSED = ['RESOLVED', 'VERIFIED', 'CLOSED'];
+  const devEmail = decodeURIComponent(id);
+  let counts = { odr: 0, otr: 0, cdr: 0, onb: 0, cnb: 0 };
 
-  if (data && data.bugs) {
-    ni_count = data.bugs.length;
+  for (let bug of (data.bugs || [])) {
+    let isClosed = CLOSED.includes(bug.status);
+    let isTracked = bug.cf_tracking_firefox_nightly === '+' ||
+                    bug.cf_tracking_firefox_beta    === '+' ||
+                    bug.cf_tracking_firefox_release === '+';
+    // prevent double-counting if a bug has multiple NI flags for this dev
+    let seen = new Set();
+
+    for (let flag of (bug.flags || [])) {
+      if (flag.name !== 'needinfo' || flag.status !== '?') continue;
+      if (flag.requestee !== devEmail) continue;
+
+      let isNagbot = flag.setter === NAGBOT;
+      let isSelf   = flag.setter === devEmail;
+
+      if (!isClosed) {
+        if (isNagbot) {
+          if (!seen.has('onb')) { counts.onb++; seen.add('onb'); }
+        } else if (!isSelf || !NeedInfoConfig.ignoremyni) {
+          if (!seen.has('odr')) { counts.odr++; seen.add('odr'); }
+        }
+        if (isTracked && !seen.has('otr')) { counts.otr++; seen.add('otr'); }
+      } else {
+        if (isNagbot) {
+          if (!seen.has('cnb')) { counts.cnb++; seen.add('cnb'); }
+        } else if (!isSelf || !NeedInfoConfig.ignoremyni) {
+          if (!seen.has('cdr')) { counts.cdr++; seen.add('cdr'); }
+        }
+      }
+    }
   }
 
+  PageStats.devOpen   += counts.odr;
+  PageStats.tracked   += counts.otr;
+  PageStats.devClosed += counts.cdr;
+  PageStats.nagOpen   += counts.onb;
+  PageStats.nagClosed += counts.cnb;
+  populatePageStats();
+
+  displayCellFor(id, elementIndex, 'odr', counts.odr, linkUrls.odr);
+  displayCellFor(id, elementIndex, 'otr', counts.otr, linkUrls.otr);
+  displayCellFor(id, elementIndex, 'cdr', counts.cdr, linkUrls.cdr);
+  displayCellFor(id, elementIndex, 'onb', counts.onb, linkUrls.onb);
+  displayCellFor(id, elementIndex, 'cnb', counts.cnb, linkUrls.cnb);
+}
+
+function displayCellFor(id, elementIndex, type, ni_count, linkUrl) {
   let tabTarget = NeedInfoConfig.targetnew ? "buglists" : "_blank";
 
   let cell = el('div', { cls: 'report-' + type, id: 'data_' + elementIndex });
   if (ni_count != 0) {
     let dash_link = "details.html?" + "&userquery=" + type + "&userid=" + id + getMaxDateParameter();
-    let bug_list = restToQueryUrl(url);
+    let bug_list = restToQueryUrl(linkUrl);
     let container = el('div', { cls: 'bug-link-container' });
     container.appendChild(el('a', { cls: 'bug-link', title: 'Needinfo Details', href: dash_link, target: 'nilist', text: '' + ni_count }));
     container.appendChild(el('a', { cls: 'bug-icon', title: 'Bugzilla Bug List', href: bug_list, target: tabTarget }, [
@@ -491,25 +490,6 @@ function displayCountFor(id, elementIndex, developer, url, type, data) {
   } else {
     cell.appendChild(document.createTextNode('\u00A0'));
   }
-
-  switch(type) {
-    case 'odr':
-    PageStats.devOpen += ni_count;
-    break;
-    case 'otr':
-    PageStats.tracked += ni_count;
-    break;
-    case 'cdr':
-    PageStats.devClosed += ni_count;
-    break;
-    case 'onb':
-    PageStats.nagOpen += ni_count;
-    break;
-    case 'cnb':
-    PageStats.nagClosed += ni_count;
-    break;
-  }
-  populatePageStats();
 
   let placeholder = document.getElementById('data_' + type + '_' + elementIndex);
   placeholder.parentNode.replaceChild(cell, placeholder);
