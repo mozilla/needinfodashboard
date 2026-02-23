@@ -44,44 +44,63 @@
   <!-- dialog: setting and alert icon -->
   <dialog id="settings-dialog">
     <form method="dialog">
-      <div class="settings-container">
+      <div class="dialog-header">
+        <h2 class="dialog-title">Settings</h2>
+        <button type="submit" value="cancel" class="dialog-close-btn btn-cancel" aria-label="Close">&#x2715;</button>
+      </div>
 
-        <div class="prompt-row1">Settings</div>
+      <div class="dialog-body">
+        <div class="settings-container">
 
-        <label class="prompt-row2" for="api-key">
-          API Key&nbsp;<a href="https://wiki.mozilla.org/Bugzilla:REST_API#with_two_factor_authentication" target="_blank" rel="noopener noreferrer"><img src="images/info.png" alt="info"></a>
-        </label>
-        <input class="prompt-row3" type="text" id="api-key" placeholder="Bugzilla API Key" name="key" />
+          <div class="settings-header">
+            <div class="settings-label-title">Bugzilla Access</div>
+          </div>
+          <div class="settings-full-row">
+            <label for="api-key">API Key</label>
+            <input type="text" id="api-key" placeholder="Bugzilla API Key" name="key" />
+            <p class="settings-help-text">
+              Enter a Bugzilla API key to access security-sensitive bugs and perform bulk
+              actions. API keys are managed in your Bugzilla account preferences.
+              <a href="https://wiki.mozilla.org/Bugzilla:REST_API#with_two_factor_authentication"
+                 target="_blank" rel="noopener noreferrer">More info</a>
+            </p>
+          </div>
 
-        <div class="prompt-row4 settings-options-container">
           <div class="settings-header">
             <div class="settings-label-title">Search Options</div>
           </div>
-          <div class="settings-col1">
+          <div class="settings-option-row">
             <input type="checkbox" id="option-ignoremyni" name="ignoremyni" />
+            <label for="option-ignoremyni">
+              Ignore needinfos set on yourself.
+              <small>Hides flags where you are both the requester and the requestee.</small>
+            </label>
           </div>
-          <div class="settings-col2">
-            <div class="settings-label">Ignore self needinfos</div>
-          </div>
+
           <div class="settings-header">
             <div class="settings-label-title">General Options</div>
           </div>
-          <div class="settings-col1">
+          <div class="settings-option-row">
             <input type="checkbox" id="option-targets" name="target" />
+            <label for="option-targets">
+              Re-use the same target tab for bug links.
+              <small>All bug links will open in the same tab instead of opening new tabs.</small>
+            </label>
           </div>
-          <div class="settings-col2">
-            <div class="settings-label">Target same tab for bug links</div>
-          </div>
-          <div class="settings-col1">
+          <div class="settings-option-row">
             <input type="checkbox" id="option-save" name="save" />
+            <label for="option-save">
+              Persist settings including my Bugzilla API key in local storage.
+              <small>When off, settings are only kept for the current browser session.</small>
+            </label>
           </div>
-          <div class="settings-col2">
-            <div class="settings-label">Always remember my settings</div>
-          </div>
-        </div>
 
-        <button class="prompt-row5 btn-confirm" value="confirm">Apply</button>
-        <button class="prompt-row6 btn-cancel" autofocus value="cancel">Cancel</button>
+        </div>
+      </div>
+
+      <div class="dialog-footer">
+        <button class="btn-cancel" value="cancel">Cancel</button>
+        <button class="btn-confirm" value="confirm">Apply</button>
       </div>
     </form>
   </dialog>
