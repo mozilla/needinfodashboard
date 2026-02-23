@@ -399,10 +399,20 @@ a:hover {
   align-self: center;
 }
 
-.alert-icon {
-  visibility: hidden;
-  width: 10px;
-  height: 10px;
+.settings-button-container {
+  position: relative;
+  display: inline-block;
+}
+
+.settings-button-container.alert::after {
+  content: '';
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 8px;
+  height: 8px;
+  background: red;
+  border-radius: 50%;
 }
 
 .status-text {

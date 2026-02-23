@@ -34,8 +34,9 @@
     <div class="button-separator"></div>
     <input type="date" class="date-picker" id="oldest-search-date" onchange="lastDateChanged();"/>
     <button class="command-button" onclick="refreshList(event);">Refresh</button>
-    <button class="command-button" onclick="openSettings()">Settings</button>
-    <img id="alert-icon" class="alert-icon" src="images/alert-icon.png" width="10" height="10" alt="" title="Missing Bugzilla API Key. Select Settings to configure." />
+    <div class="settings-button-container" id="settings-button-container" title="Missing Bugzilla API Key. Select Settings to configure.">
+      <button class="command-button" onclick="openSettings()">Settings</button>
+    </div>
   </div>
 
   <div class="table-container" id="report">

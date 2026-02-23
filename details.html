@@ -28,8 +28,9 @@
     <button class="command-button" id="button-clear" onclick="invokeClearNI();">Clear</button>
     <div class="button-separator"></div>
     <button class="command-button" onclick="refreshList(event);">Refresh</button>
-    <button class="command-button" onclick="openSettings()">Settings</button>
-    <img id="alert-icon" class="alert-icon" src="images/alert-icon.png" width="10" height="10" alt="" title="Missing Bugzilla API Key. Select Settings to configure." />
+    <div class="settings-button-container" id="settings-button-container" title="Missing Bugzilla API Key. Select Settings to configure.">
+      <button class="command-button" onclick="openSettings()">Settings</button>
+    </div>
   </div>
   <!-- main list loading circle indicator -->
   <div id="progress" class="progress"></div>

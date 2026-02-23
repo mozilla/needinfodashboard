@@ -507,11 +507,8 @@ function settingsUpdated() {
 }
 
 function checkConfig() {
-  if (!NeedInfoConfig.api_key || NeedInfoConfig.api_key.length == 0) {
-    document.getElementById('alert-icon').style.visibility = 'visible';
-  } else {
-    document.getElementById('alert-icon').style.visibility = 'hidden';
-  }
+  let noKey = !NeedInfoConfig.api_key || NeedInfoConfig.api_key.length == 0;
+  document.getElementById('settings-button-container').classList.toggle('alert', noKey);
 }
 
 function getRedirectToAccount() {
