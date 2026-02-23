@@ -146,38 +146,42 @@ function prepPage() {
   $("#report").empty();
 
   var frag = document.createDocumentFragment();
-  frag.appendChild(el('div', { cls: 'report-title', text: 'Engineer' }));
-  frag.appendChild(el('div', { cls: 'report-odr', text: 'Open Dev Related' }));
-  frag.appendChild(el('div', { cls: 'report-otr', title: 'Bugs with any needinfos for you that track the current nightly, beta, or release versions of Firefox.', text: 'Open Tracked' }));
-  frag.appendChild(el('div', { cls: 'report-cdr', text: 'Closed Dev Related' }));
-  frag.appendChild(el('div', { cls: 'report-onb', text: 'Open Nagbot' }));
-  frag.appendChild(el('div', { cls: 'report-cnb', text: 'Closed Nagbot' }));
+  let sel = document.getElementById('team-select');
+  let teamLabel = (sel && sel.value !== 'empty') ? sel.options[sel.selectedIndex].text : 'Needinfo Summary';
+  frag.appendChild(el('div', { cls: 'table-title-bar', text: teamLabel }));
+  frag.appendChild(el('div', { cls: 'report-title row-header', text: 'Engineer' }));
+  frag.appendChild(el('div', { cls: 'report-odr row-header', text: 'Open Dev Related' }));
+  frag.appendChild(el('div', { cls: 'report-otr row-header', title: 'Bugs with any needinfos for you that track the current nightly, beta, or release versions of Firefox.', text: 'Open Tracked' }));
+  frag.appendChild(el('div', { cls: 'report-cdr row-header', text: 'Closed Dev Related' }));
+  frag.appendChild(el('div', { cls: 'report-onb row-header', text: 'Open Nagbot' }));
+  frag.appendChild(el('div', { cls: 'report-cnb row-header', text: 'Closed Nagbot' }));
 
   // This is an element id idx and must match up when we
   // populate each row in displayCellFor.
   let devIndex = 0;
   for (let developer in NeedInfoConfig.developers) {
     devIndex++;
-    let link = el('a', { href: '' });
+    let rowClass = (devIndex % 2 === 1) ? 'row-odd' : 'row-even';
+    let link = el('a', { href: '', cls: rowClass });
     link.addEventListener('click', function(e) { event_loadUserSummary(e, developer); });
     link.appendChild(el('div', { cls: 'report-title', text: developer }));
     frag.appendChild(link);
-    frag.appendChild(el('div', { cls: 'report-odr', id: 'data_odr_' + devIndex, text: '?' }));
-    frag.appendChild(el('div', { cls: 'report-otr', id: 'data_otr_' + devIndex, text: '?' }));
-    frag.appendChild(el('div', { cls: 'report-cdr', id: 'data_cdr_' + devIndex, text: '?' }));
-    frag.appendChild(el('div', { cls: 'report-onb', id: 'data_onb_' + devIndex, text: '?' }));
-    frag.appendChild(el('div', { cls: 'report-cnb', id: 'data_cnb_' + devIndex, text: '?' }));
+    frag.appendChild(el('div', { cls: 'report-odr ' + rowClass, id: 'data_odr_' + devIndex, text: '?' }));
+    frag.appendChild(el('div', { cls: 'report-otr ' + rowClass, id: 'data_otr_' + devIndex, text: '?' }));
+    frag.appendChild(el('div', { cls: 'report-cdr ' + rowClass, id: 'data_cdr_' + devIndex, text: '?' }));
+    frag.appendChild(el('div', { cls: 'report-onb ' + rowClass, id: 'data_onb_' + devIndex, text: '?' }));
+    frag.appendChild(el('div', { cls: 'report-cnb ' + rowClass, id: 'data_cnb_' + devIndex, text: '?' }));
   }
   document.getElementById('report').appendChild(frag);
 
   if (devIndex > 1) {
     var totalFrag = document.createDocumentFragment();
-    totalFrag.appendChild(el('div', { cls: 'report-title', text: 'TOTALS' }));
-    totalFrag.appendChild(el('div', { cls: 'report-odr', id: 'odr-total', text: '' + PageStats.devOpen }));
-    totalFrag.appendChild(el('div', { cls: 'report-otr', id: 'otr-total', text: '' + PageStats.tracked }));
-    totalFrag.appendChild(el('div', { cls: 'report-cdr', id: 'cdr-total', text: '' + PageStats.devClosed }));
-    totalFrag.appendChild(el('div', { cls: 'report-onb', id: 'onb-total', text: '' + PageStats.nagOpen }));
-    totalFrag.appendChild(el('div', { cls: 'report-cnb', id: 'cnb-total', text: '' + PageStats.nagClosed }));
+    totalFrag.appendChild(el('div', { cls: 'report-title row-totals', text: '' }));
+    totalFrag.appendChild(el('div', { cls: 'report-odr row-totals', id: 'odr-total', text: '' + PageStats.devOpen }));
+    totalFrag.appendChild(el('div', { cls: 'report-otr row-totals', id: 'otr-total', text: '' + PageStats.tracked }));
+    totalFrag.appendChild(el('div', { cls: 'report-cdr row-totals', id: 'cdr-total', text: '' + PageStats.devClosed }));
+    totalFrag.appendChild(el('div', { cls: 'report-onb row-totals', id: 'onb-total', text: '' + PageStats.nagOpen }));
+    totalFrag.appendChild(el('div', { cls: 'report-cnb row-totals', id: 'cnb-total', text: '' + PageStats.nagClosed }));
     document.getElementById('report').appendChild(totalFrag);
   }
 
@@ -492,6 +496,8 @@ function displayCellFor(id, elementIndex, type, ni_count, linkUrl) {
   }
 
   let placeholder = document.getElementById('data_' + type + '_' + elementIndex);
+  if (placeholder.classList.contains('row-even')) cell.classList.add('row-even');
+  else if (placeholder.classList.contains('row-odd')) cell.classList.add('row-odd');
   placeholder.parentNode.replaceChild(cell, placeholder);
 }
 
