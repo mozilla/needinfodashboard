@@ -77,11 +77,6 @@ function updateDomains() {
   console.log("Bugzilla target:", domain);
 }
 
-// generate random integer in the given range
-function randomNumber(min, max) { 
-    return Math.round(Math.random() * (max - min) + min);
-}
-
 // returns a string - '2024-01-01'
 function getTodaysDateMinusOneYear() {
   let d = new Date(Date.now());
@@ -319,4 +314,30 @@ function sortPriorityDesc(a, b) {
   return pVals[a.priority] < pVals[b.priority];
 }
 
+function getRedirectToAccount() {
+  if (!document.getElementById('autofill-user-search').disabled &&
+      document.getElementById('autofill-user-search').value) {
+    return document.getElementById('autofill-user-search').value;
+  }
+  let to = document.getElementById("prompt-redirect-to-confirm-to").value;
+  if (!to.length) {
+    to = null;
+  }
+  return to;
+}
 
+function searchForNick(element) {
+  $('#autofill-user-search').empty();
+  document.getElementById('autofill-user-search').disabled = true;
+
+  let value = element.value;
+  if (!value) {
+    return;
+  }
+  if (value.length < 3) {
+    return;
+  }
+
+  console.log('searching for', value);
+  submitUserSearch(value);
+}

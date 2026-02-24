@@ -33,11 +33,6 @@ a:hover {
   border-radius: 0;
 }
 
-/* kept for backwards compatibility - no longer needed */
-.header-bg {
-  display: none;
-}
-
 #title-img {
   width: 60px;
   margin-right: 12px;
@@ -56,11 +51,6 @@ a:hover {
 /* include margin and padding in sizing calulations */
 * {
   box-sizing: border-box;
-}
-
-#content {
-  height: 67vh;
-  text-align: center;
 }
 
 .nodecoration {
@@ -252,7 +242,7 @@ a:hover {
 
 .name-bugtitle {
   grid-column: 9;
-  min-width:28vmin;
+  min-width: 22vmin;
 }
 
 .name-nimsg {
@@ -386,10 +376,6 @@ a:hover {
   background-color: #f0f0f0;
 }
 
-.command-button-hidden {
-  visibility: collapse;
-}
-
 .button-separator {
   display: none;
 }
@@ -458,15 +444,6 @@ a:hover {
 
 .prompt-row6 {
   grid-row: 6;
-}
-
-/* generic use dialog grid cols */
-.prompt-col1 {
-  grid-column: 1;
-}
-
-.prompt-col2 {
-  grid-column: 2;
 }
 
 /* standardized dialog buttons */

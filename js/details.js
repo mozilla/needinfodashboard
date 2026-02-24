@@ -316,24 +316,24 @@ function prepPage(userQuery) {
   var frag = document.createDocumentFragment();
   var checkAll = el('input', { type: 'checkbox', id: 'check-all' });
   checkAll.addEventListener('click', function() { allCheckClick(this); });
-  frag.appendChild(el('div', { cls: 'name-checkbox' }, [checkAll]));
-  var datehdr = el('div', { cls: 'name-nidate-hdr', text: 'NI Date' });
+  frag.appendChild(el('div', { cls: 'name-checkbox row-header' }, [checkAll]));
+  var datehdr = el('div', { cls: 'name-nidate-hdr row-header', text: 'NI Date' });
   datehdr.addEventListener('click', dateSort);
   frag.appendChild(datehdr);
-  var bugidhdr = el('div', { cls: 'name-bugid-hdr', text: 'Bug ID' });
+  var bugidhdr = el('div', { cls: 'name-bugid-hdr row-header', text: 'Bug ID' });
   bugidhdr.addEventListener('click', bugIdSort);
   frag.appendChild(bugidhdr);
-  frag.appendChild(el('div', { cls: 'name-nifrom', text: 'NeedInfo' }));
-  frag.appendChild(el('div', { cls: 'name-assignee', text: 'Assignee' }));
-  var sevhdr = el('div', { cls: 'name-severity-hdr', text: 'Sev' });
+  frag.appendChild(el('div', { cls: 'name-nifrom row-header', text: 'NeedInfo' }));
+  frag.appendChild(el('div', { cls: 'name-assignee row-header', text: 'Assignee' }));
+  var sevhdr = el('div', { cls: 'name-severity-hdr row-header', text: 'Sev' });
   sevhdr.addEventListener('click', severitySort);
   frag.appendChild(sevhdr);
-  var prihdr = el('div', { cls: 'name-priority-hdr', text: 'Pri' });
+  var prihdr = el('div', { cls: 'name-priority-hdr row-header', text: 'Pri' });
   prihdr.addEventListener('click', prioritySort);
   frag.appendChild(prihdr);
-  frag.appendChild(el('div', { cls: 'name-platform-hdr', text: 'OS' }));
-  frag.appendChild(el('div', { cls: 'name-bugtitle', text: 'Title' }));
-  frag.appendChild(el('div', { cls: 'name-nimsg', text: 'NI Message' }));
+  frag.appendChild(el('div', { cls: 'name-platform-hdr row-header', text: 'OS' }));
+  frag.appendChild(el('div', { cls: 'name-bugtitle row-header', text: 'Bug Title' }));
+  frag.appendChild(el('div', { cls: 'name-nimsg row-header', text: 'NI Message' }));
   document.getElementById('report').appendChild(frag);
 
   let textHdr = '';
@@ -802,10 +802,6 @@ function queueBugChange(type, bugId, comment, to) {
   submitCommand(url, bugId, json);
 }
 
-function getRandomIntStr(max) {
-  return '' + Math.floor(Math.random() * max);
-}
-
 function queueChanges(type, comment, to) {
   if (!ChangeList.length)
     return;
@@ -992,34 +988,6 @@ function submitUserSearch(value) {
     }
     errorMsg(errorThrown);
   });
-}
-
-function getRedirectToAccount() {
-  if (!document.getElementById('autofill-user-search').disabled &&
-      document.getElementById('autofill-user-search').value) {
-    return document.getElementById('autofill-user-search').value;
-  }
-  let to = document.getElementById("prompt-redirect-to-confirm-to").value;
-  if (!to.length) {
-    to = null;
-  }
-  return to;
-}
-
-function searchForNick(element) {
-  $('#autofill-user-search').empty();
-  document.getElementById('autofill-user-search').disabled = true;
-
-  let value = element.value;
-  if (!value) {
-    return;
-  }
-  if (value.element < 3) {
-    return;
-  }
-
-  console.log('searching for', value);
-  submitUserSearch(value);
 }
 
 var SearchTimeoutId = -1;

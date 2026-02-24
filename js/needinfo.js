@@ -406,7 +406,6 @@ function retrieveInfoFor(url, id, elementIndex, developer, linkUrls) {
     }
   })
   .error(function(jqXHR, textStatus, errorThrown) {
-    displayErrorFor(id, elementIndex, developer, url, null);
     console.log("status:", textStatus);
     console.log("error thrown:", errorThrown);
     console.log("response text:", jqXHR.responseText);
@@ -419,9 +418,6 @@ function retrieveInfoFor(url, id, elementIndex, developer, linkUrls) {
     }
     errorMsg(errorThrown);
   });
-}
-
-function displayErrorFor(id, elementIndex, developer, url, type) {
 }
 
 // Bucket all bugs from the combined query into the 5 categories client-side,
@@ -511,18 +507,6 @@ function checkConfig() {
   document.getElementById('settings-button-container').classList.toggle('alert', noKey);
 }
 
-function getRedirectToAccount() {
-  if (!document.getElementById('autofill-user-search').disabled &&
-      document.getElementById('autofill-user-search').value) {
-    return document.getElementById('autofill-user-search').value;
-  }
-  let to = document.getElementById("prompt-redirect-to-confirm-to").value;
-  if (!to.length) {
-    to = null;
-  }
-  return to;
-}
-
 function queryAccount() {
   let dlg = document.getElementById("prompt-query-account");
   dlg.returnValue = "cancel";
@@ -575,22 +559,6 @@ function submitUserSearch(value) {
     }
     errorMsg(errorThrown);
   });
-}
-
-function searchForNick(element) {
-  $('#autofill-user-search').empty();
-  document.getElementById('autofill-user-search').disabled = true;
-
-  let value = element.value;
-  if (!value) {
-    return;
-  }
-  if (value.element < 3) {
-    return;
-  }
-
-  console.log('searching for', value);
-  submitUserSearch(value);
 }
 
 var SearchTimeoutId = -1;
