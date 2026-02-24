@@ -42,4 +42,3 @@ Two pages, each with a dedicated JS file, sharing `js/utils.js` and `js/config.j
 - `js/libs/jquery-1.12.0.min.js` — DOM and AJAX
 - `js/libs/jquery-cross-origin.min.js` — CORS support for cross-origin AJAX
 - `js/libs/purl-2.3.1/` — Legacy URL parsing (newer code uses `URLSearchParams` directly)
-- `js/libs/ical.js` — iCalendar parsing library; loaded by `details.html` but not currently called anywhere — appears to be unused/dead code
