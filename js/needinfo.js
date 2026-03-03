@@ -265,9 +265,6 @@ function loadPage() {
 
     // ODR link URL
     url = NeedInfoConfig.bugzilla_search_url;
-    if (NeedInfoConfig.api_key.length) {
-      url += "api_key=" + NeedInfoConfig.api_key + "&";
-    }
     url += NeedInfoConfig.fields_query.replace("{id}", id);
     url += getBugzillaMaxDateQuery();
     url += "&f3=setters.login_name";
@@ -283,9 +280,6 @@ function loadPage() {
 
     // OTR link URL
     url = NeedInfoConfig.bugzilla_search_url;
-    if (NeedInfoConfig.api_key.length) {
-      url += "api_key=" + NeedInfoConfig.api_key + "&";
-    }
     url += NeedInfoConfig.fields_query.replace("{id}", id);
     url += getBugzillaMaxDateQuery();
     url += "&f3=bug_status";
@@ -307,9 +301,6 @@ function loadPage() {
 
     // CDR link URL
     url = NeedInfoConfig.bugzilla_search_url;
-    if (NeedInfoConfig.api_key.length) {
-      url += "api_key=" + NeedInfoConfig.api_key + "&";
-    }
     url += NeedInfoConfig.fields_query.replace("{id}", id);
     url += getBugzillaMaxDateQuery();
     url += "&f3=setters.login_name";
@@ -327,9 +318,6 @@ function loadPage() {
 
     // ONB link URL
     url = NeedInfoConfig.bugzilla_search_url;
-    if (NeedInfoConfig.api_key.length) {
-      url += "api_key=" + NeedInfoConfig.api_key + "&";
-    }
     url += NeedInfoConfig.fields_query.replace("{id}", id);
     url += getBugzillaMaxDateQuery();
     url += "&f3=setters.login_name";
@@ -342,9 +330,6 @@ function loadPage() {
 
     // CNB link URL
     url = NeedInfoConfig.bugzilla_search_url;
-    if (NeedInfoConfig.api_key.length) {
-      url += "api_key=" + NeedInfoConfig.api_key + "&";
-    }
     url += NeedInfoConfig.fields_query.replace("{id}", id);
     url += getBugzillaMaxDateQuery();
     url += "&f3=setters.login_name";
@@ -361,9 +346,6 @@ function loadPage() {
     /////////////////////////////////////////////////////////
 
     let combinedUrl = NeedInfoConfig.bugzilla_search_url;
-    if (NeedInfoConfig.api_key.length) {
-      combinedUrl += "api_key=" + NeedInfoConfig.api_key + "&";
-    }
     combinedUrl += "f1=requestees.login_name&o1=equals&v1=" + id;
     combinedUrl += "&f2=flagtypes.name&o2=equals&v2=needinfo%3F";
     combinedUrl += "&include_fields=id,status,flags,cf_tracking_firefox_nightly,cf_tracking_firefox_beta,cf_tracking_firefox_release";
@@ -401,6 +383,7 @@ function errorMsg(text) {
 function retrieveInfoFor(url, id, elementIndex, developer, linkUrls) {
   $.ajax({
     url: url,
+    headers: getApiHeaders(),
     success: function (data) {
       processAllCountsFor(id, elementIndex, developer, linkUrls, data);
     }
@@ -526,12 +509,10 @@ function queryAccount() {
 function submitUserSearch(value) {
   let url = NeedInfoConfig.bugzilla_user_url;
   url = url.replace('{value}', value);
-  if (NeedInfoConfig.api_key.length) {
-    url += "&api_key=" + NeedInfoConfig.api_key;
-  }
   $('#autofill-user-search').empty();
   $.ajax({
     url: url,
+    headers: getApiHeaders(),
     success: function (data) {
       // data.users.name and real_name
       data.users.forEach(function (val) {

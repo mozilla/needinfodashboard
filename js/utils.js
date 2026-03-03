@@ -94,6 +94,13 @@ function restToQueryUrl(url) {
   return url.replace('/rest/bug', '/buglist.cgi');
 }
 
+function getApiHeaders() {
+  if (NeedInfoConfig.api_key && NeedInfoConfig.api_key.length) {
+    return { 'X-Bugzilla-api-key': NeedInfoConfig.api_key };
+  }
+  return {};
+}
+
 function trimAddress(account) {
   if (account == undefined) {
     // Unassigned

@@ -83,9 +83,6 @@ function main(json) {
   // v2=needinfo?
 
   let url = NeedInfoConfig.bugzilla_search_url;
-  if (NeedInfoConfig.api_key.length > 0) {
-    url += "api_key=" + NeedInfoConfig.api_key + "&";
-  }
   url += NeedInfoConfig.bugs_query.replace("{id}", id);
 
   url += getBugzillaMaxDateQuery();
@@ -201,6 +198,7 @@ function retrieveInfoFor(url, userQuery)
 {
   $.ajax({
     url: url,
+    headers: getApiHeaders(),
     success: function (data) {
       populateBugs(url, userQuery, data);
       sortByDefault();
@@ -651,6 +649,7 @@ function submitCommand(url, bugId, jsonData) {
     type: 'PUT',
     data: jsonData,
     contentType: "application/json",
+    headers: getApiHeaders(),
     success: function (data) {
       // success response 
       // Object { message: null, error: true, documentation: "http://www.bugzilla.org/docs/4.2/en/html/api/", code: 100500 }
@@ -795,9 +794,6 @@ function queueBugChange(type, bugId, comment, to) {
 
   let json = JSON.stringify(data);
   let url = NeedInfoConfig.bugzilla_put_url.replace('{id}', bug.bugid);
-  if (NeedInfoConfig.api_key.length) {
-    url += "?api_key=" + NeedInfoConfig.api_key;
-  }
 
   submitCommand(url, bugId, json);
 }
@@ -955,12 +951,10 @@ function invokeRedirectTo() {
 function submitUserSearch(value) {
   let url = NeedInfoConfig.bugzilla_user_url;
   url = url.replace('{value}', value);
-  if (NeedInfoConfig.api_key.length) {
-    url += "&api_key=" + NeedInfoConfig.api_key;
-  }
   $('#autofill-user-search').empty();
   $.ajax({
     url: url,
+    headers: getApiHeaders(),
     success: function (data) {
       // data.users.name and real_name
       data.users.forEach(function (val) {
