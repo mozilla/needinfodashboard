@@ -439,6 +439,7 @@ a:hover {
 .settings-button-container {
   position: relative;
   display: inline-block;
+  margin-left: auto;
 }
 
 .settings-button-container.alert::after {
