@@ -326,20 +326,18 @@ a:hover {
   border-bottom: 1px solid #e0e0e0;
 }
 
-.date-picker {
-  font-family: Moz;
-  background: ButtonFace;
-  font-size: 1.2vmin;
+.date-picker,
+.team-select,
+.command-button {
+  font-size: 1.558626vmin;
+  font-family: Arial, Helvetica, sans-serif;
   padding: 5px 12px;
   border: 1px solid #ccc;
   border-radius: 4px;
 }
 
-.team-select {
-  padding: 5px 12px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  font-family: Moz;
+.date-picker {
+  background: ButtonFace;
 }
 
 .team-option {
@@ -364,11 +362,6 @@ a:hover {
 }
 
 .command-button {
-  font-size: 1.2vmin;
-  font-family: Moz;
-  padding: 5px 12px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
   cursor: pointer;
 }
 
