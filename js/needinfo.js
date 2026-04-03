@@ -348,7 +348,7 @@ function loadPage() {
     let combinedUrl = NeedInfoConfig.bugzilla_search_url;
     combinedUrl += "f1=requestees.login_name&o1=equals&v1=" + id;
     combinedUrl += "&f2=flagtypes.name&o2=equals&v2=needinfo%3F";
-    combinedUrl += "&include_fields=id,status,flags,cf_tracking_firefox_nightly,cf_tracking_firefox_beta,cf_tracking_firefox_release";
+    combinedUrl += "&include_fields=id,status,flags,groups,cf_tracking_firefox_nightly,cf_tracking_firefox_beta,cf_tracking_firefox_release";
     combinedUrl += getBugzillaMaxDateQuery();
 
     retrieveInfoFor(combinedUrl, id, elementIndex, developer, linkUrls);
@@ -405,17 +405,26 @@ function retrieveInfoFor(url, id, elementIndex, developer, linkUrls) {
 
 // Bucket all bugs from the combined query into the 5 categories client-side,
 // then render each cell. Called once per developer instead of 5 times.
+// Security-group bugs are counted separately (secXxx) so the display can
+// show a red bubble distinct from the regular blue bubble.
 function processAllCountsFor(id, elementIndex, developer, linkUrls, data) {
   const NAGBOT = 'release-mgmt-account-bot@mozilla.tld';
   const CLOSED = ['RESOLVED', 'VERIFIED', 'CLOSED'];
   const devEmail = decodeURIComponent(id);
-  let counts = { odr: 0, otr: 0, cdr: 0, onb: 0, cnb: 0 };
+  let counts = {
+    odr: 0, odrSec: 0,
+    otr: 0, otrSec: 0,
+    cdr: 0, cdrSec: 0,
+    onb: 0, onbSec: 0,
+    cnb: 0, cnbSec: 0,
+  };
 
   for (let bug of (data.bugs || [])) {
     let isClosed = CLOSED.includes(bug.status);
     let isTracked = bug.cf_tracking_firefox_nightly === '+' ||
                     bug.cf_tracking_firefox_beta    === '+' ||
                     bug.cf_tracking_firefox_release === '+';
+    let isSec = Array.isArray(bug.groups) && bug.groups.length > 0;
     // prevent double-counting if a bug has multiple NI flags for this dev
     let seen = new Set();
 
@@ -428,47 +437,56 @@ function processAllCountsFor(id, elementIndex, developer, linkUrls, data) {
 
       if (!isClosed) {
         if (isNagbot) {
-          if (!seen.has('onb')) { counts.onb++; seen.add('onb'); }
+          if (!seen.has('onb')) { isSec ? counts.onbSec++ : counts.onb++; seen.add('onb'); }
         } else if (!isSelf || !NeedInfoConfig.ignoremyni) {
-          if (!seen.has('odr')) { counts.odr++; seen.add('odr'); }
+          if (!seen.has('odr')) { isSec ? counts.odrSec++ : counts.odr++; seen.add('odr'); }
         }
-        if (isTracked && !seen.has('otr')) { counts.otr++; seen.add('otr'); }
+        if (isTracked && !seen.has('otr')) { isSec ? counts.otrSec++ : counts.otr++; seen.add('otr'); }
       } else {
         if (isNagbot) {
-          if (!seen.has('cnb')) { counts.cnb++; seen.add('cnb'); }
+          if (!seen.has('cnb')) { isSec ? counts.cnbSec++ : counts.cnb++; seen.add('cnb'); }
         } else if (!isSelf || !NeedInfoConfig.ignoremyni) {
-          if (!seen.has('cdr')) { counts.cdr++; seen.add('cdr'); }
+          if (!seen.has('cdr')) { isSec ? counts.cdrSec++ : counts.cdr++; seen.add('cdr'); }
         }
       }
     }
   }
 
-  PageStats.devOpen   += counts.odr;
-  PageStats.tracked   += counts.otr;
-  PageStats.devClosed += counts.cdr;
-  PageStats.nagOpen   += counts.onb;
-  PageStats.nagClosed += counts.cnb;
+  PageStats.devOpen   += counts.odr + counts.odrSec;
+  PageStats.tracked   += counts.otr + counts.otrSec;
+  PageStats.devClosed += counts.cdr + counts.cdrSec;
+  PageStats.nagOpen   += counts.onb + counts.onbSec;
+  PageStats.nagClosed += counts.cnb + counts.cnbSec;
   populatePageStats();
 
-  displayCellFor(id, elementIndex, 'odr', counts.odr, linkUrls.odr);
-  displayCellFor(id, elementIndex, 'otr', counts.otr, linkUrls.otr);
-  displayCellFor(id, elementIndex, 'cdr', counts.cdr, linkUrls.cdr);
-  displayCellFor(id, elementIndex, 'onb', counts.onb, linkUrls.onb);
-  displayCellFor(id, elementIndex, 'cnb', counts.cnb, linkUrls.cnb);
+  displayCellFor(id, elementIndex, 'odr', counts.odr, counts.odrSec, linkUrls.odr);
+  displayCellFor(id, elementIndex, 'otr', counts.otr, counts.otrSec, linkUrls.otr);
+  displayCellFor(id, elementIndex, 'cdr', counts.cdr, counts.cdrSec, linkUrls.cdr);
+  displayCellFor(id, elementIndex, 'onb', counts.onb, counts.onbSec, linkUrls.onb);
+  displayCellFor(id, elementIndex, 'cnb', counts.cnb, counts.cnbSec, linkUrls.cnb);
 }
 
-function displayCellFor(id, elementIndex, type, ni_count, linkUrl) {
+const BZ_BUG_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2l1.88 1.88"/><path d="M14.12 3.88 16 2"/><path d="M9 7.13v-1a3.003 3.003 0 1 1 6 0v1"/><path d="M12 20c-3.3 0-6-2.7-6-6v-3a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v3c0 3.3-2.7 6-6 6z"/><path d="M12 20v-9"/><path d="M6.53 9C4.6 8.8 3 7.1 3 5"/><path d="M6 13H2"/><path d="M3 21c0-2.1 1.7-3.9 3.8-4"/><path d="M20.97 5c0 2.1-1.6 3.8-3.5 4"/><path d="M22 13h-4"/><path d="M17.2 17c2.1.1 3.8 1.9 3.8 4"/></svg>';
+
+function displayCellFor(id, elementIndex, type, ni_count, ni_sec_count, linkUrl) {
   let tabTarget = NeedInfoConfig.targetnew ? "buglists" : "_blank";
 
   let cell = el('div', { cls: 'report-' + type, id: 'data_' + elementIndex });
-  if (ni_count != 0) {
+  if (ni_count > 0 || ni_sec_count > 0) {
     let dash_link = "details.html?" + "&userquery=" + type + "&userid=" + id + getMaxDateParameter();
     let bug_list = restToQueryUrl(linkUrl);
     let container = el('div', { cls: 'bug-link-container' });
-    container.appendChild(el('a', { cls: 'bug-link', title: 'Needinfo Details', href: dash_link, target: 'nilist', text: '' + ni_count }));
-    container.appendChild(el('a', { cls: 'bug-icon', title: 'Bugzilla Bug List', href: bug_list, target: tabTarget }, [
-      el('img', { src: 'images/favicon.ico' })
-    ]));
+    let regSlot = el('div', { cls: 'bubble-slot' });
+    if (ni_count > 0) {
+      regSlot.appendChild(el('a', { cls: 'bug-count-bubble', title: 'Needinfo Details', href: dash_link, target: 'nilist', text: '' + ni_count }));
+    }
+    container.appendChild(regSlot);
+    let secSlot = el('div', { cls: 'bubble-slot' });
+    if (ni_sec_count > 0) {
+      secSlot.appendChild(el('a', { cls: 'bug-count-bubble sec', title: 'Security Needinfo Details', href: dash_link, target: 'nilist', text: '' + ni_sec_count }));
+    }
+    container.appendChild(secSlot);
+    container.appendChild(el('a', { cls: 'bz-list-btn', title: 'Bugzilla Bug List', href: bug_list, target: tabTarget, html: BZ_BUG_SVG }));
     cell.appendChild(container);
   } else {
     cell.appendChild(document.createTextNode('\u00A0'));

@@ -261,16 +261,16 @@ function populateBugs(url, type, data) {
 
     if (commentIdx == -1) {
       processRow(flagCreationDate, bug.id, flagId, flagIdx, bug.assigned_to, bug.severity,
-        bug.priority, bug.op_sys, bug.flags, "", 0, bug.summary, setter);
+        bug.priority, bug.op_sys, bug.flags, "", 0, bug.summary, setter, bug.groups);
     } else {
       processRow(flagCreationDate, bug.id, flagId, flagIdx, bug.assigned_to, bug.severity,
         bug.priority, bug.op_sys, bug.flags, bug.comments[commentIdx].text, bug.comments[commentIdx].count,
-        bug.summary, setter);
+        bug.summary, setter, bug.groups);
     }
   });
 }
 
-function addRec(ct, bugId, flagId, flagIdx, assignee, s, p, platform, msg, cmtIdx, title, flags, nisetter) {
+function addRec(ct, bugId, flagId, flagIdx, assignee, s, p, platform, msg, cmtIdx, title, flags, nisetter, groups) {
   let record = {
     'date': ct, // NI Date
     'bugid': bugId,
@@ -285,13 +285,14 @@ function addRec(ct, bugId, flagId, flagIdx, assignee, s, p, platform, msg, cmtId
     'msg': msg,
     'commentid': cmtIdx,
     'nisetter': nisetter,
+    'isSec': Array.isArray(groups) && groups.length > 0,
     'checked': false
   };
   bugset.push(record);
   return record;
 }
 
-function processRow(ct, bugId, flagId, flagIdx, assignee, s, p, platform, flags, msg, cmtIdx, title, nisetter) {
+function processRow(ct, bugId, flagId, flagIdx, assignee, s, p, platform, flags, msg, cmtIdx, title, nisetter, groups) {
   // flagId is the bugzilla flagid of the ni that set this user's ni. We use it
   // in comment links.
 
@@ -307,7 +308,7 @@ function processRow(ct, bugId, flagId, flagIdx, assignee, s, p, platform, flags,
   if (platform == 'Unspecified')
     platform = '';
 
-  addRec(d, bugId, flagId, flagIdx, assignee, s, p, platform, msgClean, cmtIdx, title, flags, nisetter);
+  addRec(d, bugId, flagId, flagIdx, assignee, s, p, platform, msgClean, cmtIdx, title, flags, nisetter, groups);
 }
 
 function prepPage(userQuery) {
@@ -361,7 +362,7 @@ function populateRow(record, rowIndex) {
   let bugUrl = NeedInfoConfig.bugzilla_link_url.replace('{id}', record.bugid);
   let dateStr = record.date.toLocaleDateString(undefined, options);
   let tabTarget = NeedInfoConfig.targetnew ? "nidetails" : "_blank";
-  let bugLink = el('a', { target: tabTarget, href: bugUrl, text: record.bugid });
+  let bugLink = el('a', { target: tabTarget, href: bugUrl, text: record.bugid, cls: record.isSec ? 'sec-bugid' : '' });
   let titleLink = el('a', { cls: 'nodecoration', target: tabTarget, href: bugUrl, text: record.title });
   let commentLink = el('a', { cls: 'nodecoration', target: tabTarget, href: bugUrl + '#c' + record.commentid, text: record.msg });
   let assignee = trimAddress(record.assignee);

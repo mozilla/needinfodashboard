@@ -2,7 +2,7 @@
 
 **Purpose:** A single-page Mozilla internal tool for tracking Bugzilla `needinfo?` flags across engineering teams. Hosted at `https://mozilla.github.io/needinfodashboard/`.
 
-**Tech stack:** Vanilla JS + jQuery 1.12.0, jquery-cross-origin, purl (URL parsing), ical.js (details page only). No build system — plain HTML/CSS/JS files served statically from GitHub Pages. Configuration is driven by JSON files (`js/config.json` for Bugzilla base config, `js/<team>.json` for per-team developer lists).
+**Tech stack:** Vanilla JS + jQuery 1.12.0, jquery-cross-origin, purl (URL parsing). No build system — plain HTML/CSS/JS files served statically from GitHub Pages. Configuration is driven by JSON files (`js/config.json` for Bugzilla base config, `js/<team>.json` for per-team developer lists).
 
 ---
 
@@ -23,7 +23,11 @@
 | Open Nagbot | `onb` | Open bugs, NI set by `release-mgmt-account-bot@mozilla.tld` |
 | Closed Nagbot | `cnb` | Closed bugs, NI set by Nagbot |
 
-- Each non-zero cell shows: a count link → details page, and a Bugzilla bug-list icon link.
+- Each cell contains up to three elements, always in fixed-width slots so columns stay aligned across rows:
+  - **Blue bubble** — count of regular (non-security) NIs; links to the details page.
+  - **Red bubble** — count of security-group NIs (only appears when a Bugzilla API key is configured and security bugs are returned); links to the details page.
+  - **Bug icon button** — inline SVG bug icon; opens the matching Bugzilla bug list.
+- Security bugs are identified by a non-empty `groups` field in the Bugzilla response. Without an API key, security bugs are not returned by Bugzilla and no red bubble appears.
 - A totals row sums all columns when viewing a team (more than one developer).
 - "Specific Account…" opens a search dialog to look up any Bugzilla user by email/nick and drill into their needinfos.
 
@@ -34,6 +38,7 @@
 - Reached via URL params: `?userid=<email>&userquery=<odr|otr|cdr|onb|cnb>&creation_time=<date>`.
 - Fetches full bug data (flags, comments, severity, priority, assignee, summary, OS) and displays each NI as a row.
 - Columns: checkbox, NI date, Bug ID, NI setter (+ extra NIs), Assignee, Severity, Priority, OS, Title, NI Message (linked to the matching comment).
+- Bug IDs for security-group bugs are rendered in red for quick visual identification.
 - Rows are sortable by NI Date, Bug ID, Severity, Priority (sort order persisted in session/localStorage).
 - **Bulk actions** (require API key):
   - **Clear** — clears the `needinfo?` flag on checked bugs (no comment).
