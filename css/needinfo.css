@@ -28,7 +28,7 @@ a:hover {
   padding: 12px 20px;
   background: linear-gradient(180deg, #058b00 0%, #12bc00 100%);
   color: white;
-  font-size: 2vmin;
+  font-size: 1.4vw;
   font-family: Moz;
   border-radius: 0;
 }
@@ -46,7 +46,7 @@ a:hover {
 }
 
 .title-details {
-  font-size: 1.8vmin;
+  font-size: 1.8vw;
 }
 
 /* include margin and padding in sizing calulations */
@@ -85,7 +85,7 @@ a:hover {
 }
 
 .report-title, .report-odr, .report-otr, .report-cdr, .report-onb, .report-cnb {
-  min-height: 4vh;
+  min-height: 4.2vh;
   text-align: left;
   border-bottom: 1px solid #e0e0e0;
   padding-top: 7px;
