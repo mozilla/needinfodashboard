@@ -185,6 +185,16 @@ function prepPage() {
     document.getElementById('report').appendChild(totalFrag);
   }
 
+  // Legend row
+  let legendFrag = document.createDocumentFragment();
+  let legendCell = el('div', { cls: 'report-legend' });
+  legendCell.innerHTML =
+    '<span class="legend-item"><span class="legend-bubble">1</span> Regular needinfo</span>' +
+    '<span class="legend-item"><span class="legend-bubble sec">1</span> Security needinfo</span>' +
+    '<span class="legend-item"><span class="legend-bz-icon">' + BZ_BUG_SVG + '</span> Open bug list in Bugzilla</span>';
+  legendFrag.appendChild(legendCell);
+  document.getElementById('report').appendChild(legendFrag);
+
   checkConfig();
 }
 

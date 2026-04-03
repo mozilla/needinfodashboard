@@ -325,6 +325,59 @@ a:hover {
   height: 1.3vmin;
 }
 
+.report-legend {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 2vmin;
+  padding: 1vmin 1.5vmin;
+  font-size: 1.4vmin;
+  color: #666;
+  border-top: 1px solid #dde2ea;
+  margin-top: 0.5vmin;
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6vmin;
+}
+
+.legend-bubble {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 3.2vmin;
+  height: 3.2vmin;
+  border-radius: 50%;
+  background-color: #0060df;
+  color: white;
+  font-weight: 700;
+  font-size: 1.5vmin;
+  padding: 0 0.6vmin;
+}
+
+.legend-bubble.sec {
+  background-color: #cc0000;
+}
+
+.legend-bz-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.2vmin;
+  height: 2.2vmin;
+  border-radius: 4px;
+  background-color: #ebebeb;
+  color: #555;
+}
+
+.legend-bz-icon svg {
+  display: block;
+  width: 1.3vmin;
+  height: 1.3vmin;
+}
+
 .errors-container {
   padding-top: 20px;
   padding-left: 2vmin;
