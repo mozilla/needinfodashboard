@@ -1,16 +1,15 @@
 {
   "developers": {
+    "Security Team": "security@mozilla.org",
     "Daniel Veditz": "dveditz@mozilla.com",
     "Malte Jürgens": "maltejur@mozilla.com",
     "Tom Ritter": "tom@mozilla.com",
     "Tom Schuster": "tschuster@mozilla.com",
     "Frederik Braun": "fbraun@mozilla.com",
-    "Christian Holler": "choller@mozilla.com",
     "Tyson Smith": "twsmith@mozilla.com",
     "Jesse Schwartzentruber": "jschwartzentruber@mozilla.com",
     "Jason Kratzer": "jkratzer@mozilla.com",
     "Simon Friedberger": "sfriedberger@mozilla.com",
-    "Maurice Dauer": "mdauer@mozilla.com",
-    "Fatih Kilic": "fkilic@mozilla.com"
+    "Maurice Dauer": "mdauer@mozilla.com"
   }
 }
